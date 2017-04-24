@@ -10,6 +10,7 @@ if __name__ == '__main__':
 	filename = "hello_world.txt"
 	os.system("lex source.l")
 	os.system("cc -o scanner -O lex.yy.c -ll")
+	# os.system("cc -o scanner -O lex.yy.c -lfl")
 
 	if(len(sys.argv) == 2):
 		filename = sys.argv[1]
