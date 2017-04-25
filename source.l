@@ -87,9 +87,10 @@ type	{token("TYPE")}
 var	{token("VAR")}
 void	{token("VOID")}
 while	{token("WHILE")}
+[+-]?{digit}*([.]{digit}*)?["e"|"E"]{digit}* {tokenString("REAL NUMBER", yytext);}
 
 {id}		{tokenString("id", yytext);}
-{digit}    	{tokenInteger("integer",atoi(yytext));}
+
 
 \n|\r\n {printLine();}
 [ \t]*  {LIST;}
