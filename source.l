@@ -20,7 +20,6 @@ letter [A-Za-z]
 id {letter}({letter}|{digit})*
 %x commentState
 
-
 %%
 
 "/*" {
@@ -32,8 +31,8 @@ id {letter}({letter}|{digit})*
 	LIST;
 	BEGIN(INITIAL);
 }
-<commentState>\n|<commentState>.*\r\n {printLine();}
-<commentState>[^"*/"] {LIST;}
+<commentState>\n|<commentState>\r\n {printLine();}
+<commentState>. {LIST;}
 \/\/.* {
 	// comment //
 	LIST;
