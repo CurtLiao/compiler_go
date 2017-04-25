@@ -1,9 +1,13 @@
 // Hello World Example
 
+
+
+/*
+fds
+wdf
+sdadadad
+ccs*/
 func main ( ) {
     println "Hello World"
-    println "aa""bb"
-    println "aa""bb""cc"
-    println "aa""bb""cc"""
-    println """aa""bb""cc"""
+
 }

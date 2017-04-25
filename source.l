@@ -7,6 +7,7 @@
 #define tokenString(t,s) {LIST; printf("<%s:%s>\n", t, s);}
 #define MAX_LINE_LENG 256
 #define printYYText() {LIST; printf("%s\n",yytext);}
+#define printLine() {LIST;printf("%d: %s", linenum++, buf);    buf[0] = '\0';}
 
 int linenum = 1;
 char buf[MAX_LINE_LENG];
@@ -17,37 +18,43 @@ char strBuf[MAX_LINE_LENG];
 digit [0-9]+
 letter [A-Za-z]
 id {letter}({letter}|{digit})*
-%x strState
 %x commentState
 
 
-
 %%
+
+"/*" {
+	// for comment /* */
+	LIST;
+	BEGIN(commentState);
+}
+<commentState>"*/" {
+	LIST;
+	BEGIN(INITIAL);
+}
+<commentState>\n|<commentState>.*\r\n {printLine();}
+<commentState>[^"*/"] {LIST;}
+\/\/.* {
+	// comment //
+	LIST;
+}
 \".*\" {
-	LIST; 
-	printf("flag = half and str = %s \n", yytext);
+	// for string
+	// delete first "
 	strcpy(strBuf, yytext+1);
-	printf("strBuf = %s\n", strBuf);
+	// delete last "
 	strBuf[strlen(strBuf)-1] = '\0';
-	printf("strBuf = %s\n", strBuf);
-	int count = 0;
-	char* strFind;
-	while(strBuf[count] != '\0'){
-		printf("curchar = %c \n", strBuf[count]);
-		printf("count = %d strBuf = %s\n", count, strBuf);
+	int count = -1;
+	// replace "" to "
+	while(strBuf[++count] != '\0'){
 		if(strBuf[count] == '\"'){
 			int temp = count;
-			while(strBuf[temp] != '\0'){
+			while(strBuf[temp++] != '\0')
 				strBuf[temp] = strBuf[temp+1];
-				temp++;
-			}
 		}
-		count++;
-
 	}
-	printf("strBuf = %s\n", strBuf);
+	tokenString("string", strBuf);
 	strBuf[0] = '\0';
-
 }
 
 
@@ -85,20 +92,22 @@ while	{token("WHILE")}
 {id}		{tokenString("id", yytext);}
 {digit}    	{tokenInteger("integer",atoi(yytext));}
 
-
-
-\n     {
-        LIST;
-        printf("%d: %s", linenum++, buf);
-        buf[0] = '\0';
-        }
-
+\n|\r\n {printLine();}
 [ \t]*  {LIST;}
-
-.       {
-        LIST;
-        printf("%d:%s\n", linenum+1, buf);
-        printf("bad character:'%s'\n",yytext);
-        exit(-1);
-        }
+.   {
+    LIST;
+    printf("%d:%s\n", linenum+1, buf);
+    printf("bad character:'%s'\n",yytext);
+    exit(-1);
+}
 %%
+// int main(int argc, char const *argv[])
+// {
+
+// 	yylex();	
+//     printf("\n%s\n", buf);
+//     printf("%d: %s\n", linenum, buf);
+//     buf[0] = '\0';
+// 	/* code */
+// 	return 0;
+// }
