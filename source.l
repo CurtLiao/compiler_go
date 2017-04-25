@@ -57,7 +57,7 @@ id {letter}({letter}|{digit})*
 }
 
 
-","|":"";"|"("|")"|"["|"]"|"{"|"}" {token(yytext);}
+","|":"|";"|"("|")"|"["|"]"|"{"|"}" {token(yytext);}
 "+"|"-"|"*"|"/"|"^"|"%"|"<"|"<="|">="|">"|"=="|"!="|"&"|"|"|"!"|"="|"+="|"-="|"*="|"/="    {token(yytext);}
 
 bool	{token("BOOL")}
@@ -90,7 +90,7 @@ while	{token("WHILE")}
 [+-]?{digit}*([.]{digit}*)?["e"|"E"]{digit}* {tokenString("REAL NUMBER", yytext);}
 
 {id}		{tokenString("id", yytext);}
-
+{digit}    	{tokenInteger("integer",atoi(yytext));}
 
 \n|\r\n {printLine();}
 [ \t]*  {LIST;}
