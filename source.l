@@ -1,6 +1,8 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include "symbol_table.h"
+
 #define LIST     strcat(buf,yytext)
 #define token(t) {LIST; 	printf("<'%s'>\n", t); }
 #define tokenInteger(t,i) {LIST; printf("<%s:%d>\n", t, i);}
@@ -8,14 +10,15 @@
 #define MAX_LINE_LENG 256
 #define printYYText() {LIST; printf("%s\n",yytext);}
 #define printLine() {LIST;printf("%d: %s", linenum++, buf);    buf[0] = '\0';}
-
+symbol_table st;
+symbol_table_entry currentSTE;
 int linenum = 1;
 char buf[MAX_LINE_LENG];
 char strBuf[MAX_LINE_LENG];
 
 %}
 
-digit [0-9]+
+digit [+-]?[0-9]+
 letter [A-Za-z]
 id {letter}({letter}|{digit})*
 %x commentState
@@ -87,9 +90,14 @@ type	{token("TYPE")}
 var	{token("VAR")}
 void	{token("VOID")}
 while	{token("WHILE")}
-[+-]?{digit}*([.]{digit}*)?["e"|"E"]{digit}* {tokenString("REAL NUMBER", yytext);}
+{digit}*([.][0-9]*)?["e"|"E"][0-9]* {tokenString("REAL NUMBER", yytext);}
 
-{id}		{tokenString("id", yytext);}
+{id}		{
+	tokenString("id", yytext);
+	if(st.lookup(&currentSTE, yytext) == nil)
+		st.insert(&currentSTE, yytext);
+		//printf("insert %s index = %ld\n", yytext, st.insert(&currentSTE, yytext));
+}
 {digit}    	{tokenInteger("integer",atoi(yytext));}
 
 \n|\r\n {printLine();}
@@ -101,13 +109,11 @@ while	{token("WHILE")}
     exit(-1);
 }
 %%
-// int main(int argc, char const *argv[])
-// {
-
-// 	yylex();	
-//     printf("\n%s\n", buf);
-//     printf("%d: %s\n", linenum, buf);
-//     buf[0] = '\0';
-// 	/* code */
-// 	return 0;
-// }
+int main(int argc, char const *argv[])
+{
+	currentSTE = st.create();
+	yylex();	
+	/* code */
+	st.dump(&currentSTE);
+	return 0;
+}
