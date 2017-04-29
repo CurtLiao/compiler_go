@@ -18,7 +18,7 @@ char strBuf[MAX_LINE_LENG];
 
 %}
 
-digit [+-]?[0-9]+
+digit [0-9]+
 letter [A-Za-z]
 id {letter}({letter}|{digit})*
 %x commentState
@@ -90,7 +90,7 @@ type	{token("TYPE")}
 var	{token("VAR")}
 void	{token("VOID")}
 while	{token("WHILE")}
-{digit}*([.][0-9]*)?["e"|"E"][0-9]* {tokenString("REAL NUMBER", yytext);}
+{digit}*([.]{digit}*)?["e"|"E"][+-]?{digit}* {tokenString("REAL NUMBER", yytext);}
 
 {id}		{
 	tokenString("id", yytext);
@@ -98,7 +98,7 @@ while	{token("WHILE")}
 		st.insert(&currentSTE, yytext);
 		//printf("insert %s index = %ld\n", yytext, st.insert(&currentSTE, yytext));
 }
-{digit}    	{tokenInteger("integer",atoi(yytext));}
+[+-]?{digit}    	{tokenInteger("integer",atoi(yytext));}
 
 \n|\r\n {printLine();}
 [ \t]*  {LIST;}
@@ -114,6 +114,15 @@ int main(int argc, char const *argv[])
 	currentSTE = st.create();
 	yylex();	
 	/* code */
+	// show symbol table
 	st.dump(&currentSTE);
 	return 0;
 }
+int yywrap(){
+	if(buf[0] != '\0'){
+		printf("%d: %s\n", linenum++, buf); 
+		buf[0] = '\0';
+	}
+	return 1;
+}
+
