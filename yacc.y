@@ -58,19 +58,30 @@ int yyerror(char *s);
         statement{Trace("Reducing to program\n");};
 
     statement: 
-        identifier_declared |
-        identifier_declared statement;
+        identifier_declared { Trace("declare id \n");}|
+        identifier_declared statement{ Trace("declare id and states\n");};
     identifier_list:          //變數宣告的LIST
         ID ',' identifier_list  {Trace("identifier_list\n");}|
         ID '=' ID ',' identifier_list    {   Trace("id = id ,list\n");}|
         ID '=' ID    {   Trace("id = id \n");}|
         ID '=' NUMBER    {   Trace("id = id \n");}|
-        ID     {   Trace("ID\n");};
+        ID     {   
+                    Trace("ID ="); 
+                    //printf("%s\n", $1);
+                };
 
     identifier_declared:  //declare the type of id
-        VAR identifier_list primitive_type '=' NUMBER {Trace("identifier_declared '=' \n");}|
-        VAR identifier_list primitive_type {Trace("identifier_declared non '='\n");};
+        VAR identifier_list primitive_type { Trace("identifier_declared non \n");}|
+        VAR identifier_list INT '=' NUMBER {Trace("identifier_declared INT \n");}|
+        VAR identifier_list BOOL '=' bool_type {Trace("identifier_declared BOOL \n");}|
+        VAR identifier_list STRING '=' STR {Trace("identifier_declared STR \n");}|
+        VAR identifier_list REAL '=' REAL_NUMBER {Trace("identifier_declared REAL \n");}|
+        VAR identifier_list '[' NUMBER ']' primitive_type {Trace("identifier_declared array \n");};//array declaration
+
+
     primitive_type: STRING | INT | BOOL | REAL;
+    bool_type: TRUE | FALSE;
+
 
 %%
 

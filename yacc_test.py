@@ -20,11 +20,11 @@ if __name__ == '__main__':
 	# os.system("g++ -o scanner -O lex.yy.cpp y.tab.c symbol_table.cpp -ll")
 	# os.system("g++ -o scanner -O lex.yy.cc y.tab.c symbol_table.cpp -ll")
 	# os.system("g++ -o scanner -O lex.yy.cc y.tab.c symbol_table.cpp -ll")
-	os.system("g++ lex.yy.cpp y.tab.c symbol_table.cpp -lfl -ly")
+	os.system("g++ lex.yy.cpp y.tab.c symbol_table.cpp -ll -ly")
 	# os.system("gcc lex.yy.c y.tab.c -lfl -ly")
 
 	# if(len(sys.argv) == 2):
 	# 	filename = sys.argv[1]
 	# # print("test filename => ", filename)
-	os.system("a.exe < " + filename)
+	os.system("./a.out < " + filename)
 	sys.exit()
