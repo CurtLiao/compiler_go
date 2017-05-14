@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "y.tab.h"
-#include "symbol_table.h"
+// #include "symbol_table.h"
 
 #define LIST     strcat(buf,yytext)
 #define token(t) {LIST; 	printf("<'%s'>\n", yytext); return(t);}
@@ -11,8 +11,8 @@
 #define MAX_LINE_LENG 256
 #define printYYText() {LIST; printf("%s\n",yytext);}
 #define printLine() {LIST;printf("%d: %s", linenum++, buf);    buf[0] = '\0';}
-symbol_table st;
-symbol_table_entry currentSTE;
+// symbol_table st;
+// symbol_table_entry currentSTE;
 int linenum = 1;
 char buf[MAX_LINE_LENG];
 char strBuf[MAX_LINE_LENG];
@@ -124,9 +124,11 @@ while		{token(WHILE);}
 }
 
 {id}		{
-	tokenString("id", yytext);
-	if(st.lookup(&currentSTE, yytext) == nil)
-		st.insert(&currentSTE, yytext);
+	// tokenString("id", yytext);
+	printf("<%s:%s>\n", "ID", yytext);
+	token(ID);
+	// if(st.lookup(&currentSTE, yytext) == nil)
+		// st.insert(&currentSTE, yytext);
 		//printf("insert %s index = %ld\n", yytext, st.insert(&currentSTE, yytext));
 }
 [+-]?{digit}    	{tokenInteger("integer",atoi(yytext));}
@@ -142,11 +144,11 @@ while		{token(WHILE);}
 %%
 int main(int argc, char const *argv[])
 {
-	currentSTE = st.create();
+	// currentSTE = st.create();
 	yylex();	
 	/* code */
 	// show symbol table
-	st.dump(&currentSTE);
+	// st.dump(&currentSTE);
 	return 0;
 }
 int yywrap(){

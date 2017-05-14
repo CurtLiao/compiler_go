@@ -103,8 +103,8 @@ extern int yydebug;
     DIV_ASSIGNMENT = 313,
     NUMBER = 314,
     STR = 315,
-    REAL_NUMBER = 316,
-    ID = 317
+    ID = 316,
+    REAL_NUMBER = 317
   };
 #endif
 /* Tokens.  */
@@ -166,8 +166,8 @@ extern int yydebug;
 #define DIV_ASSIGNMENT 313
 #define NUMBER 314
 #define STR 315
-#define REAL_NUMBER 316
-#define ID 317
+#define ID 316
+#define REAL_NUMBER 317
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
