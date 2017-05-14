@@ -1,12 +1,13 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include "y.tab.h"
 #include "symbol_table.h"
 
 #define LIST     strcat(buf,yytext)
-#define token(t) {LIST; 	printf("<'%s'>\n", t); }
-#define tokenInteger(t,i) {LIST; printf("<%s:%d>\n", t, i);}
-#define tokenString(t,s) {LIST; printf("<%s:%s>\n", t, s);}
+#define token(t) {LIST; 	printf("<'%s'>\n", yytext); return(t);}
+#define tokenInteger(t,i) {LIST; printf("<%s:%d>\n", yytext, i); return(NUMBER);}
+#define tokenString(t,s) {LIST; printf("<%s:%s>\n", "String", yytext); return(STR);}
 #define MAX_LINE_LENG 256
 #define printYYText() {LIST; printf("%s\n",yytext);}
 #define printLine() {LIST;printf("%d: %s", linenum++, buf);    buf[0] = '\0';}
@@ -60,37 +61,67 @@ id {letter}({letter}|{digit})*
 }
 
 
-","|":"|";"|"("|")"|"["|"]"|"{"|"}" {token(yytext);}
-"+"|"-"|"*"|"/"|"^"|"%"|"<"|"<="|">="|">"|"=="|"!="|"&"|"|"|"!"|"="|"+="|"-="|"*="|"/="    {token(yytext);}
+","          {token(COMMA);}
+":"          {token(COLON);}
+";"          {token(SEMICOLON);}
+"("          {token(LEFT_PARENTHESES);}
+")"          {token(RIGHT_PARENTHESES);}
+"["          {token(LEFT_SQUARE_BRACKET);}
+"]"          {token(RIGHT_SQUARE_BRACKET);}
+"{"          {token(LEFT_BRACKET);}
+"}"          {token(RIGHT_BRACKET);}
+"+"          {token(ADD);}
+"-"          {token(SUB);}
+"*"          {token(MUL);}
+"/"          {token(DIV);}
+"^"          {token(POWER);}
+"%"          {token(MOD);}
+"<"          {token(LESS);}
+"<="         {token(LESS_EQUAL);}
+">="         {token(GREAT_EQUAL);}
+">"         {token(GREAT);}
+"=="         {token(EQUAL);}
+"!="         {token(NOT_EQUAL);}
+"&"         {token(AND);}
+"|"         {token(OR);}
+"!"         {token(NOT);}
+"="         {token(ASSIGNMENT);}
+"+="         {token(ADD_ASSIGNMENT);}
+"-="         {token(SUB_ASSIGNMENT);}
+"*="         {token(MUL_ASSIGNMENT);}
+"/="         {token(DIV_ASSIGNMENT);}
 
-bool	{token("BOOL")}
-break	{token("BREAK")}
-case	{token("CASE")}
-const	{token("CONST")}
-continue	{token("CONTINUE")}
-default	{token("DEFAULT")}
-else	{token("ELSE")}
-false	{token("FALSE")}
-for	{token("FOR")}
-func	{token("FUNC")}
-go	{token("GO")}
-if	{token("IF")}
-import	{token("IMPORT")}
-int	{token("INT")}
-nil	{token("NIL")}
-print	{token("PRINT")}
-println	{token("PRINTLN")}
-real	{token("REAL")}
-return	{token("RETURN")}
-string	{token("STRING")}
-struct	{token("STRUCT")}
-switch	{token("SWITCH")}
-true	{token("TRUE")}
-type	{token("TYPE")}
-var	{token("VAR")}
-void	{token("VOID")}
-while	{token("WHILE")}
-{digit}*([.]{digit}*)?["e"|"E"][+-]?{digit}* {tokenString("REAL NUMBER", yytext);}
+bool		{token(BOOL);}
+break		{token(BREAK);}
+case		{token(CASE);}
+const		{token(CONST);}
+continue		{token(CONTINUE);}
+default		{token(DEFAULT);}
+else		{token(ELSE);}
+false		{token(FALSE);}
+for		{token(FOR);}
+func		{token(FUNC);}
+go		{token(GO);}
+if		{token(IF);}
+import		{token(IMPORT);}
+int		{token(INT);}
+nil		{token(NIL);}
+print		{token(PRINT);}
+println		{token(PRINTLN);}
+real		{token(REAL);}
+return		{token(RETURN);}
+string		{token(STRING);}
+struct		{token(STRUCT);}
+switch		{token(SWITCH);}
+true		{token(TRUE);}
+type		{token(TYPE);}
+var		{token(VAR);}
+void		{token(VOID);}
+while		{token(WHILE);}
+{digit}*([.]{digit}*)?["e"|"E"][+-]?{digit}* {
+	//tokenString("REAL NUMBER", yytext);
+	token(REAL_NUMBER);
+}
 
 {id}		{
 	tokenString("id", yytext);
