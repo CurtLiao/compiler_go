@@ -35,6 +35,7 @@ int yyerror(char *s);
 %token VAR
 %token VOID
 %token WHILE
+%token READ
 
 %token LESS_EQUAL
 %token GREAT_EQUAL
@@ -50,16 +51,34 @@ int yyerror(char *s);
 %token ID
 %token REAL_NUMBER
 %start program
+%left '+' '-' '*' '/' '%' '^'
+%left '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
+%left '!' '&' '|'
+%nonassoc UMINUS
 
 
 %%
+    primitive_type: STRING | INT | BOOL | REAL;
+    primitive: STR | NUMBER | REAL_NUMBER | bool_type;
+    bool_type: TRUE | FALSE;
+    op_order2: '^' ;
+    op_order3: '*' | '/' | '%' ;
+    op_order4: '+' | '-' ;
+    op_order5: '<' | '>' | LESS_EQUAL | GREAT_EQUAL | EQUAL | NOT_EQUAL;
+    op_order6: '!' ;
+    op_order7: '&' ;
+    op_order8: '|' ;
 
+    
     program:
         statement{Trace("Reducing to program\n");};
 
     statement: 
         identifier_declared { Trace("declare id \n");}|
-        identifier_declared statement{ Trace("declare id and states\n");};
+        identifier_declared statement{ Trace("declare id and states\n");}|
+        simple_statement statement{ Trace("simple statement states\n");}|
+        simple_statement { Trace("simple statement\n");};
+
     identifier_list:          //變數宣告的LIST
         ID ',' identifier_list  {Trace("identifier_list\n");}|
         ID     {   
@@ -75,12 +94,27 @@ int yyerror(char *s);
         VAR identifier_list REAL '=' REAL_NUMBER {Trace("identifier_declared REAL \n");}|
         VAR identifier_list '[' NUMBER ']' primitive_type {Trace("identifier_declared array \n");}|//array declaration
         CONST identifier_list '=' primitive {Trace("CONST \n");};
-
-    primitive_type: STRING | INT | BOOL | REAL;
-    primitive: STR | NUMBER | REAL_NUMBER | bool_type;
-    bool_type: TRUE | FALSE;
-
-
+    simple_statement:
+        ID '=' expression |
+        ID '[' NUMBER ']''=' expression |
+        PRINT expression |
+        PRINTLN expression |
+        READ ID |
+        RETURN expression|
+        RETURN ;
+    expression:
+        ID |
+        primitive |
+        expression op_order8 expression | 
+        expression op_order7 expression | 
+        expression op_order6 expression | 
+        expression op_order5 expression | 
+        expression op_order4 expression | 
+        expression op_order3 expression | 
+        expression op_order2 expression | 
+        '-' expression %prec UMINUS  |
+        '(' expression ')';
+      
 %%
 
 int yyerror(char *s)
