@@ -1308,7 +1308,7 @@ YY_RULE_SETUP
 #line 128 "source.l"
 {
 	// tokenString("id", yytext);
-	// printf("<%s:%s>\n", "ID", yytext);
+	printf("<%s:%s>\n", "ID", yytext);
 	token(ID);
 	// if(st.lookup(&currentSTE, yytext) == nil)
 		// st.insert(&currentSTE, yytext);

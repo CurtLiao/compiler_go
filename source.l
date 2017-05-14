@@ -127,7 +127,7 @@ while		{token(WHILE);}
 
 {id}		{
 	// tokenString("id", yytext);
-	// printf("<%s:%s>\n", "ID", yytext);
+	printf("<%s:%s>\n", "ID", yytext);
 	token(ID);
 	// if(st.lookup(&currentSTE, yytext) == nil)
 		// st.insert(&currentSTE, yytext);

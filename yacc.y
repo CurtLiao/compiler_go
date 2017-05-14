@@ -62,9 +62,6 @@ int yyerror(char *s);
         identifier_declared statement{ Trace("declare id and states\n");};
     identifier_list:          //變數宣告的LIST
         ID ',' identifier_list  {Trace("identifier_list\n");}|
-        ID '=' ID ',' identifier_list    {   Trace("id = id ,list\n");}|
-        ID '=' ID    {   Trace("id = id \n");}|
-        ID '=' NUMBER    {   Trace("id = id \n");}|
         ID     {   
                     Trace("ID ="); 
                     //printf("%s\n", $1);
@@ -76,10 +73,11 @@ int yyerror(char *s);
         VAR identifier_list BOOL '=' bool_type {Trace("identifier_declared BOOL \n");}|
         VAR identifier_list STRING '=' STR {Trace("identifier_declared STR \n");}|
         VAR identifier_list REAL '=' REAL_NUMBER {Trace("identifier_declared REAL \n");}|
-        VAR identifier_list '[' NUMBER ']' primitive_type {Trace("identifier_declared array \n");};//array declaration
-
+        VAR identifier_list '[' NUMBER ']' primitive_type {Trace("identifier_declared array \n");}|//array declaration
+        CONST identifier_list '=' primitive {Trace("CONST \n");};
 
     primitive_type: STRING | INT | BOOL | REAL;
+    primitive: STR | NUMBER | REAL_NUMBER | bool_type;
     bool_type: TRUE | FALSE;
 
 

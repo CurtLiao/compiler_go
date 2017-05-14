@@ -1,3 +1,7 @@
+
+const ab1 = false
+const a = 5
+const adsad = "strwr"
 var sum int = 0
 var avs, bds, sd int = 0
 // next will be false
