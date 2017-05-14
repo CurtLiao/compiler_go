@@ -129,8 +129,8 @@ while		{token(WHILE);}
 	// tokenString("id", yytext);
 	// printf("<%s:%s>\n", "ID", yytext);
 	token(ID);
-	if(st.lookup(&currentSTE, yytext) == nil)
-		st.insert(&currentSTE, yytext);
+	// if(st.lookup(&currentSTE, yytext) == nil)
+		// st.insert(&currentSTE, yytext);
 		//printf("insert %s index = %ld\n", yytext, st.insert(&currentSTE, yytext));
 }
 [+-]?{digit}    	{tokenInteger("integer",atoi(yytext));}
@@ -144,16 +144,15 @@ while		{token(WHILE);}
     exit(-1);
 }
 %%
-int main(int argc, char const *argv[])
-{
+// int main(int argc, char const *argv[])
+// {
 	// currentSTE = st.create();
-	yylex();	
-	yyparse();
+	// yylex();	
 	/* code */
 	// show symbol table
-	st.dump(&currentSTE);
-	return 0;
-}
+	// st.dump(&currentSTE);
+	// return 0;
+// }
 int yywrap(){
 	if(buf[0] != '\0'){
 		printf("%d: %s\n", linenum++, buf); 

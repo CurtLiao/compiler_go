@@ -87,3 +87,13 @@ int yyerror(char *s)
     // }
 }
 
+int main(int argc, char const *argv[])
+{
+    // currentSTE = st.create();
+    // yylex(); 
+    /* code */
+    // show symbol table
+    // st.dump(&currentSTE);
+    // return 0;
+    yyparse();
+}
