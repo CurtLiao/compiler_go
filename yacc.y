@@ -1,13 +1,12 @@
 %{
-#include "lex.yy.c"
+#define Trace(t)        printf(t)
 #include <stdlib.h>
 #include <stdio.h>
-#define Trace(t)        printf(t)
- // void yyerror (char const *s);
+int yylex();
 int yyerror(char *s);
-
 %}
 
+/* tokens */
 /* tokens */
 %token BOOL
 %token BREAK
@@ -36,31 +35,12 @@ int yyerror(char *s);
 %token VAR
 %token VOID
 %token WHILE
-%token COMMA
-%token COLON
-%token SEMICOLON
-%token LEFT_PARENTHESES
-%token RIGHT_PARENTHESES
-%token LEFT_SQUARE_BRACKET
-%token RIGHT_SQUARE_BRACKET
-%token LEFT_BRACKET
-%token RIGHT_BRACKET
-%token ADD
-%token SUB
-%token MUL
-%token DIV
-%token POWER
-%token MOD
-%token LESS
+
 %token LESS_EQUAL
-%token GREAT
 %token GREAT_EQUAL
 %token EQUAL
 %token NOT_EQUAL
 %token AND
-%token OR
-%token NOT
-%token ASSIGNMENT
 %token ADD_ASSIGNMENT
 %token SUB_ASSIGNMENT
 %token MUL_ASSIGNMENT
@@ -81,48 +61,29 @@ int yyerror(char *s);
         identifier_declared |
         identifier_declared statement;
     identifier_list:          //變數宣告的LIST
-        ID ',' identifier_list  {Trace("identifier_list");}|
-        ID '=' ID ',' identifier_list    {   Trace("id = id ,list");}|
-        ID '=' ID    {   Trace("id = id ");}|
-        ID '=' NUMBER    {   Trace("id = id ");}|
-        ID     {   Trace("identifier_list ',' identifier_decl");};
+        ID ',' identifier_list  {Trace("identifier_list\n");}|
+        ID '=' ID ',' identifier_list    {   Trace("id = id ,list\n");}|
+        ID '=' ID    {   Trace("id = id \n");}|
+        ID '=' NUMBER    {   Trace("id = id \n");}|
+        ID     {   Trace("ID\n");};
 
     identifier_declared:  //declare the type of id
-        VAR identifier_list primitive_type '=' NUMBER {Trace("identifier_declared '=' ");}|
-        VAR identifier_list primitive_type {Trace("identifier_declared non '='");};
+        VAR identifier_list primitive_type '=' NUMBER {Trace("identifier_declared '=' \n");}|
+        VAR identifier_list primitive_type {Trace("identifier_declared non '='\n");};
     primitive_type: STRING | INT | BOOL | REAL;
 
 %%
 
-// yyerror(msg)
 int yyerror(char *s)
 {
     
-    printf("%d:  %s:  \n", ++linenum, s);
+    // printf("%d:  %s:  \n", linenum, s);
+    printf("666:  %s:  \n", s);
+
     return 0;
     // char *msg;
     // {
     //     fprintf(stderr, "%s\n", msg);
     // }
 }
- // void yyerror (char const *s) {
- //   fprintf (stderr, "%s\n", s);
- // }
-
-// main()
-// {
-//     printf ("yacc main\n");
-
-//     /* open the source program file */
-//     if (argc != 2) {
-//         printf ("Usage: sc filename\n");
-//         exit(1);
-//     }
-//     yyin = fopen(argv[1], "r");         /* open input file */
-
-//     /* perform parsing */
-//     if (yyparse() == 1)                 /* parsing */
-//         yyerror("Parsing error !");     /* syntax error */
-// }
-
 

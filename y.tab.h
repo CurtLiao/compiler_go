@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.0.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -72,39 +72,19 @@ extern int yydebug;
     VAR = 282,
     VOID = 283,
     WHILE = 284,
-    COMMA = 285,
-    COLON = 286,
-    SEMICOLON = 287,
-    LEFT_PARENTHESES = 288,
-    RIGHT_PARENTHESES = 289,
-    LEFT_SQUARE_BRACKET = 290,
-    RIGHT_SQUARE_BRACKET = 291,
-    LEFT_BRACKET = 292,
-    RIGHT_BRACKET = 293,
-    ADD = 294,
-    SUB = 295,
-    MUL = 296,
-    DIV = 297,
-    POWER = 298,
-    MOD = 299,
-    LESS = 300,
-    LESS_EQUAL = 301,
-    GREAT = 302,
-    GREAT_EQUAL = 303,
-    EQUAL = 304,
-    NOT_EQUAL = 305,
-    AND = 306,
-    OR = 307,
-    NOT = 308,
-    ASSIGNMENT = 309,
-    ADD_ASSIGNMENT = 310,
-    SUB_ASSIGNMENT = 311,
-    MUL_ASSIGNMENT = 312,
-    DIV_ASSIGNMENT = 313,
-    NUMBER = 314,
-    STR = 315,
-    ID = 316,
-    REAL_NUMBER = 317
+    LESS_EQUAL = 285,
+    GREAT_EQUAL = 286,
+    EQUAL = 287,
+    NOT_EQUAL = 288,
+    AND = 289,
+    ADD_ASSIGNMENT = 290,
+    SUB_ASSIGNMENT = 291,
+    MUL_ASSIGNMENT = 292,
+    DIV_ASSIGNMENT = 293,
+    NUMBER = 294,
+    STR = 295,
+    ID = 296,
+    REAL_NUMBER = 297
   };
 #endif
 /* Tokens.  */
@@ -135,39 +115,19 @@ extern int yydebug;
 #define VAR 282
 #define VOID 283
 #define WHILE 284
-#define COMMA 285
-#define COLON 286
-#define SEMICOLON 287
-#define LEFT_PARENTHESES 288
-#define RIGHT_PARENTHESES 289
-#define LEFT_SQUARE_BRACKET 290
-#define RIGHT_SQUARE_BRACKET 291
-#define LEFT_BRACKET 292
-#define RIGHT_BRACKET 293
-#define ADD 294
-#define SUB 295
-#define MUL 296
-#define DIV 297
-#define POWER 298
-#define MOD 299
-#define LESS 300
-#define LESS_EQUAL 301
-#define GREAT 302
-#define GREAT_EQUAL 303
-#define EQUAL 304
-#define NOT_EQUAL 305
-#define AND 306
-#define OR 307
-#define NOT 308
-#define ASSIGNMENT 309
-#define ADD_ASSIGNMENT 310
-#define SUB_ASSIGNMENT 311
-#define MUL_ASSIGNMENT 312
-#define DIV_ASSIGNMENT 313
-#define NUMBER 314
-#define STR 315
-#define ID 316
-#define REAL_NUMBER 317
+#define LESS_EQUAL 285
+#define GREAT_EQUAL 286
+#define EQUAL 287
+#define NOT_EQUAL 288
+#define AND 289
+#define ADD_ASSIGNMENT 290
+#define SUB_ASSIGNMENT 291
+#define MUL_ASSIGNMENT 292
+#define DIV_ASSIGNMENT 293
+#define NUMBER 294
+#define STR 295
+#define ID 296
+#define REAL_NUMBER 297
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
