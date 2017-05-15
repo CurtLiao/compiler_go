@@ -22,7 +22,7 @@ char strBuf[MAX_LINE_LENG];
 
 digit [0-9]+
 letter [A-Za-z]
-id {letter}({letter}|{digit})*
+id {letter}({letter}|{digit}|_)*
 %x commentState
 
 %%

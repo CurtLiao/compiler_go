@@ -71,21 +71,32 @@ int yyerror(char *s);
 
     
     program:
-        statement{Trace("Reducing to program\n");};
-
+        statements{Trace("Reducing to program\n");};
+    statements:
+        statement | statement statements;
     statement: 
-        identifier_declared { Trace("declare id \n");}|
-        identifier_declared statement{ Trace("declare id and states\n");}|
-        simple_statement statement{ Trace("simple statement states\n");}|
-        simple_statement { Trace("simple statement\n");};
+        declared { Trace("declare id \n");}|
+        simple_statement { Trace("simple statement\n");}|
+        compound |
+        func_invoke |   
+        condition |   
+        for_loop |
+        go;      
 
+    func_declared:
+        FUNC primitive_type ID '(' ')' compound|
+        FUNC primitive_type ID '(' formal_args ')' compound|
+        FUNC VOID ID '(' ')' compound|
+        FUNC VOID ID '(' formal_args ')' compound;
+    formal_args:
+        primitive_type ID|
+        primitive_type ID ',' formal_args;
+    declared:
+        func_declared | 
+        identifier_declared ;
     identifier_list:          //變數宣告的LIST
         ID ',' identifier_list  {Trace("identifier_list\n");}|
-        ID     {   
-                    Trace("ID ="); 
-                    //printf("%s\n", $1);
-                };
-
+        ID     {   Trace("ID ="); };
     identifier_declared:  //declare the type of id
         VAR identifier_list primitive_type { Trace("identifier_declared non \n");}|
         VAR identifier_list INT '=' NUMBER {Trace("identifier_declared INT \n");}|
@@ -114,7 +125,37 @@ int yyerror(char *s);
         expression op_order2 expression | 
         '-' expression %prec UMINUS  |
         '(' expression ')';
-      
+    bool_exp:
+        expression {Trace("exp \n");}|
+        '!' bool_exp {Trace("!bool_exp \n");}|
+        '(' bool_exp ')' {Trace("( bool_exp ) \n");}|
+        bool_exp op_order5 bool_exp {Trace("bool_exp op_order5 bool_exp \n");}|
+        bool_exp op_order6 bool_exp {Trace("bool_exp op_order6 bool_exp \n");}|
+        bool_exp op_order7 bool_exp {Trace("bool_exp op_order7 bool_exp \n");}|
+        bool_exp op_order8 bool_exp {Trace("bool_exp op_order8 bool_exp \n");};
+
+
+    compound:
+        '{' '}'|
+        '{' statements '}';
+    func_invoke:
+        ID '(' identifier_list ')';
+    condition:
+        IF '(' bool_exp ')' statement|
+        IF '(' bool_exp ')' statement ELSE statement;
+    for_loop:
+        FOR '(' bool_exp ')' simple_statement|
+        FOR '(' bool_exp ')' compound|
+        FOR '(' statement ';' bool_exp ')' simple_statement|
+        FOR '(' statement ';' bool_exp ')' compound|
+        FOR '(' bool_exp ';' statement ')' simple_statement|
+        FOR '(' bool_exp ';' statement ')' compound|
+        FOR '(' statement ';' bool_exp ';' statement ')' simple_statement|
+        FOR '(' statement ';' bool_exp ';' statement ')' compound;
+    go:
+        go ID '(' identifier_list ')';
+
+        
 %%
 
 int yyerror(char *s)

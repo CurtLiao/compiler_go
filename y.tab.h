@@ -72,19 +72,21 @@ extern int yydebug;
     VAR = 282,
     VOID = 283,
     WHILE = 284,
-    LESS_EQUAL = 285,
-    GREAT_EQUAL = 286,
-    EQUAL = 287,
-    NOT_EQUAL = 288,
-    AND = 289,
-    ADD_ASSIGNMENT = 290,
-    SUB_ASSIGNMENT = 291,
-    MUL_ASSIGNMENT = 292,
-    DIV_ASSIGNMENT = 293,
-    NUMBER = 294,
-    STR = 295,
-    ID = 296,
-    REAL_NUMBER = 297
+    READ = 285,
+    LESS_EQUAL = 286,
+    GREAT_EQUAL = 287,
+    EQUAL = 288,
+    NOT_EQUAL = 289,
+    AND = 290,
+    ADD_ASSIGNMENT = 291,
+    SUB_ASSIGNMENT = 292,
+    MUL_ASSIGNMENT = 293,
+    DIV_ASSIGNMENT = 294,
+    NUMBER = 295,
+    STR = 296,
+    ID = 297,
+    REAL_NUMBER = 298,
+    UMINUS = 299
   };
 #endif
 /* Tokens.  */
@@ -115,19 +117,21 @@ extern int yydebug;
 #define VAR 282
 #define VOID 283
 #define WHILE 284
-#define LESS_EQUAL 285
-#define GREAT_EQUAL 286
-#define EQUAL 287
-#define NOT_EQUAL 288
-#define AND 289
-#define ADD_ASSIGNMENT 290
-#define SUB_ASSIGNMENT 291
-#define MUL_ASSIGNMENT 292
-#define DIV_ASSIGNMENT 293
-#define NUMBER 294
-#define STR 295
-#define ID 296
-#define REAL_NUMBER 297
+#define READ 285
+#define LESS_EQUAL 286
+#define GREAT_EQUAL 287
+#define EQUAL 288
+#define NOT_EQUAL 289
+#define AND 290
+#define ADD_ASSIGNMENT 291
+#define SUB_ASSIGNMENT 292
+#define MUL_ASSIGNMENT 293
+#define DIV_ASSIGNMENT 294
+#define NUMBER 295
+#define STR 296
+#define ID 297
+#define REAL_NUMBER 298
+#define UMINUS 299
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

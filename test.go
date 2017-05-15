@@ -1,24 +1,56 @@
+/* fib.sc
+ *
+ * This test program computes the Nth Fibonacci number
+ */
 
-const ab1 = false
-const a = 5
-const adsad = "strwr"
-var sum int = 0
-var avs, bds, sd int = 0
-// next will be false
-// var avs int = "fsafafas"
-// next will be false
-// var avs int = false
-var avs [ 120 ] int
-var avs [120] int
-var avs real
-var avs real = 12313.2442e1421
-// next will be false
-// var avs real = 12313
-var avs bool
-var avs bool = true
-var avs bool = false
-// next will be false
-// var avs string = false
-var avs string = "21314"
-var avs string = "21314""sdadsad"
+// variables
+const Fn = 1
+var n int  = 8
+var FNminus1 int = 1
+var temp int
 
+// compute the nth Fibonacci number
+func void main( ) {
+	var a int  = 1
+	var b int  = 2
+	var c int  = 3
+	
+	if(a > b)
+		temp = Fn
+	else
+		temp = Fn
+
+	if(a > b)
+		temp = Fn
+	if(a > b)
+		temp = Fn
+	else
+		temp = Fn
+
+	for (n = 1; n > 2; n = n - 1) {
+		temp = Fn
+		Fn = Fn + FNminus1
+		FNminus1 = temp
+	}
+	for (n > 2; n = n - 1) {
+		temp = Fn
+		Fn = Fn + FNminus1
+		FNminus1 = temp
+	}
+	if(a > 5)
+		temp = Fn
+	if(!a)
+		temp = Fn
+	if(!(a == b))
+		a = b
+	if(b | !(a))
+		a = b
+	if(!(a > b) | !(a == b))
+		a = b
+	if(!(a > b) | (c > b) & (a > b) | !(a == b))
+		temp = Fn
+
+	/* print result */
+	print "Result of computation: "
+	println n
+}
