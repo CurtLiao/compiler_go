@@ -122,7 +122,7 @@ void		{token(VOID);}
 while		{token(WHILE);}
 read		{token(READ);}
 
-{digit}*([.]{digit}*)?["e"|"E"][+-]?{digit}* {
+{digit}*("."{digit}*)?["e"|"E"][+-]?{digit}* {
 	//tokenString("REAL NUMBER", yytext);
 	token(REAL_NUMBER);
 }

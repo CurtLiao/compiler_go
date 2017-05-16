@@ -116,10 +116,6 @@ int yyerror(char *s);
     expression:
         ID |
         primitive |
-        expression op_order8 expression | 
-        expression op_order7 expression | 
-        expression op_order6 expression | 
-        expression op_order5 expression | 
         expression op_order4 expression | 
         expression op_order3 expression | 
         expression op_order2 expression | 
@@ -127,12 +123,13 @@ int yyerror(char *s);
         '(' expression ')';
     bool_exp:
         expression {Trace("exp \n");}|
+        '(' bool_exp ')'|
         '!' bool_exp {Trace("!bool_exp \n");}|
-        '(' bool_exp ')' {Trace("( bool_exp ) \n");}|
-        bool_exp op_order5 bool_exp {Trace("bool_exp op_order5 bool_exp \n");}|
-        bool_exp op_order6 bool_exp {Trace("bool_exp op_order6 bool_exp \n");}|
-        bool_exp op_order7 bool_exp {Trace("bool_exp op_order7 bool_exp \n");}|
-        bool_exp op_order8 bool_exp {Trace("bool_exp op_order8 bool_exp \n");};
+        bool_exp op_order8 bool_exp | 
+        bool_exp op_order7 bool_exp | 
+        bool_exp op_order6 bool_exp | 
+        bool_exp op_order5 bool_exp ;
+        
 
 
     compound:
