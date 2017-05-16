@@ -122,7 +122,7 @@ void		{token(VOID);}
 while		{token(WHILE);}
 read		{token(READ);}
 
-{digit}*("."{digit}*)?["e"|"E"][+-]?{digit}* {
+{digit}*("."{digit}*)?["e"|"E"][+-]?{digit}*|{digit}"."{digit}* {
 	//tokenString("REAL NUMBER", yytext);
 	yylval.Token.name = strdup(yytext);
 	yylval.Token.name = strdup(yytext);

@@ -8,8 +8,12 @@ func void main( ) {
 	// var avs int = false
 	var avs [ 120 ] int
 	var avs [120] int
-	var avs real
+	// i can not catch it
+	// var avs real = 123214
+	var avs real = 123214.1
 	var avs real = 12313.2442e1421
+	var avs real = 12313.2442e+1421
+	var avs real = 12313.2442e-1421
 	// next will be false
 	// var avs real = 12313
 	var avs bool

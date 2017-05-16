@@ -174,7 +174,7 @@ int yyerror(char *s);
         FOR '(' statement ';' bool_exp ';' statement ')' simple_statement|
         FOR '(' statement ';' bool_exp ';' statement ')' compound;
     go:
-        go ID '(' identifier_list ')';
+        GO ID '(' identifier_list ')';
 
         
 %%
