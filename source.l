@@ -129,6 +129,7 @@ read		{token(READ);}
 
 {id}		{
 	// tokenString("id", yytext);
+	yylval.name = strdup(yytext);
 	printf("<%s:%s>\n", "ID", yytext);
 	token(ID);
 	// if(st.lookup(&currentSTE, yytext) == nil)

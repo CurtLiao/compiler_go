@@ -1319,6 +1319,7 @@ YY_RULE_SETUP
 #line 130 "source.l"
 {
 	// tokenString("id", yytext);
+	yylval.name = strdup(yytext);
 	printf("<%s:%s>\n", "ID", yytext);
 	token(ID);
 	// if(st.lookup(&currentSTE, yytext) == nil)
@@ -1328,23 +1329,23 @@ YY_RULE_SETUP
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 138 "source.l"
+#line 139 "source.l"
 {tokenInteger("integer",atoi(yytext));}
 	YY_BREAK
 case 67:
 /* rule 67 can match eol */
 YY_RULE_SETUP
-#line 140 "source.l"
+#line 141 "source.l"
 {printLine();}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 141 "source.l"
+#line 142 "source.l"
 {LIST;}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 142 "source.l"
+#line 143 "source.l"
 {
     LIST;
     printf("%d:%s\n", linenum+1, buf);
@@ -1354,10 +1355,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 148 "source.l"
+#line 149 "source.l"
 ECHO;
 	YY_BREAK
-#line 1360 "lex.yy.c"
+#line 1361 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(commentState):
 	yyterminate();
@@ -2359,7 +2360,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 148 "source.l"
+#line 149 "source.l"
 
 // int main(int argc, char const *argv[])
 // {

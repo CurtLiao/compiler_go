@@ -5,7 +5,13 @@
 int yylex();
 int yyerror(char *s);
 %}
-
+//add my type to pass the value from lex
+%union 
+{
+    char    *name;
+    int     val;
+}
+%type<name> ID
 /* tokens */
 /* tokens */
 %token BOOL
@@ -70,9 +76,9 @@ int yyerror(char *s);
     op_order8: '|' ;
 
     
-    program:
+    program: //start program
         statements{Trace("Reducing to program\n");};
-    statements:
+    statements: //statements can be a one statement or statements
         statement | statement statements;
     statement: 
         declared { Trace("declare id \n");}|
@@ -83,21 +89,21 @@ int yyerror(char *s);
         for_loop |
         go;      
 
-    func_declared:
+    func_declared: // can provide function declared, support void type
         FUNC primitive_type ID '(' ')' compound|
         FUNC primitive_type ID '(' formal_args ')' compound|
         FUNC VOID ID '(' ')' compound|
         FUNC VOID ID '(' formal_args ')' compound;
-    formal_args:
+    formal_args: // like  int a, int b, .... 
         primitive_type ID|
         primitive_type ID ',' formal_args;
-    declared:
+    declared: // variable or function declartd
         func_declared | 
         identifier_declared ;
-    identifier_list:          //變數宣告的LIST
+    identifier_list:          // identifier list can pass one or more id
         ID ',' identifier_list  {Trace("identifier_list\n");}|
         ID     {   Trace("ID ="); };
-    identifier_declared:  //declare the type of id
+    identifier_declared:  //declare the type of id and type check
         VAR identifier_list primitive_type { Trace("identifier_declared non \n");}|
         VAR identifier_list INT '=' NUMBER {Trace("identifier_declared INT \n");}|
         VAR identifier_list BOOL '=' bool_type {Trace("identifier_declared BOOL \n");}|
@@ -105,15 +111,16 @@ int yyerror(char *s);
         VAR identifier_list REAL '=' REAL_NUMBER {Trace("identifier_declared REAL \n");}|
         VAR identifier_list '[' NUMBER ']' primitive_type {Trace("identifier_declared array \n");}|//array declaration
         CONST identifier_list '=' primitive {Trace("CONST \n");};
-    simple_statement:
-        ID '=' expression |
+    simple_statement: //include varialbe or array assign and function call
+        ID '=' expression {   printf("\t id = %s\n", $1.name);
+}|
         ID '[' NUMBER ']''=' expression |
         PRINT expression |
         PRINTLN expression |
         READ ID |
         RETURN expression|
         RETURN ;
-    expression:
+    expression: // math experssion and boolean expression
         ID |
         primitive |
         expression op_order4 expression | 
