@@ -672,8 +672,8 @@ char *yytext;
 
 #define LIST     strcat(buf,yytext)
 #define token(t) {LIST; 	printf("<'%s'>\n", yytext); return(t);}
-#define tokenInteger(t,i) {LIST; printf("<%s:%d>\n", "NUMBER", i); return(NUMBER);}
-#define tokenString(t,s) {LIST; printf("<%s:%s>\n", "String", yytext); return(STR);}
+#define tokenInteger(t,i) {LIST; printf("<%s:%d>\n", "NUMBER", i); 	yylval.Token.val = i; return(NUMBER);}
+#define tokenString(t,s) {LIST; printf("<%s:%s>\n", "String", yytext); yylval.Token.name = s; return(STR);}
 #define MAX_LINE_LENG 256
 #define printYYText() {LIST; printf("%s\n",yytext);}
 #define printLine() {LIST;printf("%d: %s", linenum++, buf);    buf[0] = '\0';}
@@ -1311,15 +1311,17 @@ YY_RULE_SETUP
 #line 125 "source.l"
 {
 	//tokenString("REAL NUMBER", yytext);
+	yylval.Token.name = strdup(yytext);
+	yylval.Token.name = strdup(yytext);
 	token(REAL_NUMBER);
 }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 130 "source.l"
+#line 132 "source.l"
 {
 	// tokenString("id", yytext);
-	yylval.name = strdup(yytext);
+	yylval.Token.name = strdup(yytext);
 	printf("<%s:%s>\n", "ID", yytext);
 	token(ID);
 	// if(st.lookup(&currentSTE, yytext) == nil)
@@ -1329,23 +1331,24 @@ YY_RULE_SETUP
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 139 "source.l"
-{tokenInteger("integer",atoi(yytext));}
+#line 141 "source.l"
+{
+	tokenInteger("integer",atoi(yytext));}
 	YY_BREAK
 case 67:
 /* rule 67 can match eol */
 YY_RULE_SETUP
-#line 141 "source.l"
+#line 144 "source.l"
 {printLine();}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 142 "source.l"
+#line 145 "source.l"
 {LIST;}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 143 "source.l"
+#line 146 "source.l"
 {
     LIST;
     printf("%d:%s\n", linenum+1, buf);
@@ -1355,10 +1358,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 149 "source.l"
+#line 152 "source.l"
 ECHO;
 	YY_BREAK
-#line 1361 "lex.yy.c"
+#line 1364 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(commentState):
 	yyterminate();
@@ -2360,7 +2363,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 149 "source.l"
+#line 152 "source.l"
 
 // int main(int argc, char const *argv[])
 // {

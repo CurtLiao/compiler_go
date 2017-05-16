@@ -6,12 +6,28 @@ int yylex();
 int yyerror(char *s);
 %}
 //add my type to pass the value from lex
+
 %union 
 {
-    char    *name;
-    int     val;
+    struct
+    {
+        char *name;
+        int  val;
+        char toktype;
+    }Token;
 }
-%type<name> ID
+
+// %union 
+// {
+//     char    *name;
+//     int     val;
+// }
+%type<Token.name> ID
+// %type<name> STR
+// %type<name> REAL
+// %type<val> NUMBER
+
+
 /* tokens */
 /* tokens */
 %token BOOL
@@ -101,8 +117,8 @@ int yyerror(char *s);
         func_declared | 
         identifier_declared ;
     identifier_list:          // identifier list can pass one or more id
-        ID ',' identifier_list  {Trace("identifier_list\n");}|
-        ID     {   Trace("ID ="); };
+        ID ',' identifier_list { printf("\t id , identifier_list || id = %s\n", $1); }|
+        ID     { printf("\t id in identifier_list || id = %s\n", $1); };
     identifier_declared:  //declare the type of id and type check
         VAR identifier_list primitive_type { Trace("identifier_declared non \n");}|
         VAR identifier_list INT '=' NUMBER {Trace("identifier_declared INT \n");}|
@@ -112,12 +128,13 @@ int yyerror(char *s);
         VAR identifier_list '[' NUMBER ']' primitive_type {Trace("identifier_declared array \n");}|//array declaration
         CONST identifier_list '=' primitive {Trace("CONST \n");};
     simple_statement: //include varialbe or array assign and function call
-        ID '=' expression {   printf("\t id = %s\n", $1.name);
-}|
-        ID '[' NUMBER ']''=' expression |
+        ID '=' expression { printf("\t id = expression || id = %s\n", $1);}|
+        ID '[' NUMBER ']''=' expression {
+
+        }|
         PRINT expression |
         PRINTLN expression |
-        READ ID |
+        READ ID   {  printf("\t Read id || id = %s\n", $2);}|
         RETURN expression|
         RETURN ;
     expression: // math experssion and boolean expression

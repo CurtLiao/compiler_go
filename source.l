@@ -7,8 +7,8 @@
 
 #define LIST     strcat(buf,yytext)
 #define token(t) {LIST; 	printf("<'%s'>\n", yytext); return(t);}
-#define tokenInteger(t,i) {LIST; printf("<%s:%d>\n", "NUMBER", i); return(NUMBER);}
-#define tokenString(t,s) {LIST; printf("<%s:%s>\n", "String", yytext); return(STR);}
+#define tokenInteger(t,i) {LIST; printf("<%s:%d>\n", "NUMBER", i); 	yylval.Token.val = i; return(NUMBER);}
+#define tokenString(t,s) {LIST; printf("<%s:%s>\n", "String", yytext); yylval.Token.name = s; return(STR);}
 #define MAX_LINE_LENG 256
 #define printYYText() {LIST; printf("%s\n",yytext);}
 #define printLine() {LIST;printf("%d: %s", linenum++, buf);    buf[0] = '\0';}
@@ -124,19 +124,22 @@ read		{token(READ);}
 
 {digit}*("."{digit}*)?["e"|"E"][+-]?{digit}* {
 	//tokenString("REAL NUMBER", yytext);
+	yylval.Token.name = strdup(yytext);
+	yylval.Token.name = strdup(yytext);
 	token(REAL_NUMBER);
 }
 
 {id}		{
 	// tokenString("id", yytext);
-	yylval.name = strdup(yytext);
+	yylval.Token.name = strdup(yytext);
 	printf("<%s:%s>\n", "ID", yytext);
 	token(ID);
 	// if(st.lookup(&currentSTE, yytext) == nil)
 		// st.insert(&currentSTE, yytext);
 		//printf("insert %s index = %ld\n", yytext, st.insert(&currentSTE, yytext));
 }
-[+-]?{digit}    	{tokenInteger("integer",atoi(yytext));}
+[+-]?{digit}    {
+	tokenInteger("integer",atoi(yytext));}
 
 \n|\r\n {printLine();}
 [ \t]*  {LIST;}
