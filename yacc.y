@@ -11,8 +11,10 @@ int yyerror(char *s);
 {
     struct
     {
-        char *name;
-        int  val;
+        union{
+            char *name;
+            int  val;
+        };
         char toktype;
     }Token;
 }
@@ -22,8 +24,8 @@ int yyerror(char *s);
 //     char    *name;
 //     int     val;
 // }
-%type<Token.name> ID
-// %type<name> STR
+%type<Token> ID
+%type<Token> STR
 // %type<name> REAL
 // %type<val> NUMBER
 
@@ -117,24 +119,24 @@ int yyerror(char *s);
         func_declared | 
         identifier_declared ;
     identifier_list:          // identifier list can pass one or more id
-        ID ',' identifier_list { printf("\t id , identifier_list || id = %s\n", $1); }|
-        ID     { printf("\t id in identifier_list || id = %s\n", $1); };
+        ID ',' identifier_list { printf("\t id , identifier_list || id = %s\n", $1.name); }|
+        ID     { printf("\t id in identifier_list || id = %s\n", $1.name); };
     identifier_declared:  //declare the type of id and type check
         VAR identifier_list primitive_type { Trace("identifier_declared non \n");}|
         VAR identifier_list INT '=' NUMBER {Trace("identifier_declared INT \n");}|
         VAR identifier_list BOOL '=' bool_type {Trace("identifier_declared BOOL \n");}|
-        VAR identifier_list STRING '=' STR {Trace("identifier_declared STR \n");}|
+        VAR identifier_list STRING '=' STR { printf("\t id = str || str = %s\n", $5.name); }|
         VAR identifier_list REAL '=' REAL_NUMBER {Trace("identifier_declared REAL \n");}|
         VAR identifier_list '[' NUMBER ']' primitive_type {Trace("identifier_declared array \n");}|//array declaration
         CONST identifier_list '=' primitive {Trace("CONST \n");};
     simple_statement: //include varialbe or array assign and function call
-        ID '=' expression { printf("\t id = expression || id = %s\n", $1);}|
+        ID '=' expression { printf("\t id = expression || id = %s\n", $1.name);}|
         ID '[' NUMBER ']''=' expression {
 
         }|
         PRINT expression |
         PRINTLN expression |
-        READ ID   {  printf("\t Read id || id = %s\n", $2);}|
+        READ ID   {  printf("\t Read id || id = %s\n", $2.name);}|
         RETURN expression|
         RETURN ;
     expression: // math experssion and boolean expression

@@ -142,12 +142,14 @@ union YYSTYPE
 
     struct
     {
-        char *name;
-        int  val;
+        union{
+            char *name;
+            int  val;
+        };
         char toktype;
     }Token;
 
-#line 151 "y.tab.h" /* yacc.c:1915  */
+#line 153 "y.tab.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;
