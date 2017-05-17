@@ -3,7 +3,6 @@
 #include <string.h>
 #include "y.tab.h"
 
-#include "symbol_table.h"
 
 #define LIST     strcat(buf,yytext)
 #define token(t) {LIST; 	printf("<'%s'>\n", yytext); return(t);}
@@ -12,8 +11,8 @@
 #define MAX_LINE_LENG 256
 #define printYYText() {LIST; printf("%s\n",yytext);}
 #define printLine() {LIST;printf("%d: %s", linenum++, buf);    buf[0] = '\0';}
-symbol_table st;
-symbol_table_entry currentSTE;
+// symbol_table st;
+// symbol_table_entry currentSTE;
 int linenum = 1;
 char buf[MAX_LINE_LENG];
 char strBuf[MAX_LINE_LENG];

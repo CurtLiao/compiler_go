@@ -2,6 +2,9 @@
 #define Trace(t)        printf(t)
 #include <stdlib.h>
 #include <stdio.h>
+#include "symbol_table.h"
+symbol_table st;
+symbol_table_entry currentSTE;
 int yylex();
 int yyerror(char *s);
 %}
