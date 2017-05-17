@@ -44,7 +44,7 @@ public:
     bool insert(std::string key,int type, variable_data value);
     int checkDeclared(std::string key);
     // void dump(symbol_table_entry* st);
-    // void dump();
+    void dump();
     // void push_table();
     void push_table();
 	void pop_table();
@@ -52,5 +52,6 @@ private:
 	std::vector<symbol_table_entry> tableEntrys;
 	std::string const_error_msg = "The variable is a constant, can not reassign!";
 	std::string nondeclared_error_msg = "The variable is not a variable, can not assign!";
+	std::string type_name(int value);
 
 };

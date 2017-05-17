@@ -49,13 +49,13 @@ bool symbol_table::assign(std::string key,int type, variable_data value, bool cF
     return assign(key, v);
 }
 bool symbol_table::assign(std::string key,variable v){
-    for(size_t table_idx = tableEntrys.size() -1; (int) table_idx  >= 0; --table_idx)
-        for(size_t idx = tableEntrys.at(table_idx).ids.size() - 1; (int) idx >= 0; --idx){
-            //check name and type and const;
-            if(tableEntrys.at(table_idx).ids.at(idx).name == key){
-                if(tableEntrys.at(table_idx).ids.at(idx).type  == v.type){
-                    if(tableEntrys.at(table_idx).ids.at(idx).constFlag  == true){
-                        tableEntrys.at(table_idx).ids.at(idx).data = v.data;
+    for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
+        for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
+        //check name and type and const;
+            if((*it).name == key){
+                if((*it).type  == v.type){
+                    if((*it).constFlag  == true){
+                        (*it).data = v.data;
                         return true;     
                     }
                     else{
@@ -65,8 +65,29 @@ bool symbol_table::assign(std::string key,variable v){
                 }
             }
         }
+    }
+
     std::cout << nondeclared_error_msg << std::endl;
     return false;
+
+    // for(size_t table_idx = tableEntrys.size() -1; (int) table_idx  >= 0; --table_idx)
+    //     for(size_t idx = tableEntrys.at(table_idx).ids.size() - 1; (int) idx >= 0; --idx){
+    //         //check name and type and const;
+    //         if(tableEntrys.at(table_idx).ids.at(idx).name == key){
+    //             if(tableEntrys.at(table_idx).ids.at(idx).type  == v.type){
+    //                 if(tableEntrys.at(table_idx).ids.at(idx).constFlag  == true){
+    //                     tableEntrys.at(table_idx).ids.at(idx).data = v.data;
+    //                     return true;     
+    //                 }
+    //                 else{
+    //                     std::cout << const_error_msg << std::endl;
+    //                     return false;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // std::cout << nondeclared_error_msg << std::endl;
+    // return false;
 }
 int symbol_table::checkDeclared(std::string key){
     int variable_type = lookup_variable(key).type;
@@ -96,3 +117,30 @@ void symbol_table::pop_table(){
 //     }
 //     std::cout << "=========================" << std::endl;
 // }
+void symbol_table::dump(){
+    std::cout << "dump symbol_table" << std::endl;
+    std::cout << "=========================" << std::endl;
+    for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
+        for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
+        //check name and type and const;
+           std::cout << "variable => " << (*it).name << " type = " << type_name((*it).type) << std::endl;
+        }
+    }
+    // for(std::vector<std::string>::iterator iter = st->ids.begin(); iter != st->ids.end(); ++iter) {
+    //     std::cout << *iter << std::endl;
+    // }
+    std::cout << "=========================" << std::endl;
+}
+std::string symbol_table::type_name(int value){
+    if(value == 0)
+        return "INT";
+    if(value == 1)
+        return "BOOL";
+    if(value == 2)
+        return "STRING";
+    if(value == 3)
+        return "REAL";
+
+    return "unknow type";
+
+}
