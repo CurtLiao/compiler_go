@@ -6,8 +6,8 @@
 
 #define LIST     strcat(buf,yytext)
 #define token(t) {LIST; 	printf("<'%s'>\n", yytext); return(t);}
-#define tokenInteger(t,i) {LIST; printf("<%s:%d>\n", "NUMBER", i); 	yylval.Token.val = i; return(NUMBER);}
-#define tokenString(t,s) {LIST; printf("<%s:%s>\n", "String", yytext); yylval.Token.name = s; return(STR);}
+#define tokenInteger(t,i) {LIST; printf("<%s:%d>\n", "NUMBER", i); 	yylval.Token.val = i; yylval.Token.token_type = T_INT;return(NUMBER);}
+#define tokenString(t,s) {LIST; printf("<%s:%s>\n", "String", yytext); yylval.Token.name = s; yylval.Token.token_type = T_STR; return(STR);}
 #define MAX_LINE_LENG 256
 #define printYYText() {LIST; printf("%s\n",yytext);}
 #define printLine() {LIST;printf("%d: %s", linenum++, buf);    buf[0] = '\0';}
@@ -16,6 +16,7 @@
 int linenum = 1;
 char buf[MAX_LINE_LENG];
 char strBuf[MAX_LINE_LENG];
+enum Type_enum{T_INT = 1, T_BOOL, T_STR, T_REAL};
 
 %}
 
@@ -99,7 +100,7 @@ const		{token(CONST);}
 continue		{token(CONTINUE);}
 default		{token(DEFAULT);}
 else		{token(ELSE);}
-false		{token(FALSE);}
+false		{	yylval.Token.flag = false; yylval.Token.token_type = T_BOOL; token(FALSE);}
 for		{token(FOR);}
 func		{token(FUNC);}
 go		{token(GO);}
@@ -114,29 +115,27 @@ return		{token(RETURN);}
 string		{token(STRING);}
 struct		{token(STRUCT);}
 switch		{token(SWITCH);}
-true		{token(TRUE);}
+true		{	yylval.Token.flag = true; yylval.Token.token_type = T_BOOL; token(TRUE);}
 type		{token(TYPE);}
 var		{token(VAR);}
 void		{token(VOID);}
 while		{token(WHILE);}
 read		{token(READ);}
 
+
+{id}		{
+	yylval.Token.name = strdup(yytext);
+	yylval.Token.token_type = T_STR;
+	printf("<%s:%s>\n", "ID", yytext);
+	token(ID);
+}
 {digit}*("."{digit}*)?["e"|"E"][+-]?{digit}*|{digit}"."{digit}* {
-	//tokenString("REAL NUMBER", yytext);
 	yylval.Token.name = strdup(yytext);
-	yylval.Token.name = strdup(yytext);
+	yylval.Token.token_type = T_REAL;
 	token(REAL_NUMBER);
 }
 
-{id}		{
-	// tokenString("id", yytext);
-	yylval.Token.name = strdup(yytext);
-	printf("<%s:%s>\n", "ID", yytext);
-	token(ID);
-	// if(st.lookup(&currentSTE, yytext) == nil)
-		// st.insert(&currentSTE, yytext);
-		//printf("insert %s index = %ld\n", yytext, st.insert(&currentSTE, yytext));
-}
+
 [+-]?{digit}    {
 	tokenInteger("integer",atoi(yytext));}
 

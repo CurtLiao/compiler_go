@@ -6,11 +6,11 @@
 symbol_table global_st;
 int variable_type; // 0=> int 1=> bool 2=> string 3=>real
 bool const_flag = false;
+enum Type_enum{T_INT = 1, T_BOOL, T_STR, T_REAL};
 int yylex();
 int yyerror(char *s);
 %}
 //add my type to pass the value from lex
-
 %union 
 {
     struct
@@ -18,8 +18,9 @@ int yyerror(char *s);
         union{
             char *name;
             int  val;
+            bool flag;
         };
-        char toktype;
+        char token_type;
     }Token;
 }
 
@@ -31,8 +32,9 @@ int yyerror(char *s);
 %type<Token> ID
 %type<Token> STR
 %type<Token> identifier_list
-// %type<name> REAL
+%type<Token> REAL_NUMBER
 %type<Token> NUMBER
+%type<Token> bool_type
 
 
 /* tokens */
@@ -89,7 +91,7 @@ int yyerror(char *s);
 %%
     primitive_type: STRING | INT | BOOL | REAL;
     primitive: NUMBER{variable_type = 0;} | bool_type{variable_type = 1;} | STR{variable_type = 3;} | REAL_NUMBER{variable_type = 4;} ;
-    bool_type: TRUE | FALSE;
+    bool_type: TRUE{$$.token_type = T_BOOL; $$.flag = true;}| FALSE{$$.token_type = T_BOOL; $$.flag = false;};
     op_order2: '^' ;
     op_order3: '*' | '/' | '%' ;
     op_order4: '+' | '-' ;
@@ -128,21 +130,32 @@ int yyerror(char *s);
         ID     {printf("\t id in identifier_list || id = %s\n", $1.name); $$.name = $1.name; };
     identifier_declared:  //declare the type of id and type check
         VAR identifier_list primitive_type { 
-            printf("$1 id_list = %s\n", $2.name); 
             if(!global_st.declared($2.name, variable_type))
                 yyerror("declared error");
             Trace("identifier_declared non \n");
         }|
         VAR identifier_list INT '=' NUMBER {
-            // variable_type = 0;
-            variable(0, 0, $5.val); 
-            if(!global_st.declared($2.name, variable_type))
+            variable v(T_INT, 0, $5.val); 
+            if(!global_st.declared($2.name, v))
                 yyerror("declared error");
             Trace("identifier_declared INT \n");
         }|
-        VAR identifier_list BOOL '=' bool_type {Trace("identifier_declared BOOL \n");}|
-        VAR identifier_list STRING '=' STR { printf("\t id = str || str = %s\n", $5.name); }|
-        VAR identifier_list REAL '=' REAL_NUMBER {Trace("identifier_declared REAL \n");}|
+        VAR identifier_list BOOL '=' bool_type {
+            
+            variable v(T_BOOL, 0, $5.flag); 
+            if(!global_st.declared($2.name, v))
+                yyerror("declared error");
+            Trace("identifier_declared BOOL \n");}|
+        VAR identifier_list STRING '=' STR { 
+            variable v(T_STR, 0, $5.name); 
+            if(!global_st.declared($2.name, v))
+                yyerror("declared error");
+        }|
+        VAR identifier_list REAL '=' REAL_NUMBER {
+            variable v(T_REAL, 0, $5.name); 
+            if(!global_st.declared($2.name, v))
+                yyerror("declared error");
+            Trace("identifier_declared REAL \n");}|
         VAR identifier_list '[' NUMBER ']' primitive_type {Trace("identifier_declared array \n");}|//array declaration
         CONST identifier_list '=' primitive {Trace("CONST \n");};
     simple_statement: //include varialbe or array assign and function call

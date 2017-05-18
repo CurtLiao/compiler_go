@@ -34,7 +34,6 @@ struct variable{
 		variable(type1, 0);
 	}
 	variable(int type1, int type2): type(type1), s_type(type2){
-		printf("in v type1 = %d, type2 = %d\n", type1, type2);
 		init_data(type1);
 	}
 	variable(int type1, int type2, char* value): type(type1), s_type(type2){
@@ -43,6 +42,10 @@ struct variable{
 	variable(int type1, int type2, bool value){
 		data.flag = value;
 	}
+	variable(int type1, int type2, int value){
+		data.value = value;
+	}
+
 	void copy(const char* key, variable v){
 		name = key;
 		type = v.type;
@@ -55,7 +58,6 @@ struct variable{
 		data = v.data;
 	}
 	void init_data(int type){
-		printf("init type = %d\n", type);
 		char* c = new char[1];
 		c[0] = '\0';
 		if(type == 0){
@@ -77,24 +79,16 @@ class symbol_table
 public:
     symbol_table();
     ~symbol_table();
-
-    // symbol_table_entry create();
-    // unsigned long lookup(symbol_table_entry* st, std::string key);
-
 	bool each_assign(std::string key,variable v);
 	bool assign(std::string keys, int type = 0, int type2 = 0);
 	bool assign(std::string keys, variable v);
 	bool declared(std::string keys, int type = 0, int type2 = 0);
 	bool declared(std::string keys, variable v);
-
-    variable lookup_variable(std::string key);
-    // bool insert(std::string key,int type, variable_data value);
-    // int checkDeclared(std::string key);
-    // void dump(symbol_table_entry* st);
     void dump();
-    // void push_table();
     void push_table();
 	void pop_table();
+    variable lookup_variable(std::string key);
+
 private:
 	std::vector<symbol_table_entry> tableEntrys;
 	std::string const_error_msg = "The variable is a constant, can not reassign!";

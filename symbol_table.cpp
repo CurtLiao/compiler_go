@@ -15,9 +15,6 @@ variable symbol_table::lookup_variable(std::string key){
                 return tableEntrys.at(table_idx).ids.at(idx);
     }
     variable TYPE_NIL_variable(TYPE_NIL);
-    // TYPE_NIL_variable.type = TYPE_NIL;
-    std::cout << "TYPE_NIL_variable type : " << TYPE_NIL_variable.type << std::endl;
-
     return TYPE_NIL_variable;
 }
 bool symbol_table::declared(std::string keys,int type, int type2){
@@ -30,10 +27,10 @@ bool symbol_table::declared(std::string keys,variable v){
     {
         std::string key;
         iss >> key;
-        std::cout << "assign keys : " << key << std::endl;
         //avoid empty string
         if(strcmp(key.c_str(), "")== 0)
             break;
+        std::cout << "declared keys : " << key << std::endl;
         if(lookup_variable(key).type != TYPE_NIL){
             std::cout << "key : " << key << "\t" <<redeclared_error_msg << std::endl;
             return false;

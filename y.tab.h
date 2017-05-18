@@ -145,11 +145,12 @@ union YYSTYPE
         union{
             char *name;
             int  val;
+            bool flag;
         };
-        char toktype;
+        char token_type;
     }Token;
 
-#line 153 "y.tab.h" /* yacc.c:1915  */
+#line 154 "y.tab.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;
