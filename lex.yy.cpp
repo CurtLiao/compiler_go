@@ -1310,19 +1310,15 @@ case 64:
 YY_RULE_SETUP
 #line 126 "source.l"
 {
-	// tokenString("id", yytext);
 	yylval.Token.name = strdup(yytext);
 	yylval.Token.token_type = T_STR;
 	printf("<%s:%s>\n", "ID", yytext);
 	token(ID);
-	// if(st.lookup(&currentSTE, yytext) == nil)
-		// st.insert(&currentSTE, yytext);
-		//printf("insert %s index = %ld\n", yytext, st.insert(&currentSTE, yytext));
 }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 136 "source.l"
+#line 132 "source.l"
 {
 	yylval.Token.name = strdup(yytext);
 	yylval.Token.token_type = T_REAL;
@@ -1331,24 +1327,24 @@ YY_RULE_SETUP
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 143 "source.l"
+#line 139 "source.l"
 {
 	tokenInteger("integer",atoi(yytext));}
 	YY_BREAK
 case 67:
 /* rule 67 can match eol */
 YY_RULE_SETUP
-#line 146 "source.l"
+#line 142 "source.l"
 {printLine();}
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 147 "source.l"
+#line 143 "source.l"
 {LIST;}
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 148 "source.l"
+#line 144 "source.l"
 {
     LIST;
     printf("%d:%s\n", linenum+1, buf);
@@ -1358,10 +1354,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 154 "source.l"
+#line 150 "source.l"
 ECHO;
 	YY_BREAK
-#line 1364 "lex.yy.c"
+#line 1360 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(commentState):
 	yyterminate();
@@ -2363,7 +2359,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 154 "source.l"
+#line 150 "source.l"
 
 // int main(int argc, char const *argv[])
 // {

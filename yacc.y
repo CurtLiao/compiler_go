@@ -6,7 +6,7 @@
 symbol_table global_st;
 int variable_type; // 0=> int 1=> bool 2=> string 3=>real
 bool const_flag = false;
-enum Type_enum{T_INT = 1, T_BOOL, T_STR, T_REAL};
+enum Type_enum{T_INT = 0, T_BOOL = 1, T_STR, T_REAL};
 int yylex();
 int yyerror(char *s);
 %}
@@ -89,8 +89,8 @@ int yyerror(char *s);
 
 
 %%
-    primitive_type: STRING | INT | BOOL | REAL;
-    primitive: NUMBER{variable_type = 0;} | bool_type{variable_type = 1;} | STR{variable_type = 3;} | REAL_NUMBER{variable_type = 4;} ;
+    primitive_type: INT{variable_type = T_INT;}  | BOOL{variable_type = T_BOOL;} | STRING{variable_type = T_STR;} | REAL{variable_type = T_REAL;};
+    primitive: NUMBER| bool_type | STR | REAL_NUMBER;
     bool_type: TRUE{$$.token_type = T_BOOL; $$.flag = true;}| FALSE{$$.token_type = T_BOOL; $$.flag = false;};
     op_order2: '^' ;
     op_order3: '*' | '/' | '%' ;
@@ -141,11 +141,12 @@ int yyerror(char *s);
             Trace("identifier_declared INT \n");
         }|
         VAR identifier_list BOOL '=' bool_type {
-            
+            printf("T_BOOL = %d\n", T_BOOL);
             variable v(T_BOOL, 0, $5.flag); 
             if(!global_st.declared($2.name, v))
                 yyerror("declared error");
-            Trace("identifier_declared BOOL \n");}|
+            Trace("identifier_declared BOOL \n");
+        }|
         VAR identifier_list STRING '=' STR { 
             variable v(T_STR, 0, $5.name); 
             if(!global_st.declared($2.name, v))

@@ -25,7 +25,7 @@ typedef union{
 struct variable{
 	std::string name;
 	variable_data data;
-	int type;
+	int type;// 0 = int 1 = bool 2 = str 3 = real_numver
 	int s_type;// 0 = normal 1 = const 2 = function declare
 	variable():type(0), s_type(0){
 		data.value = 0;
@@ -39,10 +39,10 @@ struct variable{
 	variable(int type1, int type2, char* value): type(type1), s_type(type2){
 		data.str = value;
 	}
-	variable(int type1, int type2, bool value){
+	variable(int type1, int type2, bool value): type(type1), s_type(type2){
 		data.flag = value;
 	}
-	variable(int type1, int type2, int value){
+	variable(int type1, int type2, int value): type(type1), s_type(type2){
 		data.value = value;
 	}
 

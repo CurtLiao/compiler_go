@@ -124,9 +124,15 @@ void symbol_table::dump(){
         //check name and type and const;
            std::cout << "variable => " << (*it).name << "\n\t type = " << type_name((*it).type)  << "\n\t special_type = " << s_type_name((*it).s_type)  << std::endl;
                 if((*it).type == 0)
-                   std::cout << "\t value = " << (*it).data.value  << std::endl;
-                else if((*it).type == 1)
-                   std::cout << "\t value = " << (*it).data.flag  << std::endl;
+                    std::cout << "\t value = " << (*it).data.value  << std::endl;
+                else if((*it).type == 1){
+                    if((*it).data.flag == 0){
+                       std::cout << "\t value = false"  << std::endl;
+                    }
+                    else{
+                        std::cout << "\t value = true"  << std::endl;   
+                    }
+                }
                 else
                     std::cout << "\t value = " << (*it).data.str  << std::endl;
 
