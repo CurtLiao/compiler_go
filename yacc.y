@@ -88,7 +88,7 @@ int yyerror(char *s);
 
 %%
     primitive_type: STRING | INT | BOOL | REAL;
-    primitive: STR | NUMBER | REAL_NUMBER | bool_type;
+    primitive: NUMBER{variable_type = 0;} | bool_type{variable_type = 1;} | STR{variable_type = 3;} | REAL_NUMBER{variable_type = 4;} ;
     bool_type: TRUE | FALSE;
     op_order2: '^' ;
     op_order3: '*' | '/' | '%' ;
@@ -127,7 +127,11 @@ int yyerror(char *s);
         ID ',' identifier_list {  printf("\t id , identifier_list || id = %s\n", $1.name); strcat($$.name, " "); strcat($$.name, $3.name);}|
         ID     {printf("\t id in identifier_list || id = %s\n", $1.name); $$.name = $1.name; };
     identifier_declared:  //declare the type of id and type check
-        VAR identifier_list primitive_type { printf("$1 id_list = %s\n", $2.name); Trace("identifier_declared non \n");}|
+        VAR identifier_list primitive_type { 
+            printf("$1 id_list = %s\n", $2.name); 
+            global_st.assign($2.name, variable_type);
+            Trace("identifier_declared non \n");
+        }|
         VAR identifier_list INT '=' NUMBER {variable_type = 0; const_flag = false; Trace("identifier_declared INT \n");}|
         VAR identifier_list BOOL '=' bool_type {Trace("identifier_declared BOOL \n");}|
         VAR identifier_list STRING '=' STR { printf("\t id = str || str = %s\n", $5.name); }|

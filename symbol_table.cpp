@@ -41,6 +41,26 @@ bool symbol_table::insert(std::string key,int type, variable_data value){
     }
     return false;
 }
+variable_data symbol_table::initialize_variable(int type){
+    variable_data v;
+    if(type == 0)
+        v.value = 0;
+    if(type == 1)
+        v.flag = false;
+    // if(type == 2)
+    //     v.str = '';
+    // if(type == 3)
+    //     v.str = "0.0";
+    return v;
+}
+bool symbol_table::assign(std::string key,int type){
+    variable v;
+    v.type = type;
+    v.constFlag = false;
+    //initialize variable
+    v.data = initialize_variable(type);
+    return assign(key, v);
+}
 bool symbol_table::assign(std::string key,int type, bool cFlag){
     variable v;
     v.type = type;
@@ -54,7 +74,7 @@ bool symbol_table::assign(std::string key,int type, variable_data value, bool cF
     v.constFlag = cFlag;
     return assign(key, v);
 }
-bool symbol_table::assign(std::string key,variable v){
+bool symbol_table::each_assign(std::string key,variable v){
     for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
         for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
         //check name and type and const;
@@ -75,6 +95,18 @@ bool symbol_table::assign(std::string key,variable v){
 
     std::cout << nondeclared_error_msg << std::endl;
     return false;
+}
+bool symbol_table::assign(std::string keys,variable v){
+    std::istringstream iss(keys);
+    do
+    {
+        std::string key;
+        iss >> key;
+        std::cout << "assign keys : " << key << std::endl;
+        if(each_assign(key, v) == false)
+            return false
+    } while (iss);
+    return true;
 
     // for(size_t table_idx = tableEntrys.size() -1; (int) table_idx  >= 0; --table_idx)
     //     for(size_t idx = tableEntrys.at(table_idx).ids.size() - 1; (int) idx >= 0; --idx){

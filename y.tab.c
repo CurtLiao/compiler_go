@@ -535,11 +535,11 @@ static const yytype_uint8 yyrline[] =
       92,    92,    93,    94,    94,    94,    95,    95,    96,    96,
       96,    96,    96,    96,    97,    98,    99,   103,   105,   105,
      107,   108,   109,   110,   111,   112,   113,   116,   117,   118,
-     119,   121,   122,   124,   125,   127,   128,   130,   131,   132,
-     133,   134,   135,   136,   138,   139,   142,   143,   144,   145,
-     146,   148,   149,   150,   151,   152,   153,   154,   156,   157,
-     158,   159,   160,   161,   162,   167,   168,   170,   172,   173,
-     175,   176,   177,   178,   179,   180,   181,   182,   184
+     119,   121,   122,   124,   125,   127,   128,   130,   135,   136,
+     137,   138,   139,   140,   142,   143,   146,   147,   148,   149,
+     150,   152,   153,   154,   155,   156,   157,   158,   160,   161,
+     162,   163,   164,   165,   166,   171,   172,   174,   176,   177,
+     179,   180,   181,   182,   183,   184,   185,   186,   188
 };
 #endif
 
@@ -623,8 +623,8 @@ static const yytype_uint8 yydefact[] =
        0,     0,     0,     0,     0,     0,     0,     0,    60,     0,
        0,     0,     0,     0,    27,    28,    43,    30,    44,    31,
       32,    33,    34,    35,    36,    46,     0,     0,     4,     3,
-       5,     2,     0,     0,     0,     0,    11,    10,     7,     6,
-      61,     8,     0,     0,    62,     9,    56,    57,    59,     0,
+       5,     2,     0,     0,     0,     0,    11,    10,     6,     8,
+      61,     9,     0,     0,    62,     7,    56,    57,    59,     0,
       58,     0,     0,     0,    75,     0,     1,    29,     0,     0,
       61,     0,     0,     0,    68,     0,     0,     0,     0,     0,
       66,     0,    16,    17,    13,    14,    15,    12,     0,     0,
@@ -1452,118 +1452,146 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 27:
+        case 6:
+#line 91 "yacc.y" /* yacc.c:1661  */
+    {variable_type = 0;}
+#line 1459 "y.tab.c" /* yacc.c:1661  */
+    break;
+
+  case 7:
+#line 91 "yacc.y" /* yacc.c:1661  */
+    {variable_type = 1;}
+#line 1465 "y.tab.c" /* yacc.c:1661  */
+    break;
+
+  case 8:
+#line 91 "yacc.y" /* yacc.c:1661  */
+    {variable_type = 3;}
+#line 1471 "y.tab.c" /* yacc.c:1661  */
+    break;
+
+  case 9:
+#line 91 "yacc.y" /* yacc.c:1661  */
+    {variable_type = 4;}
+#line 1477 "y.tab.c" /* yacc.c:1661  */
+    break;
+
+  case 27:
 #line 103 "yacc.y" /* yacc.c:1661  */
     {Trace("Reducing to program\n");}
-#line 1459 "y.tab.c" /* yacc.c:1661  */
+#line 1483 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 30:
 #line 107 "yacc.y" /* yacc.c:1661  */
     { Trace("declare id \n");}
-#line 1465 "y.tab.c" /* yacc.c:1661  */
+#line 1489 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 31:
 #line 108 "yacc.y" /* yacc.c:1661  */
     { Trace("simple statement\n");}
-#line 1471 "y.tab.c" /* yacc.c:1661  */
+#line 1495 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 45:
 #line 127 "yacc.y" /* yacc.c:1661  */
     {  printf("\t id , identifier_list || id = %s\n", (yyvsp[-2].Token).name); strcat((yyval.Token).name, " "); strcat((yyval.Token).name, (yyvsp[0].Token).name);}
-#line 1477 "y.tab.c" /* yacc.c:1661  */
+#line 1501 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 46:
 #line 128 "yacc.y" /* yacc.c:1661  */
     {printf("\t id in identifier_list || id = %s\n", (yyvsp[0].Token).name); (yyval.Token).name = (yyvsp[0].Token).name; }
-#line 1483 "y.tab.c" /* yacc.c:1661  */
+#line 1507 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 47:
 #line 130 "yacc.y" /* yacc.c:1661  */
-    { printf("$1 id_list = %s\n", (yyvsp[-1].Token).name); Trace("identifier_declared non \n");}
-#line 1489 "y.tab.c" /* yacc.c:1661  */
+    { 
+            printf("$1 id_list = %s\n", (yyvsp[-1].Token).name); 
+            global_st.assign((yyvsp[-1].Token).name, variable_type);
+            Trace("identifier_declared non \n");
+        }
+#line 1517 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 48:
-#line 131 "yacc.y" /* yacc.c:1661  */
+#line 135 "yacc.y" /* yacc.c:1661  */
     {variable_type = 0; const_flag = false; Trace("identifier_declared INT \n");}
-#line 1495 "y.tab.c" /* yacc.c:1661  */
+#line 1523 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 49:
-#line 132 "yacc.y" /* yacc.c:1661  */
+#line 136 "yacc.y" /* yacc.c:1661  */
     {Trace("identifier_declared BOOL \n");}
-#line 1501 "y.tab.c" /* yacc.c:1661  */
+#line 1529 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 50:
-#line 133 "yacc.y" /* yacc.c:1661  */
+#line 137 "yacc.y" /* yacc.c:1661  */
     { printf("\t id = str || str = %s\n", (yyvsp[0].Token).name); }
-#line 1507 "y.tab.c" /* yacc.c:1661  */
+#line 1535 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 51:
-#line 134 "yacc.y" /* yacc.c:1661  */
+#line 138 "yacc.y" /* yacc.c:1661  */
     {Trace("identifier_declared REAL \n");}
-#line 1513 "y.tab.c" /* yacc.c:1661  */
+#line 1541 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 52:
-#line 135 "yacc.y" /* yacc.c:1661  */
+#line 139 "yacc.y" /* yacc.c:1661  */
     {Trace("identifier_declared array \n");}
-#line 1519 "y.tab.c" /* yacc.c:1661  */
+#line 1547 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 53:
-#line 136 "yacc.y" /* yacc.c:1661  */
+#line 140 "yacc.y" /* yacc.c:1661  */
     {Trace("CONST \n");}
-#line 1525 "y.tab.c" /* yacc.c:1661  */
+#line 1553 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 54:
-#line 138 "yacc.y" /* yacc.c:1661  */
+#line 142 "yacc.y" /* yacc.c:1661  */
     { printf("\t id = expression || id = %s\n", (yyvsp[-2].Token).name);}
-#line 1531 "y.tab.c" /* yacc.c:1661  */
+#line 1559 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 55:
-#line 139 "yacc.y" /* yacc.c:1661  */
+#line 143 "yacc.y" /* yacc.c:1661  */
     {
 
         }
-#line 1539 "y.tab.c" /* yacc.c:1661  */
+#line 1567 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 58:
-#line 144 "yacc.y" /* yacc.c:1661  */
+#line 148 "yacc.y" /* yacc.c:1661  */
     {  printf("\t Read id || id = %s\n", (yyvsp[0].Token).name);}
-#line 1545 "y.tab.c" /* yacc.c:1661  */
+#line 1573 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 68:
-#line 156 "yacc.y" /* yacc.c:1661  */
+#line 160 "yacc.y" /* yacc.c:1661  */
     {Trace("exp \n");}
-#line 1551 "y.tab.c" /* yacc.c:1661  */
+#line 1579 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 70:
-#line 158 "yacc.y" /* yacc.c:1661  */
+#line 162 "yacc.y" /* yacc.c:1661  */
     {Trace("!bool_exp \n");}
-#line 1557 "y.tab.c" /* yacc.c:1661  */
+#line 1585 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 76:
-#line 168 "yacc.y" /* yacc.c:1661  */
+#line 172 "yacc.y" /* yacc.c:1661  */
     {    global_st.push_table();}
-#line 1563 "y.tab.c" /* yacc.c:1661  */
+#line 1591 "y.tab.c" /* yacc.c:1661  */
     break;
 
 
-#line 1567 "y.tab.c" /* yacc.c:1661  */
+#line 1595 "y.tab.c" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1791,7 +1819,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 187 "yacc.y" /* yacc.c:1906  */
+#line 191 "yacc.y" /* yacc.c:1906  */
 
 
 int yyerror(char *s)
