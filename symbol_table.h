@@ -27,30 +27,20 @@ struct variable{
 	variable_data data;
 	int type;
 	int s_type;// 0 = normal 1 = const 2 = function declare
-	variable(){
-		type = 0;
-		s_type = 0;
-        data.value = 0;
+	variable():type(0), s_type(0){
+		data.value = 0;
 	}
-	variable(int type1){
+	variable(int type1): type(type1){
 		variable(type1, 0);
 	}
-	variable(int type1, int type2){
-		type = type1;
-		s_type = type2;
-		if(type == 0)
-	        data.value = 0;
-	    if(type == 1)
-	        data.flag = false;
+	variable(int type1, int type2): type(type1), s_type(type2){
+		printf("in v type1 = %d, type2 = %d\n", type1, type2);
+		init_data(type1);
 	}
-	variable(int type1, int type2, char* value){
-		type = type1;
-		s_type = type2;
+	variable(int type1, int type2, char* value): type(type1), s_type(type2){
 		data.str = value;
 	}
 	variable(int type1, int type2, bool value){
-		type = type1;
-		s_type = type2;
 		data.flag = value;
 	}
 	void copy(const char* key, variable v){
@@ -63,6 +53,20 @@ struct variable{
 		type = v.type;
 		s_type = v.s_type;
 		data = v.data;
+	}
+	void init_data(int type){
+		printf("init type = %d\n", type);
+		char* c = new char[1];
+		c[0] = '\0';
+		if(type == 0){
+	        data.value = 0;
+		}
+	    else if(type == 1){
+	        data.flag = false;
+	    }
+	    else{
+	    	data.str = c;
+	    }
 	}
 };
 typedef struct {

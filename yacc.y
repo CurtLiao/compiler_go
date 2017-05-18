@@ -32,7 +32,7 @@ int yyerror(char *s);
 %type<Token> STR
 %type<Token> identifier_list
 // %type<name> REAL
-// %type<val> NUMBER
+%type<Token> NUMBER
 
 
 /* tokens */
@@ -135,7 +135,9 @@ int yyerror(char *s);
         }|
         VAR identifier_list INT '=' NUMBER {
             // variable_type = 0;
-
+            variable(0, 0, $5.val); 
+            if(!global_st.declared($2.name, variable_type))
+                yyerror("declared error");
             Trace("identifier_declared INT \n");
         }|
         VAR identifier_list BOOL '=' bool_type {Trace("identifier_declared BOOL \n");}|

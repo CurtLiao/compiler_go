@@ -15,6 +15,9 @@ variable symbol_table::lookup_variable(std::string key){
                 return tableEntrys.at(table_idx).ids.at(idx);
     }
     variable TYPE_NIL_variable(TYPE_NIL);
+    // TYPE_NIL_variable.type = TYPE_NIL;
+    std::cout << "TYPE_NIL_variable type : " << TYPE_NIL_variable.type << std::endl;
+
     return TYPE_NIL_variable;
 }
 bool symbol_table::declared(std::string keys,int type, int type2){
@@ -119,10 +122,18 @@ void symbol_table::pop_table(){
 void symbol_table::dump(){
     std::cout << "dump symbol_table" << std::endl;
     std::cout << "=========================" << std::endl;
-    for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
-        for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
+    for(auto table = tableEntrys.begin(); table!= tableEntrys.end(); ++table){
+        for(auto it = (*table).ids.begin(); it!= (*table).ids.end(); ++it){
         //check name and type and const;
-           std::cout << "variable => " << (*it).name << "\t\t type = " << type_name((*it).type)  << "\t special_type = " << s_type_name((*it).s_type) << std::endl;
+           std::cout << "variable => " << (*it).name << "\n\t type = " << type_name((*it).type)  << "\n\t special_type = " << s_type_name((*it).s_type)  << std::endl;
+                if((*it).type == 0)
+                   std::cout << "\t value = " << (*it).data.value  << std::endl;
+                else if((*it).type == 1)
+                   std::cout << "\t value = " << (*it).data.flag  << std::endl;
+                else
+                    std::cout << "\t value = " << (*it).data.str  << std::endl;
+
+             // std::cout << "variable => " << (*it).name << "\t\t type = " << type_name((*it).type)  << "\t special_type = " << s_type_name((*it).s_type) << std::endl;
         }
         std::cout << "====next scope===="<< std::endl;
     }
