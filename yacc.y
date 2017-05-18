@@ -130,10 +130,14 @@ int yyerror(char *s);
         VAR identifier_list primitive_type { 
             printf("$1 id_list = %s\n", $2.name); 
             if(!global_st.declared($2.name, variable_type))
-                abort();
+                yyerror("declared error");
             Trace("identifier_declared non \n");
         }|
-        VAR identifier_list INT '=' NUMBER {variable_type = 0; const_flag = false; Trace("identifier_declared INT \n");}|
+        VAR identifier_list INT '=' NUMBER {
+            // variable_type = 0;
+
+            Trace("identifier_declared INT \n");
+        }|
         VAR identifier_list BOOL '=' bool_type {Trace("identifier_declared BOOL \n");}|
         VAR identifier_list STRING '=' STR { printf("\t id = str || str = %s\n", $5.name); }|
         VAR identifier_list REAL '=' REAL_NUMBER {Trace("identifier_declared REAL \n");}|
@@ -195,7 +199,8 @@ int yyerror(char *s)
 {
     
     // printf("%d:  %s:  \n", linenum, s);
-    printf("666:  %s:  \n", s);
+    printf("compiler error:  %s  \n", s);
+    abort();
 
     return 0;
     // char *msg;

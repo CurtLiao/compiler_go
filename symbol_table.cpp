@@ -8,44 +8,17 @@ symbol_table::symbol_table(){
 symbol_table::~symbol_table(){
     
 }
-// symbol_table_entry symbol_table::create(){
-//     return symbol_table_entry();
-// }
 variable symbol_table::lookup_variable(std::string key){
     for(size_t table_idx = tableEntrys.size() -1; (int) table_idx  >= 0; --table_idx){
         for(size_t idx = tableEntrys.at(table_idx).ids.size() - 1; (int) idx >= 0; --idx)
             if(tableEntrys.at(table_idx).ids.at(idx).name == key)
                 return tableEntrys.at(table_idx).ids.at(idx);
     }
-    variable TYPE_NIL_variable;
-    TYPE_NIL_variable.type = TYPE_NIL;
+    variable TYPE_NIL_variable(TYPE_NIL);
     return TYPE_NIL_variable;
 }
-// unsigned long symbol_table::lookup(symbol_table_entry* st, std::string key){
-
-//     for(size_t idx = 0; idx < st->ids.size(); ++idx){
-//         if(st->ids.at(idx).name == key)
-//             return idx;
-//     }
-//     return TYPE_NIL;
-// }
-// unsigned long symbol_table::insert(symbol_table_entry* st, std::string key){
-//     st->ids.push_back(key);
-//     return(st->ids.size()-1);
-// }
-bool symbol_table::insert(std::string key,int type, variable_data value){
-    if(lookup_variable(key).type == TYPE_NIL){
-        variable v;
-        v.data = value;
-        return true;
-    }
-    return false;
-}
 bool symbol_table::declared(std::string keys,int type, int type2){
-    variable v;
-    v.type = type;
-    v.s_type = type2;
-    v.data = initialize_variable(type);
+    variable v(type, type2);
     return declared(keys, v);
 }
 bool symbol_table::declared(std::string keys,variable v){
@@ -59,36 +32,19 @@ bool symbol_table::declared(std::string keys,variable v){
         if(strcmp(key.c_str(), "")== 0)
             break;
         if(lookup_variable(key).type != TYPE_NIL){
-            std::cout << "keys : " << key << redeclared_error_msg << std::endl;
+            std::cout << "key : " << key << "\t" <<redeclared_error_msg << std::endl;
             return false;
         }
         variable dec_v;
-        dec_v.name = key;
-        dec_v.type = v.type;
-        dec_v.s_type = v.s_type;
-        dec_v.data = v.data;
+        dec_v.copy(key.c_str(), v);
         tableEntrys.back().ids.push_back(dec_v);
 
     } while (iss);
     return true;
 }
-variable_data symbol_table::initialize_variable(int type){
-    variable_data v;
-    if(type == 0)
-        v.value = 0;
-    if(type == 1)
-        v.flag = false;
-    // if(type == 2)
-    //     v.str = '';
-    // if(type == 3)
-    //     v.str = "0.0";
-    return v;
-}
 
 bool symbol_table::assign(std::string keys,int type, int type2){
-    variable v;
-    v.type = type;
-    v.s_type = type2;
+    variable v(type, type2);
     return assign(keys, v);
 }
 bool symbol_table::each_assign(std::string key,variable v){
@@ -102,11 +58,11 @@ bool symbol_table::each_assign(std::string key,variable v){
                         return true;     
                     }
                     else if ((*it).s_type  == STYPE_CONST){
-                        std::cout << const_error_msg << std::endl;
+                        std::cout << "key : " << key << "\t" << const_error_msg << std::endl;
                         return false;
                     }
                     else if ((*it).s_type  == STYPE_FUNC){
-                        std::cout << func_redeclared_error_msg << std::endl;
+                        std::cout << "key : " << key << "\t" << func_redeclared_error_msg << std::endl;
                         return false;
                     }
                 }
@@ -132,19 +88,19 @@ bool symbol_table::assign(std::string keys,variable v){
     } while (iss);
     return true;
 }
-int symbol_table::checkDeclared(std::string key){
-    int variable_type = lookup_variable(key).type;
-    int special_type = lookup_variable(key).s_type;
-    if(variable_type == TYPE_NIL){
-        return TYPE_NIL;
-    }
-    else if(special_type == STYPE_CONST){
-        return TYPE_CONST;
-    }
-    else {
-        return TYPE_PRIMITVE;
-    }
-}
+// int symbol_table::checkDeclared(std::string key){
+//     int variable_type = lookup_variable(key).type;
+//     int special_type = lookup_variable(key).s_type;
+//     if(variable_type == TYPE_NIL){
+//         return TYPE_NIL;
+//     }
+//     else if(special_type == STYPE_CONST){
+//         return TYPE_CONST;
+//     }
+//     else {
+//         return TYPE_PRIMITVE;
+//     }
+// }
 void symbol_table::push_table(){
     tableEntrys.push_back(symbol_table_entry());
 }

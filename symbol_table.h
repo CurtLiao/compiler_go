@@ -22,13 +22,49 @@ typedef union{
 	char *str;	
 	bool flag;
 }variable_data;
-typedef struct {
+struct variable{
 	std::string name;
 	variable_data data;
 	int type;
 	int s_type;// 0 = normal 1 = const 2 = function declare
-	
-}variable;
+	variable(){
+		type = 0;
+		s_type = 0;
+        data.value = 0;
+	}
+	variable(int type1){
+		variable(type1, 0);
+	}
+	variable(int type1, int type2){
+		type = type1;
+		s_type = type2;
+		if(type == 0)
+	        data.value = 0;
+	    if(type == 1)
+	        data.flag = false;
+	}
+	variable(int type1, int type2, char* value){
+		type = type1;
+		s_type = type2;
+		data.str = value;
+	}
+	variable(int type1, int type2, bool value){
+		type = type1;
+		s_type = type2;
+		data.flag = value;
+	}
+	void copy(const char* key, variable v){
+		name = key;
+		type = v.type;
+		s_type = v.s_type;
+		data = v.data;
+	}
+	void copy(variable v){
+		type = v.type;
+		s_type = v.s_type;
+		data = v.data;
+	}
+};
 typedef struct {
 	std::vector<variable> ids;
 }symbol_table_entry;
@@ -48,8 +84,8 @@ public:
 	bool declared(std::string keys, variable v);
 
     variable lookup_variable(std::string key);
-    bool insert(std::string key,int type, variable_data value);
-    int checkDeclared(std::string key);
+    // bool insert(std::string key,int type, variable_data value);
+    // int checkDeclared(std::string key);
     // void dump(symbol_table_entry* st);
     void dump();
     // void push_table();
@@ -65,6 +101,5 @@ private:
 	std::string type_name(int value);
 	std::string s_type_name(int value);
 
-	variable_data initialize_variable(int type);
 
 };
