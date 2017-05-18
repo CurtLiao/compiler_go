@@ -129,7 +129,8 @@ int yyerror(char *s);
     identifier_declared:  //declare the type of id and type check
         VAR identifier_list primitive_type { 
             printf("$1 id_list = %s\n", $2.name); 
-            global_st.assign($2.name, variable_type);
+            if(!global_st.declared($2.name, variable_type))
+                abort();
             Trace("identifier_declared non \n");
         }|
         VAR identifier_list INT '=' NUMBER {variable_type = 0; const_flag = false; Trace("identifier_declared INT \n");}|
