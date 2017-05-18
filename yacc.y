@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "symbol_table.h"
-symbol_table st;
-symbol_table_entry currentSTE;
+symbol_table global_st;
+int variable_type; // 0=> int 1=> bool 2=> string 3=>real
+bool const_flag = false;
 int yylex();
 int yyerror(char *s);
 %}
@@ -29,6 +30,7 @@ int yyerror(char *s);
 // }
 %type<Token> ID
 %type<Token> STR
+%type<Token> identifier_list
 // %type<name> REAL
 // %type<val> NUMBER
 
@@ -122,11 +124,11 @@ int yyerror(char *s);
         func_declared | 
         identifier_declared ;
     identifier_list:          // identifier list can pass one or more id
-        ID ',' identifier_list { printf("\t id , identifier_list || id = %s\n", $1.name); }|
-        ID     { printf("\t id in identifier_list || id = %s\n", $1.name); };
+        ID ',' identifier_list {  printf("\t id , identifier_list || id = %s\n", $1.name); strcat($$.name, " "); strcat($$.name, $3.name);}|
+        ID     {printf("\t id in identifier_list || id = %s\n", $1.name); $$.name = $1.name; };
     identifier_declared:  //declare the type of id and type check
-        VAR identifier_list primitive_type { Trace("identifier_declared non \n");}|
-        VAR identifier_list INT '=' NUMBER {Trace("identifier_declared INT \n");}|
+        VAR identifier_list primitive_type { printf("$1 id_list = %s\n", $2.name); Trace("identifier_declared non \n");}|
+        VAR identifier_list INT '=' NUMBER {variable_type = 0; const_flag = false; Trace("identifier_declared INT \n");}|
         VAR identifier_list BOOL '=' bool_type {Trace("identifier_declared BOOL \n");}|
         VAR identifier_list STRING '=' STR { printf("\t id = str || str = %s\n", $5.name); }|
         VAR identifier_list REAL '=' REAL_NUMBER {Trace("identifier_declared REAL \n");}|
@@ -163,7 +165,7 @@ int yyerror(char *s);
 
     compound:
         '{' '}'|
-        '{' statements '}';
+        '{' statements '}'{    global_st.push_table();};
     func_invoke:
         ID '(' identifier_list ')';
     condition:
@@ -206,4 +208,5 @@ int main(int argc, char const *argv[])
     // st.dump(&currentSTE);
     // return 0;
     yyparse();
+    global_st.dump();
 }

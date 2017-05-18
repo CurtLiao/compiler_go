@@ -38,6 +38,7 @@ public:
 
     // symbol_table_entry create();
     // unsigned long lookup(symbol_table_entry* st, std::string key);
+	bool assign(std::string key,int type, bool cFlag);
 	bool assign(std::string key,int type, variable_data value, bool constFlag = false);
 	bool assign(std::string key,variable v);
     variable lookup_variable(std::string key);

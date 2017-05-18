@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 symbol_table::symbol_table(){
-
+    tableEntrys.push_back(symbol_table_entry());
 }
 symbol_table::~symbol_table(){
     
@@ -40,6 +40,12 @@ bool symbol_table::insert(std::string key,int type, variable_data value){
         return true;
     }
     return false;
+}
+bool symbol_table::assign(std::string key,int type, bool cFlag){
+    variable v;
+    v.type = type;
+    v.constFlag = cFlag;
+    return assign(key, v);
 }
 bool symbol_table::assign(std::string key,int type, variable_data value, bool cFlag){
     variable v;
@@ -121,6 +127,7 @@ void symbol_table::dump(){
     std::cout << "dump symbol_table" << std::endl;
     std::cout << "=========================" << std::endl;
     for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
+       std::cout << "====next scope===="<< std::endl;
         for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
         //check name and type and const;
            std::cout << "variable => " << (*it).name << " type = " << type_name((*it).type) << std::endl;

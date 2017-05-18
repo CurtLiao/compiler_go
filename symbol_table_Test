@@ -1,0 +1,14 @@
+// You can edit this code!
+// Click here and start typing.
+package main
+
+import "fmt"	
+var a int = 100
+
+func main() {
+	fmt.Println(a)
+	a = 10
+}
+func test() {
+	fmt.Println(a)
+}
