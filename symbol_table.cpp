@@ -151,7 +151,7 @@ void symbol_table::dump(){
     for(auto table = tableEntrys.begin(); table!= tableEntrys.end(); ++table){
         for(auto it = (*table).ids.begin(); it!= (*table).ids.end(); ++it){
         //check name and type and const;
-           std::cout << "variable => " << (*it).name << "\n\t type = " << type_name((*it).type)  << "\n\t special_type = " << s_type_name((*it).s_type)  << std::endl;
+           std::cout << "variable => \n\t key = " << (*it).name << "\n\t type = " << type_name((*it).type)  << "\n\t special_type = " << s_type_name((*it).s_type)  << std::endl;
                 if((*it).type == 0)
                     std::cout << "\t value = " << (*it).data.value  << std::endl;
                 else if((*it).type == 1){

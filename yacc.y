@@ -36,6 +36,7 @@ int yyerror(char *s);
 %type<Token> NUMBER
 %type<Token> bool_type
 %type<Token> primitive_type
+%type<Token> primitive
 
 
 /* tokens */
@@ -91,7 +92,7 @@ int yyerror(char *s);
 
 %%
     primitive_type: INT{ $$.token_type = T_INT; }  | BOOL{$$.token_type =  T_BOOL;} | STRING{$$.token_type =  T_STR;} | REAL{$$.token_type =  T_REAL;};
-    primitive: NUMBER| bool_type | STR | REAL_NUMBER;
+    primitive: NUMBER{ $$.token_type = T_INT; $$.val = $1.val; }| bool_type{ $$.token_type = T_BOOL; $$.flag = $1.flag; } | STR{ $$.token_type = T_STR; $$.name = $1.name; } | REAL_NUMBER{ $$.token_type = T_REAL; $$.name = $1.name; };
     bool_type: TRUE{$$.token_type = T_BOOL; $$.flag = true;}| FALSE{$$.token_type = T_BOOL; $$.flag = false;};
     op_order2: '^' ;
     op_order3: '*' | '/' | '%' ;
@@ -168,7 +169,18 @@ int yyerror(char *s);
 
             Trace("identifier_declared array \n");
         }|
-        CONST identifier_list '=' primitive {Trace("CONST \n");};
+        CONST identifier_list '=' primitive {
+            variable v($4.token_type, 1); 
+            if($4.token_type == T_INT)
+                v.data.value = $4.val;
+            else if($4.token_type == T_BOOL)
+                v.data.flag = $4.flag;
+            else
+                v.data.str = $4.name;
+            if(!global_st.declared($2.name, v))
+                yyerror("declared error");
+            Trace("CONST \n");
+        };
     simple_statement: //include varialbe or array assign and function call
         ID '=' expression { printf("\t id = expression || id = %s\n", $1.name);}|
         ID '[' NUMBER ']''=' expression {

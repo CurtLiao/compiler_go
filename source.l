@@ -129,7 +129,7 @@ read		{token(READ);}
 	printf("<%s:%s>\n", "ID", yytext);
 	token(ID);
 }
-{digit}*("."{digit}*)?["e"|"E"][+-]?{digit}*|{digit}"."{digit}* {
+[+-]?{digit}*("."{digit}*)?["e"|"E"][+-]?{digit}*|[+-]?{digit}"."{digit}* {
 	yylval.Token.name = strdup(yytext);
 	yylval.Token.token_type = T_REAL;
 	token(REAL_NUMBER);
