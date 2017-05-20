@@ -27,10 +27,6 @@ const const_real2 = -11232.4323
 const const_real3 = 11232.4323e-21
 const const_real4 = 11232.4323e+21
 const const_real5 = -11232.4323e+21
-
-
-
-
 func void main( ) {
 
 }

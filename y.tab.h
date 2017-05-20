@@ -138,7 +138,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 15 "yacc.y" /* yacc.c:1915  */
+#line 32 "yacc.y" /* yacc.c:1915  */
 
     struct
     {
@@ -148,9 +148,10 @@ union YYSTYPE
             bool flag;
         };
         int token_type;
+        int state; //0 => id || 1 => primitive type
     }Token;
 
-#line 154 "y.tab.h" /* yacc.c:1915  */
+#line 155 "y.tab.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;

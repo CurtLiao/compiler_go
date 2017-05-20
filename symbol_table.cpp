@@ -9,11 +9,41 @@ symbol_table::~symbol_table(){
     
 }
 variable symbol_table::lookup_variable(std::string key){
-    for(size_t table_idx = tableEntrys.size() -1; (int) table_idx  >= 0; --table_idx){
-        for(size_t idx = tableEntrys.at(table_idx).ids.size() - 1; (int) idx >= 0; --idx)
-            if(tableEntrys.at(table_idx).ids.at(idx).name == key)
-                return tableEntrys.at(table_idx).ids.at(idx);
+    for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
+        for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
+        //check name and type and const;
+            if((*it).name == key){
+                return (*it);
+            }
+        }
     }
+    // for(size_t table_idx = tableEntrys.size() -1; (int) table_idx  >= 0; --table_idx){
+    //     for(size_t idx = tableEntrys.at(table_idx).ids.size() - 1; (int) idx >= 0; --idx)
+    //         if(tableEntrys.at(table_idx).ids.at(idx).name == key)
+    //             return tableEntrys.at(table_idx).ids.at(idx);
+    // }
+    variable TYPE_NIL_variable(TYPE_NIL);
+    return TYPE_NIL_variable;
+}
+variable symbol_table::lookup_array(std::string key, int index){
+    std::stringstream ss;
+    std::string i_str; // for str to int
+    ss << index;
+    ss >>  i_str;  //透過串流運算子寫到string類別即可
+    std::string key_array = key + "[" + i_str + "]";
+    for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
+        for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
+        //check name and type and const;
+            if((*it).name == key_array){
+                return (*it);
+            }
+        }
+    }
+    // for(size_t table_idx = tableEntrys.size() -1; (int) table_idx  >= 0; --table_idx){
+    //     for(size_t idx = tableEntrys.at(table_idx).ids.size() - 1; (int) idx >= 0; --idx)
+    //         if(tableEntrys.at(table_idx).ids.at(idx).name == key)
+    //             return tableEntrys.at(table_idx).ids.at(idx);
+    // }
     variable TYPE_NIL_variable(TYPE_NIL);
     return TYPE_NIL_variable;
 }

@@ -89,6 +89,7 @@ public:
     void push_table();
 	void pop_table();
     variable lookup_variable(std::string key);
+	variable lookup_array(std::string key, int index);
 
 private:
 	std::vector<symbol_table_entry> tableEntrys;
