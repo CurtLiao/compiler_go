@@ -82,12 +82,14 @@ public:
 	bool each_assign(std::string key,variable v);
 	bool assign(std::string keys, int type = 0, int type2 = 0);
 	bool assign(std::string keys, variable v);
+	bool assign_array_by_id(std::string key, int index,variable v);
 	bool declared(std::string keys, int type = 0, int type2 = 0);
 	bool declared(std::string keys, variable v);
     bool declared_array(std::string keys,variable v, int array_size);
     void dump();
     void push_table();
 	void pop_table();
+	char* concat_array_element(std::string key, int index);
     variable lookup_variable(std::string key);
 	variable lookup_array(std::string key, int index);
 

@@ -12,6 +12,7 @@ variable symbol_table::lookup_variable(std::string key){
     for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
         for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
         //check name and type and const;
+            // std::cout << "lookup key => " << (*it).name << std::endl;
             if((*it).name == key){
                 return (*it);
             }
@@ -132,6 +133,37 @@ bool symbol_table::each_assign(std::string key,variable v){
     std::cout << nondeclared_error_msg << std::endl;
     return false;
 }
+bool symbol_table::assign_array_by_id(std::string key, int index,variable v){
+    std::stringstream ss;
+    std::string i_str; // for str to int
+    ss << index;
+    ss >>  i_str;  //透過串流運算子寫到string類別即可
+    std::string key_array = key + "[" + i_str + "]";
+    for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
+        for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
+        //check name and type and const;
+            if((*it).name == key_array){
+                if((*it).type  == v.type){
+                    if((*it).s_type  == STYPE_NORMAL){
+                        (*it).data = v.data;
+                        return true;     
+                    }
+                    else if ((*it).s_type  == STYPE_CONST){
+                        std::cout << "key : " << key << "\t" << const_error_msg << std::endl;
+                        return false;
+                    }
+                    else if ((*it).s_type  == STYPE_FUNC){
+                        std::cout << "key : " << key << "\t" << func_redeclared_error_msg << std::endl;
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+
+    std::cout << nondeclared_error_msg << std::endl;
+    return false;
+}
 bool symbol_table::assign(std::string keys,variable v){
     std::istringstream iss(keys);
     do
@@ -224,4 +256,12 @@ std::string symbol_table::s_type_name(int value){
         return "FUNC";
     return "unknow type";
 
+}
+char* symbol_table::concat_array_element(std::string key, int index){
+    std::stringstream ss;
+    std::string i_str; // for str to int
+    ss << index;
+    ss >>  i_str;  //透過串流運算子寫到string類別即可
+    std::string key_array = key + "[" + i_str + "]";
+    return &key_array[0u];;
 }
