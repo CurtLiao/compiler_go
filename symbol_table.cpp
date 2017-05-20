@@ -42,6 +42,35 @@ bool symbol_table::declared(std::string keys,variable v){
     } while (iss);
     return true;
 }
+bool symbol_table::declared_array(std::string keys,variable v, int array_size){
+    std::istringstream iss(keys);
+    do
+    {
+        std::string key;
+        iss >> key;
+        //avoid empty string
+        if(strcmp(key.c_str(), "")== 0)
+            break;
+        std::cout << "declared keys : " << key << std::endl;
+        for(int i = 0; i < array_size; ++i){
+            std::string i_str;
+            std::stringstream ss;
+            ss << i;
+            ss >>  i_str;  //透過串流運算子寫到string類別即可
+            std::string key_array = key + "[" + i_str + "]";
+            if(lookup_variable(key_array).type != TYPE_NIL){
+                std::cout << "key : " << key_array << "\t" <<redeclared_error_msg << std::endl;
+                return false;
+            }
+            variable dec_v;
+            dec_v.copy(key_array.c_str(), v);
+            tableEntrys.back().ids.push_back(dec_v);    
+        }
+        
+
+    } while (iss);
+    return true;
+}
 
 bool symbol_table::assign(std::string keys,int type, int type2){
     variable v(type, type2);

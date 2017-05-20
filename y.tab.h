@@ -147,7 +147,7 @@ union YYSTYPE
             int  val;
             bool flag;
         };
-        char token_type;
+        int token_type;
     }Token;
 
 #line 154 "y.tab.h" /* yacc.c:1915  */

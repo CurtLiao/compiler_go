@@ -212,7 +212,7 @@ union YYSTYPE
             int  val;
             bool flag;
         };
-        char token_type;
+        int token_type;
     }Token;
 
 #line 219 "y.tab.c" /* yacc.c:355  */
@@ -533,15 +533,15 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    92,    92,    92,    92,    92,    93,    93,    93,    93,
-      94,    94,    95,    96,    96,    96,    97,    97,    98,    98,
-      98,    98,    98,    98,    99,   100,   101,   105,   107,   107,
-     109,   110,   111,   112,   113,   114,   115,   118,   119,   120,
-     121,   123,   124,   126,   127,   129,   130,   132,   137,   143,
-     150,   155,   160,   161,   163,   164,   167,   168,   169,   170,
-     171,   173,   174,   175,   176,   177,   178,   179,   181,   182,
-     183,   184,   185,   186,   187,   192,   193,   195,   197,   198,
-     200,   201,   202,   203,   204,   205,   206,   207,   209
+       0,    93,    93,    93,    93,    93,    94,    94,    94,    94,
+      95,    95,    96,    97,    97,    97,    98,    98,    99,    99,
+      99,    99,    99,    99,   100,   101,   102,   106,   108,   108,
+     110,   111,   112,   113,   114,   115,   116,   119,   120,   121,
+     122,   124,   125,   127,   128,   130,   131,   133,   138,   144,
+     151,   156,   161,   171,   173,   174,   177,   178,   179,   180,
+     181,   183,   184,   185,   186,   187,   188,   189,   191,   192,
+     193,   194,   195,   196,   197,   202,   203,   205,   207,   208,
+     210,   211,   212,   213,   214,   215,   216,   217,   219
 };
 #endif
 
@@ -1455,75 +1455,75 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 92 "yacc.y" /* yacc.c:1661  */
-    {variable_type = T_INT;}
+#line 93 "yacc.y" /* yacc.c:1661  */
+    { (yyval.Token).token_type = T_INT; }
 #line 1461 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 3:
-#line 92 "yacc.y" /* yacc.c:1661  */
-    {variable_type = T_BOOL;}
+#line 93 "yacc.y" /* yacc.c:1661  */
+    {(yyval.Token).token_type =  T_BOOL;}
 #line 1467 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 4:
-#line 92 "yacc.y" /* yacc.c:1661  */
-    {variable_type = T_STR;}
+#line 93 "yacc.y" /* yacc.c:1661  */
+    {(yyval.Token).token_type =  T_STR;}
 #line 1473 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 5:
-#line 92 "yacc.y" /* yacc.c:1661  */
-    {variable_type = T_REAL;}
+#line 93 "yacc.y" /* yacc.c:1661  */
+    {(yyval.Token).token_type =  T_REAL;}
 #line 1479 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 10:
-#line 94 "yacc.y" /* yacc.c:1661  */
+#line 95 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token).token_type = T_BOOL; (yyval.Token).flag = true;}
 #line 1485 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 11:
-#line 94 "yacc.y" /* yacc.c:1661  */
+#line 95 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token).token_type = T_BOOL; (yyval.Token).flag = false;}
 #line 1491 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 27:
-#line 105 "yacc.y" /* yacc.c:1661  */
+#line 106 "yacc.y" /* yacc.c:1661  */
     {Trace("Reducing to program\n");}
 #line 1497 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 30:
-#line 109 "yacc.y" /* yacc.c:1661  */
+#line 110 "yacc.y" /* yacc.c:1661  */
     { Trace("declare id \n");}
 #line 1503 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 31:
-#line 110 "yacc.y" /* yacc.c:1661  */
+#line 111 "yacc.y" /* yacc.c:1661  */
     { Trace("simple statement\n");}
 #line 1509 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 45:
-#line 129 "yacc.y" /* yacc.c:1661  */
+#line 130 "yacc.y" /* yacc.c:1661  */
     {  printf("\t id , identifier_list || id = %s\n", (yyvsp[-2].Token).name); strcat((yyval.Token).name, " "); strcat((yyval.Token).name, (yyvsp[0].Token).name);}
 #line 1515 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 46:
-#line 130 "yacc.y" /* yacc.c:1661  */
+#line 131 "yacc.y" /* yacc.c:1661  */
     {printf("\t id in identifier_list || id = %s\n", (yyvsp[0].Token).name); (yyval.Token).name = (yyvsp[0].Token).name; }
 #line 1521 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 47:
-#line 132 "yacc.y" /* yacc.c:1661  */
+#line 133 "yacc.y" /* yacc.c:1661  */
     { 
-            if(!global_st.declared((yyvsp[-1].Token).name, variable_type))
+            if(!global_st.declared((yyvsp[-1].Token).name, (yyvsp[0].Token).token_type))
                 yyerror("declared error");
             Trace("identifier_declared non \n");
         }
@@ -1531,7 +1531,7 @@ yyreduce:
     break;
 
   case 48:
-#line 137 "yacc.y" /* yacc.c:1661  */
+#line 138 "yacc.y" /* yacc.c:1661  */
     {
             variable v(T_INT, 0, (yyvsp[0].Token).val); 
             if(!global_st.declared((yyvsp[-3].Token).name, v))
@@ -1542,7 +1542,7 @@ yyreduce:
     break;
 
   case 49:
-#line 143 "yacc.y" /* yacc.c:1661  */
+#line 144 "yacc.y" /* yacc.c:1661  */
     {
             printf("T_BOOL = %d\n", T_BOOL);
             variable v(T_BOOL, 0, (yyvsp[0].Token).flag); 
@@ -1554,7 +1554,7 @@ yyreduce:
     break;
 
   case 50:
-#line 150 "yacc.y" /* yacc.c:1661  */
+#line 151 "yacc.y" /* yacc.c:1661  */
     { 
             variable v(T_STR, 0, (yyvsp[0].Token).name); 
             if(!global_st.declared((yyvsp[-3].Token).name, v))
@@ -1564,7 +1564,7 @@ yyreduce:
     break;
 
   case 51:
-#line 155 "yacc.y" /* yacc.c:1661  */
+#line 156 "yacc.y" /* yacc.c:1661  */
     {
             variable v(T_REAL, 0, (yyvsp[0].Token).name); 
             if(!global_st.declared((yyvsp[-3].Token).name, v))
@@ -1574,57 +1574,66 @@ yyreduce:
     break;
 
   case 52:
-#line 160 "yacc.y" /* yacc.c:1661  */
-    {Trace("identifier_declared array \n");}
-#line 1580 "y.tab.c" /* yacc.c:1661  */
+#line 161 "yacc.y" /* yacc.c:1661  */
+    {
+            //array declaration
+            //iterator assign => id[0] id[1] ... id[n]
+            variable v((yyvsp[0].Token).token_type, 0); 
+            printf("pre array func = %d\n", (yyvsp[-2].Token).val);
+            if(!global_st.declared_array((yyvsp[-4].Token).name, v, (yyvsp[-2].Token).val))
+                yyerror("declared error");
+
+            Trace("identifier_declared array \n");
+        }
+#line 1589 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 53:
-#line 161 "yacc.y" /* yacc.c:1661  */
+#line 171 "yacc.y" /* yacc.c:1661  */
     {Trace("CONST \n");}
-#line 1586 "y.tab.c" /* yacc.c:1661  */
+#line 1595 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 54:
-#line 163 "yacc.y" /* yacc.c:1661  */
+#line 173 "yacc.y" /* yacc.c:1661  */
     { printf("\t id = expression || id = %s\n", (yyvsp[-2].Token).name);}
-#line 1592 "y.tab.c" /* yacc.c:1661  */
+#line 1601 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 55:
-#line 164 "yacc.y" /* yacc.c:1661  */
+#line 174 "yacc.y" /* yacc.c:1661  */
     {
 
         }
-#line 1600 "y.tab.c" /* yacc.c:1661  */
+#line 1609 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 58:
-#line 169 "yacc.y" /* yacc.c:1661  */
+#line 179 "yacc.y" /* yacc.c:1661  */
     {  printf("\t Read id || id = %s\n", (yyvsp[0].Token).name);}
-#line 1606 "y.tab.c" /* yacc.c:1661  */
+#line 1615 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 68:
-#line 181 "yacc.y" /* yacc.c:1661  */
+#line 191 "yacc.y" /* yacc.c:1661  */
     {Trace("exp \n");}
-#line 1612 "y.tab.c" /* yacc.c:1661  */
+#line 1621 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 70:
-#line 183 "yacc.y" /* yacc.c:1661  */
+#line 193 "yacc.y" /* yacc.c:1661  */
     {Trace("!bool_exp \n");}
-#line 1618 "y.tab.c" /* yacc.c:1661  */
+#line 1627 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 76:
-#line 193 "yacc.y" /* yacc.c:1661  */
+#line 203 "yacc.y" /* yacc.c:1661  */
     {    global_st.push_table();}
-#line 1624 "y.tab.c" /* yacc.c:1661  */
+#line 1633 "y.tab.c" /* yacc.c:1661  */
     break;
 
 
-#line 1628 "y.tab.c" /* yacc.c:1661  */
+#line 1637 "y.tab.c" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1852,7 +1861,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 212 "yacc.y" /* yacc.c:1906  */
+#line 222 "yacc.y" /* yacc.c:1906  */
 
 
 int yyerror(char *s)

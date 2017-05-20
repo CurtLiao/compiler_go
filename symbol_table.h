@@ -84,6 +84,7 @@ public:
 	bool assign(std::string keys, variable v);
 	bool declared(std::string keys, int type = 0, int type2 = 0);
 	bool declared(std::string keys, variable v);
+    bool declared_array(std::string keys,variable v, int array_size);
     void dump();
     void push_table();
 	void pop_table();

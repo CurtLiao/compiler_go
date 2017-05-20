@@ -20,7 +20,7 @@ int yyerror(char *s);
             int  val;
             bool flag;
         };
-        char token_type;
+        int token_type;
     }Token;
 }
 
@@ -35,6 +35,7 @@ int yyerror(char *s);
 %type<Token> REAL_NUMBER
 %type<Token> NUMBER
 %type<Token> bool_type
+%type<Token> primitive_type
 
 
 /* tokens */
@@ -89,7 +90,7 @@ int yyerror(char *s);
 
 
 %%
-    primitive_type: INT{variable_type = T_INT;}  | BOOL{variable_type = T_BOOL;} | STRING{variable_type = T_STR;} | REAL{variable_type = T_REAL;};
+    primitive_type: INT{ $$.token_type = T_INT; }  | BOOL{$$.token_type =  T_BOOL;} | STRING{$$.token_type =  T_STR;} | REAL{$$.token_type =  T_REAL;};
     primitive: NUMBER| bool_type | STR | REAL_NUMBER;
     bool_type: TRUE{$$.token_type = T_BOOL; $$.flag = true;}| FALSE{$$.token_type = T_BOOL; $$.flag = false;};
     op_order2: '^' ;
@@ -130,7 +131,7 @@ int yyerror(char *s);
         ID     {printf("\t id in identifier_list || id = %s\n", $1.name); $$.name = $1.name; };
     identifier_declared:  //declare the type of id and type check
         VAR identifier_list primitive_type { 
-            if(!global_st.declared($2.name, variable_type))
+            if(!global_st.declared($2.name, $3.token_type))
                 yyerror("declared error");
             Trace("identifier_declared non \n");
         }|
@@ -157,7 +158,16 @@ int yyerror(char *s);
             if(!global_st.declared($2.name, v))
                 yyerror("declared error");
             Trace("identifier_declared REAL \n");}|
-        VAR identifier_list '[' NUMBER ']' primitive_type {Trace("identifier_declared array \n");}|//array declaration
+        VAR identifier_list '[' NUMBER ']' primitive_type {
+            //array declaration
+            //iterator assign => id[0] id[1] ... id[n]
+            variable v($6.token_type, 0); 
+            printf("pre array func = %d\n", $4.val);
+            if(!global_st.declared_array($2.name, v, $4.val))
+                yyerror("declared error");
+
+            Trace("identifier_declared array \n");
+        }|
         CONST identifier_list '=' primitive {Trace("CONST \n");};
     simple_statement: //include varialbe or array assign and function call
         ID '=' expression { printf("\t id = expression || id = %s\n", $1.name);}|

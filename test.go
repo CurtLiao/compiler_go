@@ -14,6 +14,12 @@ var e string = "waaewa"
 var e1, e2, e3 string = "waewa""""wawewaw"
 var ee string
 var ee1, ee2, ee3 string
+var i_arr[10] int
+var b_arr[10] bool
+var s_arr[10] string
+var r_arr[10] real
+
+
 func void main( ) {
 
 }
