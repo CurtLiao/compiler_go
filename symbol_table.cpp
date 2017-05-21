@@ -68,6 +68,13 @@ bool symbol_table::declared(std::string keys,variable v){
     } while (iss);
     return true;
 }
+void symbol_table::declared_noncheck(std::string key,variable v){
+    
+    std::cout << "declared keys : " << key << std::endl;
+    variable dec_v;
+    dec_v.copy(key.c_str(), v);
+    tableEntrys.back().ids.push_back(dec_v);
+}
 bool symbol_table::declared_array(std::string keys,variable v, int array_size){
     std::istringstream iss(keys);
     do
@@ -252,11 +259,36 @@ std::string symbol_table::s_type_name(int value){
     return "unknow type";
 
 }
-char* symbol_table::concat_array_element(std::string key, int index){
-    std::stringstream ss;
-    std::string i_str; // for str to int
-    ss << index;
-    ss >>  i_str;  //透過串流運算子寫到string類別即可
-    std::string key_array = key + "[" + i_str + "]";
-    return &key_array[0u];;
+// char* symbol_table::concat_array_element(std::string key, int index){
+//     std::stringstream ss;
+//     std::string i_str; // for str to int
+//     ss << index;
+//     ss >>  i_str;  //透過串流運算子寫到string類別即可
+//     std::string key_array = key + "[" + i_str + "]";
+//     return &key_array[0u];;
+// }
+void symbol_table::function_concat(int type, char *name){
+    // store function args type
+    lookup_variable(func_name).func_type.push_back(type);
+    // store each arugment
+    declared_noncheck(name, variable(type));
+
 }
+void symbol_table::function_declared(int type, char *name){
+    declared(name, variable(type, STYPE_FUNC));
+}
+bool symbol_table::function_type_Type_check(int type){
+    func_check_count++;
+    variable v = lookup_variable(func_name);
+    int vec_size = v.func_type.size();
+    if(func_check_count >= vec_size)
+        return false;
+    if(type == v.func_type.at())
+}
+bool symbol_table::function_type_ID_check(char *name){
+    retrun (function_type_Type_check(lookup_variable(name).type))
+}
+bool symbol_table::function_check_init(char *name){
+    retrun (function_type_Type_check(lookup_variable(name).type))
+}
+func_check_count

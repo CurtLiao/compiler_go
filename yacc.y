@@ -46,7 +46,6 @@ char* arr_id_err= "array index should be integer";
 %type<Token> mix_exp
 %type<Token> array_element
 %type<Token> object
-%type<Token> formal_args
 /* tokens */
 %token BOOL
 %token BREAK
@@ -158,29 +157,18 @@ char* arr_id_err= "array index should be integer";
 
     func_declared: // can provide function declared, support void type
         FUNC primitive_type ID '(' ')' compound|
-        FUNC primitive_type ID '(' formal_args ')' compound{
-            printf("formal_Args type = %s\n", $5.name);
-        }|
-        FUNC VOID ID '(' ')' compound|
-        FUNC VOID ID '(' formal_args ')' compound|
+        FUNC primitive_type ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name);} formal_args ')' compound {global_st.pop_table();}|
+        FUNC VOID ID '(' ')' compound {global_st.function_declared($2.token_type, $3.name);}|
+        FUNC VOID ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name);} formal_args ')' compound {global_st.pop_table();}|
         FUNC ID '(' ')' compound|
-        FUNC ID '(' formal_args ')' compound;        
+        FUNC ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name);} formal_args ')' compound{global_st.pop_table();};        
     formal_args: // like  int a, int b, .... 
+        //it will return a 0,b 0
         ID primitive_type{
-            // char buffer [2];
-            // itoa($2.token_type, buffer); 
-            sprintf($$.name, "%d", $2.token_type);
-            printf("IN formal_args1  = %s\n", $$.name);
-
-            // $$.name = itoa($2.token_type); 
-            // $$.name = buffer; 
+            global_st.function_concat($2.token_type, $1.name);
         }|
         ID primitive_type ',' formal_args{
-            sprintf($$.name, "%d", $2.token_type);
-            strcat($$.name, " "); 
-            strcat($$.name, $4.name);
-            printf("IN formal_args2  = %s\n", $$.name);
-
+            global_st.function_concat($2.token_type, $1.name);
         };
     declared: // variable or function declartd
         func_declared | 
@@ -195,6 +183,13 @@ char* arr_id_err= "array index should be integer";
             // printf("\t id in identifier_list || id = %s\n", $1.name); 
             $$.name = $1.name; 
         };
+    argument_list:          // identifier list can pass one or more id
+        mix_exp ',' argument_list|
+        mix_exp     {
+            
+            // printf("\t id in identifier_list || id = %s\n", $1.name); 
+        };
+
     identifier_declared:  //declare the type of id and type check
         VAR identifier_list primitive_type { 
             if(!global_st.declared($2.name, $3.token_type))
@@ -398,7 +393,7 @@ char* arr_id_err= "array index should be integer";
         FOR '(' statement ';' bool_exp ';' statement ')' simple_statement|
         FOR '(' statement ';' bool_exp ';' statement ')' compound;
     go:
-        GO ID '(' identifier_list ')';
+        GO ID '(' type_check ')';
 
 
 %%

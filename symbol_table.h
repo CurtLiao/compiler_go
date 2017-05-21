@@ -23,6 +23,7 @@ typedef union{
 	bool flag;
 }variable_data;
 struct variable{
+	std::vector<int> func_type;
 	std::string name;
 	union{
 		variable_data data;	
@@ -33,9 +34,7 @@ struct variable{
 	variable():type(0), s_type(0){
 		data.value = 0;
 	}
-	variable(int type1): type(type1){
-		variable(type1, 0);
-	}
+	variable(int type1): type(type1), s_type(0){	}
 	variable(int type1, int type2): type(type1), s_type(type2){
 		init_data(type1);
 	}
@@ -89,6 +88,9 @@ public:
 	bool declared(std::string keys, int type = 0, int type2 = 0);
 	bool declared(std::string keys, variable v);
     bool declared_array(std::string keys,variable v, int array_size);
+	void declared_noncheck(std::string key,variable v);
+    void function_concat(int type, char *name);
+	void function_declared(int type, char *name);
     void dump();
     void push_table();
 	void pop_table();
@@ -105,6 +107,8 @@ private:
 
 	std::string type_name(int value);
 	std::string s_type_name(int value);
-
+	variable func_v;
+	std::string func_name;
+	std::string func_check_count;
 
 };
