@@ -18,11 +18,6 @@ variable symbol_table::lookup_variable(std::string key){
             }
         }
     }
-    // for(size_t table_idx = tableEntrys.size() -1; (int) table_idx  >= 0; --table_idx){
-    //     for(size_t idx = tableEntrys.at(table_idx).ids.size() - 1; (int) idx >= 0; --idx)
-    //         if(tableEntrys.at(table_idx).ids.at(idx).name == key)
-    //             return tableEntrys.at(table_idx).ids.at(idx);
-    // }
     variable TYPE_NIL_variable(TYPE_NIL);
     return TYPE_NIL_variable;
 }

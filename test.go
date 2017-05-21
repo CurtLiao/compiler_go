@@ -11,10 +11,12 @@ var temp int
 
 // compute the nth Fibonacci number
 func void main( ) {
-
 	var a int = 5
 	var b int 
 	var c int = 6
+	var d real 
+	var d_flag bool = false
+
 	if(a > b)
 		temp = Fn
 	else
@@ -30,19 +32,19 @@ func void main( ) {
 	for (n = 1; n > 2; n = n - 1) {
 		{}
 		temp = Fn
-		Fn = Fn + FNminus1
+		temp = Fn + FNminus1
 		FNminus1 = temp
 		for (n = 1; n > 2; n = n - 1) {
 			{}
 			temp = Fn
-			Fn = Fn + FNminus1
+			temp = Fn + FNminus1
 			FNminus1 = temp
 			
 		}		
 	}
 	for (n > 2; n = n - 1) {
 		temp = Fn
-		Fn = Fn + FNminus1
+		temp = Fn + FNminus1
 		FNminus1 = temp
 	}
 	if(a > 5)
@@ -51,7 +53,6 @@ func void main( ) {
 		temp = Fn
 	if(!(a == b))
 		a = b
-	var d_flag bool = false
 	if(d_flag | !(false))
 		a = b
 	if(d_flag | !(d_flag))
@@ -60,17 +61,18 @@ func void main( ) {
 		a = b
 	if(!(a > b) | (c > b) & (a > b) | !(a == b))
 		temp = Fn
-
+	d_flag = a > b
 	/* print result */
 	print "Result of computation: "
 	println n
 	print 7 * 10
 	println 2 - 7 * 10
 	read a
+	// go a
+	return
 	return a
 
-	var d real 
-	//next line will be report crash bca a is integer, d is real
+	//next line will be abort  bcz a is integer, d is real
 	// if(!(a > b) | (c > b) & (a > d) | !(a == b))
 	// 	temp = Fn
 

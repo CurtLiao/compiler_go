@@ -43,6 +43,7 @@ char* arr_id_err= "array index should be integer";
 %type<Token> primitive
 %type<Token> expression
 %type<Token> bool_exp
+%type<Token> mix_exp
 %type<Token> array_element
 %type<Token> object
 
@@ -89,12 +90,13 @@ char* arr_id_err= "array index should be integer";
 %token STR
 %token ID
 %token REAL_NUMBER
+
 %start program
 %left '+' '-' '*' '/' '%' '^'
 %left '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
 %left '!' '&' '|'
 %nonassoc UMINUS
-
+//to count linenum
 
 %%
     primitive_type: INT{ $$.token_type =  T_INT; }  | BOOL{$$.token_type =  T_BOOL;} | STRING{$$.token_type =  T_STR;} | REAL{$$.token_type =  T_REAL;};
@@ -168,8 +170,15 @@ char* arr_id_err= "array index should be integer";
         func_declared | 
         identifier_declared ;
     identifier_list:          // identifier list can pass one or more id
-        ID ',' identifier_list {  printf("\t id , identifier_list || id = %s\n", $1.name); strcat($$.name, " "); strcat($$.name, $3.name);}|
-        ID     {printf("\t id in identifier_list || id = %s\n", $1.name); $$.name = $1.name; };
+        ID ',' identifier_list {  
+            printf("\t id , identifier_list || id = %s\n", $1.name); 
+            strcat($$.name, " "); 
+            strcat($$.name, $3.name);
+        }|
+        ID     {
+            // printf("\t id in identifier_list || id = %s\n", $1.name); 
+            $$.name = $1.name; 
+        };
     identifier_declared:  //declare the type of id and type check
         VAR identifier_list primitive_type { 
             if(!global_st.declared($2.name, $3.token_type))
@@ -243,7 +252,7 @@ char* arr_id_err= "array index should be integer";
                 yyerror(declared_err);
         };
     simple_statement: //include varialbe or array assign and function call
-        object '=' expression { 
+        object '=' mix_exp { 
             // printf("$1 name = %s  $3 name = %s\n", $1.name, $3.name);
             // printf("$1 state = %d\n", $1.state);
             printf("$1 use look id type = %d, $3 token_type = %d, $3 state = %d\n", global_st.lookup_variable($1.name).type, $3.token_type, $3.state);
@@ -262,7 +271,7 @@ char* arr_id_err= "array index should be integer";
 
 
             //get value
-            // variable v;
+            variable v($3.token_type);
             // if($3.state == S_ID){
             //     v = global_st.lookup_variable($3.name);
             // }
@@ -277,20 +286,20 @@ char* arr_id_err= "array index should be integer";
 
             
             //assign
-            // if($3.state == S_ARRAY){
-
-            //     if(!global_st.assign_array_by_id($1.name, $1.arr_idx, v))
-            //         yyerror(declared_err);
-            // }
-            // else if($3.state == S_ID){
-            //     if(!global_st.assign($1.name, v, )
-            //         yyerror(declared_err);
-            // }
-            // //if it is primitive
-            // else {
-            //     if(!global_st.declared_array($2.name, v, $4.val))
-            //         yyerror(declared_err);
-            // }
+            //todo: this just push type bcz it can not calcualate
+            if($3.state == S_ARRAY){
+                if(!global_st.assign_array_by_id($1.name, $1.arr_idx, v))
+                    yyerror(type_match_err);
+            }
+            else if($3.state == S_ID){
+                if(!global_st.assign($1.name, v))
+                    yyerror(type_match_err);
+            }
+            //if it is primitive
+            else {
+                if(!global_st.assign($1.name, v))
+                    yyerror(type_match_err);
+            }
         }|
         PRINT expression |
         PRINTLN expression |
@@ -350,7 +359,9 @@ char* arr_id_err= "array index should be integer";
             $$ = $1;
             $$.token_type = T_BOOL;
         };
-        
+    mix_exp:
+        bool_exp {$$ = $1;}|
+        expression {$$ = $1;};
 
 
     compound:
@@ -373,7 +384,7 @@ char* arr_id_err= "array index should be integer";
     go:
         GO ID '(' identifier_list ')';
 
-        
+
 %%
 
 int yyerror(char *s)

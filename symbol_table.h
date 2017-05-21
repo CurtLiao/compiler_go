@@ -24,7 +24,10 @@ typedef union{
 }variable_data;
 struct variable{
 	std::string name;
-	variable_data data;
+	union{
+		variable_data data;	
+	};
+	
 	int type;// 0 = int 1 = bool 2 = str 3 = real_numver
 	int s_type;// 0 = normal 1 = const 2 = function declare
 	variable():type(0), s_type(0){
