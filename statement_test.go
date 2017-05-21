@@ -11,8 +11,6 @@ var temp int
 
 // compute the nth Fibonacci number
 func void main( ) {
-	//next line will be abort  bcz Fn is const cannot assign
-	Fn = 3
 	var a int = 5
 	var b int 
 	var c int = 6
@@ -34,19 +32,19 @@ func void main( ) {
 	for (n = 1; n > 2; n = n - 1) {
 		{}
 		temp = Fn
-		Fn = Fn + FNminus1
+		temp = Fn + FNminus1
 		FNminus1 = temp
 		for (n = 1; n > 2; n = n - 1) {
 			{}
 			temp = Fn
-			Fn = Fn + FNminus1
+			temp = Fn + FNminus1
 			FNminus1 = temp
 			
 		}		
 	}
 	for (n > 2; n = n - 1) {
 		temp = Fn
-		Fn = Fn + FNminus1
+		temp = Fn + FNminus1
 		FNminus1 = temp
 	}
 	if(a > 5)
@@ -63,7 +61,7 @@ func void main( ) {
 		a = b
 	if(!(a > b) | (c > b) & (a > b) | !(a == b))
 		temp = Fn
-
+	d_flag = a > b
 	/* print result */
 	print "Result of computation: "
 	println n

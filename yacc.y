@@ -46,7 +46,7 @@ char* arr_id_err= "array index should be integer";
 %type<Token> mix_exp
 %type<Token> array_element
 %type<Token> object
-
+%type<Token> formal_args
 /* tokens */
 %token BOOL
 %token BREAK
@@ -158,20 +158,36 @@ char* arr_id_err= "array index should be integer";
 
     func_declared: // can provide function declared, support void type
         FUNC primitive_type ID '(' ')' compound|
-        FUNC primitive_type ID '(' formal_args ')' compound|
+        FUNC primitive_type ID '(' formal_args ')' compound{
+            printf("formal_Args type = %s\n", $5.name);
+        }|
         FUNC VOID ID '(' ')' compound|
         FUNC VOID ID '(' formal_args ')' compound|
         FUNC ID '(' ')' compound|
         FUNC ID '(' formal_args ')' compound;        
     formal_args: // like  int a, int b, .... 
-        primitive_type ID|
-        primitive_type ID ',' formal_args;
+        ID primitive_type{
+            // char buffer [2];
+            // itoa($2.token_type, buffer); 
+            sprintf($$.name, "%d", $2.token_type);
+            printf("IN formal_args1  = %s\n", $$.name);
+
+            // $$.name = itoa($2.token_type); 
+            // $$.name = buffer; 
+        }|
+        ID primitive_type ',' formal_args{
+            sprintf($$.name, "%d", $2.token_type);
+            strcat($$.name, " "); 
+            strcat($$.name, $4.name);
+            printf("IN formal_args2  = %s\n", $$.name);
+
+        };
     declared: // variable or function declartd
         func_declared | 
         identifier_declared ;
     identifier_list:          // identifier list can pass one or more id
         ID ',' identifier_list {  
-            printf("\t id , identifier_list || id = %s\n", $1.name); 
+            // printf("\t id , identifier_list || id = %s\n", $1.name); 
             strcat($$.name, " "); 
             strcat($$.name, $3.name);
         }|
@@ -255,8 +271,8 @@ char* arr_id_err= "array index should be integer";
         object '=' mix_exp { 
             // printf("$1 name = %s  $3 name = %s\n", $1.name, $3.name);
             // printf("$1 state = %d\n", $1.state);
-            printf("$1 use look id type = %d, $3 token_type = %d, $3 state = %d\n", global_st.lookup_variable($1.name).type, $3.token_type, $3.state);
-            printf("$1 use look arr type = %d, $3 token_type = %d, $3 state = %d\n", global_st.lookup_array($1.name, $1.arr_idx).type, $3.token_type, $3.state);
+            // printf("$1 use look id type = %d, $3 token_type = %d, $3 state = %d\n", global_st.lookup_variable($1.name).type, $3.token_type, $3.state);
+            // printf("$1 use look arr type = %d, $3 token_type = %d, $3 state = %d\n", global_st.lookup_array($1.name, $1.arr_idx).type, $3.token_type, $3.state);
             // printf("$1 type = %d, $3 in varialbe type = %d\n", global_st.lookup_variable($1.name).type, global_st.lookup_variable($3.name).type);
             // global_st.dump();
             //type check
