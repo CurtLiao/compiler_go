@@ -1,24 +1,69 @@
-var int_a int = 5
-var int_b int = 21
-var b string = "asdaw""""wd"
+/* fib.sc
+ *
+ * This test program computes the Nth Fibonacci number
+ */
 
-int_a = int_b
+// variables
+const Fn = 1
+var n int  = 8
+var FNminus1 int = 1
+var temp int
 
-// next line will compiler error
-// int_a = b
-
-var arr_s[int_a] string
-// arr_s[0] = "wadwada"
-// next line will compiler error
-// arr_s[0] = 1223213
-int_b = 3 * int_a 
-var arr_i[3 * int_a] int
-arr_i[0] = 4 
-// todo: i will crash
-// var arr_ii[arr_i[0]] real
-var arr_ii[3] real
-arr_ii[0] = 1.4353525
-
+// compute the nth Fibonacci number
 func void main( ) {
 
+	var a int = 5
+	var b int 
+	
+	if(a > b)
+		temp = Fn
+	else
+		temp = Fn
+
+	if(a > b)
+		temp = Fn
+	if(a > b)
+		temp = Fn
+	else
+		temp = Fn
+
+	for (n = 1; n > 2; n = n - 1) {
+		{}
+		temp = Fn
+		Fn = Fn + FNminus1
+		FNminus1 = temp
+		for (n = 1; n > 2; n = n - 1) {
+			{}
+			temp = Fn
+			Fn = Fn + FNminus1
+			FNminus1 = temp
+			
+		}		
+	}
+	for (n > 2; n = n - 1) {
+		temp = Fn
+		Fn = Fn + FNminus1
+		FNminus1 = temp
+	}
+	if(a > 5)
+		temp = Fn
+	if(!a)
+		temp = Fn
+	if(!(a == b))
+		a = b
+	if(b | !(a))
+		a = b
+	if(!(a > b) | !(a == b))
+		a = b
+	// if(!(a > b) | (c > b) & (a > b) | !(a == b))
+	// 	temp = Fn
+
+	/* print result */
+	print "Result of computation: "
+	println n
+		// var test_Real real  = 1.4124214
+	print 7 * 10
+	println 2 - 7 * 10
+	read a
+	return a
 }

@@ -324,18 +324,38 @@ char* arr_id_err= "array index should be integer";
         };
     bool_exp:
         expression {$$.token_type = T_BOOL;}|
-        '(' bool_exp ')'{$$.token_type = T_BOOL;}|
+        '(' bool_exp ')'{$$ = $2;}|
         '!' bool_exp {$$.token_type = T_BOOL;}|
-        bool_exp op_order8 bool_exp {$$.token_type = T_BOOL;}| 
-        bool_exp op_order7 bool_exp {$$.token_type = T_BOOL;}| 
-        bool_exp op_order6 bool_exp {$$.token_type = T_BOOL;}| 
-        bool_exp op_order5 bool_exp {$$.token_type = T_BOOL;};
+        bool_exp op_order8 bool_exp {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            $$.token_type = T_BOOL;
+        }| 
+        bool_exp op_order7 bool_exp {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            $$.token_type = T_BOOL;
+        }| 
+        bool_exp op_order6 bool_exp {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            $$.token_type = T_BOOL;
+        }| 
+        bool_exp op_order5 bool_exp {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            $$.token_type = T_BOOL;
+        };
         
 
 
     compound:
         '{' '}'|
-        '{' statements '}'{    global_st.push_table();};
+        '{'{ global_st.push_table(); printf("push table\n");} statements '}'{ global_st.pop_table(); printf("pop table\n");};
     func_invoke:
         ID '(' identifier_list ')';
     condition:

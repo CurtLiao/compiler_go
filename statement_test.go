@@ -11,15 +11,7 @@ var temp int
 
 // compute the nth Fibonacci number
 func void main( ) {
-	// var test_Real real  = 1.4124214
-	var a int  = 1
-	var b int  = 2
-	var c int  = 3
-	print 7 * 10
-	println 2 - 7 * 10
-	read a
-	return
-	return a
+
 	
 	if(a > b)
 		temp = Fn
@@ -67,4 +59,12 @@ func void main( ) {
 	/* print result */
 	print "Result of computation: "
 	println n
+		// var test_Real real  = 1.4124214
+	var a int  = 1
+	var b int  = 2
+	var c int  = 3
+	print 7 * 10
+	println 2 - 7 * 10
+	read a
+	return a
 }

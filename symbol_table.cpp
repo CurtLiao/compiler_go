@@ -197,7 +197,7 @@ void symbol_table::push_table(){
 }
 void symbol_table::pop_table(){
     if((int)tableEntrys.size() >= 0)
-        tableEntrys.push_back(symbol_table_entry());
+        tableEntrys.pop_back();
 }
 // void symbol_table::dump(symbol_table_entry* st){
 //     std::cout << "dump symbol_table" << std::endl;
