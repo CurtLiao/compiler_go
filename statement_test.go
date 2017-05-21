@@ -11,8 +11,14 @@ var temp int
 
 // compute the nth Fibonacci number
 func void main( ) {
+	//next line will be abort  bcz Fn is const cannot assign
+	Fn = 3
+	var a int = 5
+	var b int 
+	var c int = 6
+	var d real 
+	var d_flag bool = false
 
-	
 	if(a > b)
 		temp = Fn
 	else
@@ -45,11 +51,13 @@ func void main( ) {
 	}
 	if(a > 5)
 		temp = Fn
-	if(!a)
+	if(!true)
 		temp = Fn
 	if(!(a == b))
 		a = b
-	if(b | !(a))
+	if(d_flag | !(false))
+		a = b
+	if(d_flag | !(d_flag))
 		a = b
 	if(!(a > b) | !(a == b))
 		a = b
@@ -59,12 +67,15 @@ func void main( ) {
 	/* print result */
 	print "Result of computation: "
 	println n
-		// var test_Real real  = 1.4124214
-	var a int  = 1
-	var b int  = 2
-	var c int  = 3
 	print 7 * 10
 	println 2 - 7 * 10
 	read a
+	// go a
+	return
 	return a
+
+	//next line will be abort  bcz a is integer, d is real
+	// if(!(a > b) | (c > b) & (a > d) | !(a == b))
+	// 	temp = Fn
+
 }

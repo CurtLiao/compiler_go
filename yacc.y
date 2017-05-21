@@ -323,7 +323,7 @@ char* arr_id_err= "array index should be integer";
             $$ = $2;
         };
     bool_exp:
-        expression {$$.token_type = T_BOOL;}|
+        expression {$$ = $1;}|
         '(' bool_exp ')'{$$ = $2;}|
         '!' bool_exp {$$.token_type = T_BOOL;}|
         bool_exp op_order8 bool_exp {

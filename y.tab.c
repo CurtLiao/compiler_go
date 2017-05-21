@@ -1833,7 +1833,7 @@ yyreduce:
 
   case 72:
 #line 326 "yacc.y" /* yacc.c:1661  */
-    {(yyval.Token).token_type = T_BOOL;}
+    {(yyval.Token) = (yyvsp[0].Token);}
 #line 1838 "y.tab.c" /* yacc.c:1661  */
     break;
 
