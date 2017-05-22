@@ -88,14 +88,14 @@ public:
 	bool declared(std::string keys, int type = 0, int type2 = 0);
 	bool declared(std::string keys, variable v);
     bool declared_array(std::string keys,variable v, int array_size);
+	bool function_type_check(char *func_name, char* args);
 	void declared_noncheck(std::string key,variable v);
     void function_concat(int type, char *name);
 	void function_declared(int type, char *name);
-    const char* function_type_string_concat(char *name, int type);
-
     void dump();
     void push_table();
 	void pop_table();
+	const char* function_type_string_concat(char *name, int type);
 	char* concat_array_element(std::string key, int index);
     variable lookup_variable(std::string key);
 	variable lookup_array(std::string key, int index);

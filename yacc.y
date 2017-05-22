@@ -15,6 +15,7 @@ int yyerror(char *s);
 char* declared_err = "declared error";
 char* type_match_err= "type match error";
 char* arr_id_err= "array index should be integer";
+char args_buffer[256];
 
 %}
 //add my type to pass the value from lex
@@ -27,6 +28,7 @@ char* arr_id_err= "array index should be integer";
             int  val;
             bool flag;
         };
+        char* concat_name;
         int arr_idx;
         int token_type;
         int state; //0 => id || 1 => primitive type
@@ -178,7 +180,7 @@ char* arr_id_err= "array index should be integer";
         identifier_declared ;
     identifier_list:          // identifier list can pass one or more id
         ID ',' identifier_list {  
-            // printf("\t id , identifier_list || id = %s\n", $1.name); 
+            printf("\t id , identifier_list || id = %s\n", $1.name); 
             strcat($$.name, " "); 
             strcat($$.name, $3.name);
         }|
@@ -188,13 +190,59 @@ char* arr_id_err= "array index should be integer";
         };
     argument_list:          // identifier list can pass one or more id
         mix_exp ',' argument_list{
-            strcat($$.name, $1.name);
-            printf("\t $$.name in mix_exp, arg_list || id = %s\n", $3.name); 
+            // printf("\t $$.name in mix_exp, arg_list of argument_list|| id = none\n"); 
+            // printf("\t $$.name in mix_exp, arg_list of argument_list|| id = %s\n", $3.concat_name); 
+            // sprintf(temp_buffer, "%d", $1.token_type);
+            // strcat(args_buffer, temp_buffer);
+
+            // $$.name = args_buffer;
+            
+            // strcat($$.name, " ");
+            // strcat($$.name, $3.concat_name);
+            // printf("\t $$.name in mix_exp, arg_list of argument_list|| id = %s\n", $$.concat_name); 
+
+            // char temp_buffer[2];
+            // sprintf(temp_buffer, "%d", $1.token_type);
+            // printf("\t pre args in mix_exp, arg_list of argument_list|| id = %s\n", args_buffer); 
+            // printf("\t pre temp buffer in mix_exp, arg_list of argument_list|| id = %s\n", temp_buffer); 
+            // for(int i = 0; i < 256; ++i){
+            //     if(args_buffer[i] == '\0'){
+            //         printf("i = %d \n", i);
+            //         args_buffer[i] = temp_buffer[0];
+            //         args_buffer[i+1] = ' ';
+            //         args_buffer[i+2] = '\0';
+            //         break;
+            //     }
+            // }
+            $$.concat_name = (char*)malloc(2*sizeof(char)); 
+            sprintf($$.concat_name, "%d", $1.token_type);
+            strcat($$.concat_name, " ");
+            strcat($$.concat_name, $3.concat_name);
+            printf("\t args in mix_exp, arg_list of argument_list|| id = %s\n", $$.concat_name); 
         }|
         mix_exp     {
             // strcat($$.name, global_st.function_type_string_concat("", $1.token_type));
-            $$.name = "test";
-            printf("\t $$.name in mix_exp || id = %s\n", $$.name); 
+            // strcpy($$.concat_name, global_st.function_type_string_concat("", $1.token_type));
+            // $$.name = "test";
+            
+            $$.concat_name = (char*)malloc(2*sizeof(char)); 
+            sprintf($$.concat_name, "%d", $1.token_type);
+            // printf("\t temp_buffer = %s\n", temp_buffer); 
+
+            // char buffer[2];
+            // for(int i = 0; i < 256; ++i){
+            //     if(args_buffer[i] == '\0'){
+            //         printf("i = %d \n", i);
+            //         args_buffer[i] = temp_buffer[0];
+            //         args_buffer[i+1] = ' ';
+            //         args_buffer[i+2] = '\0';
+            //         break;
+            //     }
+            // }
+            // $$.concat_name = args_buffer;
+            // strcat($$.concat_name, args_buffer);
+
+            printf("\t args in mix_exp of argument_list|| id = %s\n", $$.concat_name); 
         };
 
     identifier_declared:  //declare the type of id and type check
@@ -238,7 +286,7 @@ char* arr_id_err= "array index should be integer";
             //if it is primitive
             else{ 
                 if ($4.token_type != T_INT)
-                yyerror(arr_id_err);
+                    yyerror(arr_id_err);
             }
             //store in symbol table
             //consider 2 situation 1: it is int-expression 2: it is primitive
@@ -387,14 +435,18 @@ char* arr_id_err= "array index should be integer";
         '{' '}'|
         '{'{ global_st.push_table(); printf("push table\n");} statements '}'{ global_st.pop_table(); printf("pop table\n");};
     func_invoke:
-        ID '(' argument_list ')'{
+        ID '('{args_buffer[0] = '\0';} argument_list ')'{
             global_st.dump();
             printf("id name = %s\n", $1.name);
+            if(global_st.function_type_check($1.name, $4.concat_name))
+                yyerror(type_match_err);
 
             $$.token_type = global_st.lookup_variable($1.name).type;
             printf("id type = %d\n", $$.token_type);
         }|
         ID '('')'{
+            if(global_st.function_type_check($1.name, ""))
+                yyerror(type_match_err);
             $$.token_type = global_st.lookup_variable($1.name).type;
             printf("id type = %d\n", $$.token_type);
         };

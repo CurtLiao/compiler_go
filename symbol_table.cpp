@@ -278,9 +278,33 @@ void symbol_table::function_declared(int type, char *name){
     variable v(type, STYPE_FUNC);
     v.name = name;
     tableEntrys.front().ids.push_back(v);
-
-
-
+}
+bool symbol_table::function_type_check(char *func_name, char* args){
+    variable v = lookup_variable(func_name);
+    std::string func_type_str = "";
+    std::string i_str;
+    for(auto it = v.func_type.rbegin(); it!= v.func_type.rend(); ++it){
+        
+        //check name and type and const;
+        std::cout << *it << std::endl;
+        std::stringstream ss;
+        std::string i_str; // for int to str
+        ss << *it;
+        ss >> i_str;  
+        func_type_str += i_str;
+        if(it!= v.func_type.rend())
+            func_type_str += " ";
+    }
+    std::string args_str = std::string(args);
+    std::cout << args << std::endl;
+    std::cout << args_str << std::endl;
+    std::cout << func_type_str << std::endl;
+    if(args_str == func_type_str){
+        std::cout << "compared true "  << std::endl;    
+        return true;
+    }
+    std::cout << "compared true " << std::endl;    
+    return(false);
 }
 // bool symbol_table::function_type_Type_check(int type){
 //     func_check_count++;
@@ -290,14 +314,14 @@ void symbol_table::function_declared(int type, char *name){
 //         return false;
     
 // }
-const char* symbol_table::function_type_string_concat(char *name, int type){
-    std::stringstream ss;
-    std::string i_str; // for int to str
-    ss << index;
-    ss >>  i_str;  
-    std::string concat_name = name + i_str = " ";
-    return (concat_name.c_str());
-}
+// const char* symbol_table::function_type_string_concat(char *name, int type){
+//     std::stringstream ss;
+//     std::string i_str; // for int to str
+//     ss << index;
+//     ss >> i_str;  
+//     std::string concat_name = name + i_str + " ";
+//     return (concat_name.c_str());
+// }
 
 // bool symbol_table::function_type_ID_check(char *name){
 //     retrun (function_type_Type_check(lookup_variable(name).type))
