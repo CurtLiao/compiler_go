@@ -135,6 +135,7 @@ bool symbol_table::assign_array_by_id(std::string key, int index,variable v){
     ss << index;
     ss >>  i_str;  //透過串流運算子寫到string類別即可
     std::string key_array = key + "[" + i_str + "]";
+    std::cout << "in assign array " << key_array << std::endl;
     for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
         for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
         //check name and type and const;

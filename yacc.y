@@ -323,11 +323,11 @@ char args_buffer[256];
             
             //assign
             //todo: this just push type bcz it can not calcualate
-            if($3.state == S_ARRAY){
+            if($1.state == S_ARRAY){
                 if(!global_st.assign_array_by_id($1.name, $1.arr_idx, v))
                     yyerror(type_match_err);
             }
-            else if($3.state == S_ID){
+            else if($1.state == S_ID){
                 if(!global_st.assign($1.name, v))
                     yyerror(type_match_err);
             }
@@ -397,8 +397,8 @@ char args_buffer[256];
             $$.token_type = T_BOOL;
         };
     mix_exp:
-        bool_exp {$$ = $1;};
-        // expression {$$ = $1;}; becaz mix_exp will go to exp
+        bool_exp {$$ = $1;}|
+        expression {$$ = $1;}; //becaz mix_exp will go to exp
 
 
     compound:
