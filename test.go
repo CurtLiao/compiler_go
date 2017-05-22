@@ -1,36 +1,21 @@
-/*
- * Example with Functions
+/* Sigma.go
+ *
+ * Compute sum = 1 + 2 + ... + n
  */
 
 // variables
-var a int = 5
-var c int
-
-// function declaration
-// func int add(a int, b int, c real) {
-func int add(a int, b int) {
-  return a+b
-}
-func int sub(a real, b int, c string) {
-  return 5+b
-}
-
-func int mul(a int, b int, c string) {
-  return 5+b
+const n = 10
+var sum int = 0
+var index int
+  
+// main function
+func void main ( ) {
+  for (index = 0; index <= n ) {
+    sum = sum + index
+    index = index + 1
+  } 
+  print "The sum is "
+  println sum
 }
 
-func void main( ) {
-	c = add(a, 10)
-	// c = add(1.244, 10, "WAd")
-	// c = mul(a, 10, "WAd")
-	//next line will type error
-	// c = add(1.244, 10, "WAd")
-  // if (c > 10) {
-    // print -c
-  // }
-  // else {
-    // print c
-  // }
-  // println "Hello World"
-}
 

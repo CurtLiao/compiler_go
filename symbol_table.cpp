@@ -296,8 +296,6 @@ void symbol_table::function_concat(int type, char *name){
     // assign(func_name, v);
     // store each arugment
     declared_noncheck(name, variable(type));
-    std::cout << "function_concat name = " << func_name << " func_type.size() = " << lookup_variable(func_name).func_size;
-    std::cout << "function_concat name = " << func_name << " v func_type.size() = " << v.func_size;
 
 }
 void symbol_table::function_declared(int type, char *name){
@@ -307,7 +305,6 @@ void symbol_table::function_declared(int type, char *name){
     func_name = name;
 }
 bool symbol_table::function_type_check(char *func_name, char* args){
-    std::cout << "v func name" << func_name << std::endl;
     variable v = lookup_variable(func_name);
     std::string func_type_str = "";
     std::string i_str;
@@ -328,26 +325,19 @@ bool symbol_table::function_type_check(char *func_name, char* args){
     //     if(it!= v.func_type.rend())
     //         func_type_str += " ";
     // }
-    std::cout << "v.func_size = " << v.func_size << std::endl;
-    // v.func_type[0] = 5;
+
     for(int i = 0; i < v.func_size; ++i){
         
         //check name and type and const;
-        std::cout << v.func_type[i] << std::endl;
         std::stringstream ss;
         std::string i_str; // for int to str
         ss <<  v.func_type[i] ;
         ss >> i_str;  
-        std::cout << "i_str type " << i_str << std::endl;
-
-        func_type_str += i_str;
+        func_type_str = i_str + func_type_str;
         if(i != v.func_size - 1)
-            func_type_str += " ";
+            func_type_str = " " + func_type_str ;
     }
     std::string args_str = std::string(args);
-    std::cout << args << std::endl;
-    std::cout << "args_Str " << args_str << std::endl;
-    std::cout << "func type " << func_type_str << std::endl;
     // assign_for_func(func_name, v);
     // v = lookup_variable(func_name);
     // for(int i = 0; i < v.func_size; ++i){
@@ -370,10 +360,8 @@ bool symbol_table::function_type_check(char *func_name, char* args){
     // std::cout << "rev func type " << func_type_str << std::endl;
 
     if(args_str == func_type_str){
-        std::cout << "compared true "  << std::endl;    
         return true;
     }
-    std::cout << "compared false " << std::endl;    
     return(false);
 }
 // bool symbol_table::function_type_Type_check(int type){

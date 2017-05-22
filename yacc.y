@@ -162,7 +162,7 @@ char args_buffer[256];
 
     func_declared: // can provide function declared, support void type
         FUNC primitive_type ID '(' ')'{global_st.function_declared($2.token_type, $3.name);} compound|
-        FUNC primitive_type ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name); global_st.dump();} formal_args ')' compound {global_st.pop_table();}|
+        FUNC primitive_type ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name); } formal_args ')' compound {global_st.pop_table();}|
         FUNC VOID ID '(' ')'{global_st.function_declared(-1, $3.name);} compound |
         FUNC VOID ID '('{ global_st.push_table(); global_st.function_declared(-1, $3.name);} formal_args ')' compound {global_st.pop_table();}|
         FUNC ID '(' ')'{global_st.function_declared(-1, $2.name);} compound|
@@ -436,16 +436,15 @@ char args_buffer[256];
         '{'{ global_st.push_table(); printf("push table\n");} statements '}'{ global_st.pop_table(); printf("pop table\n");};
     func_invoke:
         ID '('{args_buffer[0] = '\0';} argument_list ')'{
-            global_st.dump();
             printf("id name = %s\n", $1.name);
-            if(global_st.function_type_check($1.name, $4.concat_name))
+            if(!global_st.function_type_check($1.name, $4.concat_name))
                 yyerror(type_match_err);
 
             $$.token_type = global_st.lookup_variable($1.name).type;
             printf("id type = %d\n", $$.token_type);
         }|
         ID '('')'{
-            if(global_st.function_type_check($1.name, ""))
+            if(!global_st.function_type_check($1.name, ""))
                 yyerror(type_match_err);
             $$.token_type = global_st.lookup_variable($1.name).type;
             printf("id type = %d\n", $$.token_type);
@@ -454,14 +453,14 @@ char args_buffer[256];
         IF '(' bool_exp ')' statement|
         IF '(' bool_exp ')' statement ELSE statement;
     for_loop:
-        FOR '(' bool_exp ')' simple_statement|
-        FOR '(' bool_exp ')' compound|
-        FOR '(' statement ';' bool_exp ')' simple_statement|
-        FOR '(' statement ';' bool_exp ')' compound|
-        FOR '(' bool_exp ';' statement ')' simple_statement|
-        FOR '(' bool_exp ';' statement ')' compound|
-        FOR '(' statement ';' bool_exp ';' statement ')' simple_statement|
-        FOR '(' statement ';' bool_exp ';' statement ')' compound;
+        FOR '(' bool_exp ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
+        FOR '(' bool_exp ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} compound|
+        FOR '(' statement ';' bool_exp ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
+        FOR '(' statement ';' bool_exp ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} compound|
+        FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
+        FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} compound|
+        FOR '(' statement ';' bool_exp ';' statement ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
+        FOR '(' statement ';' bool_exp ';' statement ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} compound;
     go:
         GO ID '(' argument_list ')';
 
@@ -487,5 +486,5 @@ int main(int argc, char const *argv[])
     // st.dump(&currentSTE);
     // return 0;
     yyparse();
-    global_st.dump();
+    // global_st.dump();
 }
