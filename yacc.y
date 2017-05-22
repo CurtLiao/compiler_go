@@ -35,9 +35,10 @@ char* arr_id_err= "array index should be integer";
 
 %type<Token> ID
 %type<Token> STR
-%type<Token> identifier_list
 %type<Token> REAL_NUMBER
 %type<Token> NUMBER
+%type<Token> identifier_list
+%type<Token> argument_list
 %type<Token> bool_type
 %type<Token> primitive_type
 %type<Token> primitive
@@ -46,6 +47,8 @@ char* arr_id_err= "array index should be integer";
 %type<Token> mix_exp
 %type<Token> array_element
 %type<Token> object
+%type<Token> func_invoke
+
 /* tokens */
 %token BOOL
 %token BREAK
@@ -156,12 +159,12 @@ char* arr_id_err= "array index should be integer";
         go;      
 
     func_declared: // can provide function declared, support void type
-        FUNC primitive_type ID '(' ')' compound|
-        FUNC primitive_type ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name);} formal_args ')' compound {global_st.pop_table();}|
-        FUNC VOID ID '(' ')' compound {global_st.function_declared($2.token_type, $3.name);}|
-        FUNC VOID ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name);} formal_args ')' compound {global_st.pop_table();}|
-        FUNC ID '(' ')' compound|
-        FUNC ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name);} formal_args ')' compound{global_st.pop_table();};        
+        FUNC primitive_type ID '(' ')'{global_st.function_declared($2.token_type, $3.name);} compound|
+        FUNC primitive_type ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name); global_st.dump();} formal_args ')' compound {global_st.pop_table();}|
+        FUNC VOID ID '(' ')'{global_st.function_declared(-1, $3.name);} compound |
+        FUNC VOID ID '('{ global_st.push_table(); global_st.function_declared(-1, $3.name);} formal_args ')' compound {global_st.pop_table();}|
+        FUNC ID '(' ')'{global_st.function_declared(-1, $2.name);} compound|
+        FUNC ID '('{ global_st.push_table(); global_st.function_declared(-1, $2.name);} formal_args ')' compound{global_st.pop_table();};        
     formal_args: // like  int a, int b, .... 
         //it will return a 0,b 0
         ID primitive_type{
@@ -184,10 +187,14 @@ char* arr_id_err= "array index should be integer";
             $$.name = $1.name; 
         };
     argument_list:          // identifier list can pass one or more id
-        mix_exp ',' argument_list|
+        mix_exp ',' argument_list{
+            strcat($$.name, $1.name);
+            printf("\t $$.name in mix_exp, arg_list || id = %s\n", $3.name); 
+        }|
         mix_exp     {
-            
-            // printf("\t id in identifier_list || id = %s\n", $1.name); 
+            // strcat($$.name, global_st.function_type_string_concat("", $1.token_type));
+            $$.name = "test";
+            printf("\t $$.name in mix_exp || id = %s\n", $$.name); 
         };
 
     identifier_declared:  //declare the type of id and type check
@@ -319,6 +326,7 @@ char* arr_id_err= "array index should be integer";
         RETURN ;
 
     expression: // math experssion and boolean expression
+        func_invoke{$$ = $1;}|
         object {$$ = $1;}|
         primitive {$$ = $1;}|
         expression op_order4 expression {
@@ -371,15 +379,25 @@ char* arr_id_err= "array index should be integer";
             $$.token_type = T_BOOL;
         };
     mix_exp:
-        bool_exp {$$ = $1;}|
-        expression {$$ = $1;};
+        bool_exp {$$ = $1;};
+        // expression {$$ = $1;}; becaz mix_exp will go to exp
 
 
     compound:
         '{' '}'|
         '{'{ global_st.push_table(); printf("push table\n");} statements '}'{ global_st.pop_table(); printf("pop table\n");};
     func_invoke:
-        ID '(' identifier_list ')';
+        ID '(' argument_list ')'{
+            global_st.dump();
+            printf("id name = %s\n", $1.name);
+
+            $$.token_type = global_st.lookup_variable($1.name).type;
+            printf("id type = %d\n", $$.token_type);
+        }|
+        ID '('')'{
+            $$.token_type = global_st.lookup_variable($1.name).type;
+            printf("id type = %d\n", $$.token_type);
+        };
     condition:
         IF '(' bool_exp ')' statement|
         IF '(' bool_exp ')' statement ELSE statement;
@@ -393,7 +411,7 @@ char* arr_id_err= "array index should be integer";
         FOR '(' statement ';' bool_exp ';' statement ')' simple_statement|
         FOR '(' statement ';' bool_exp ';' statement ')' compound;
     go:
-        GO ID '(' type_check ')';
+        GO ID '(' argument_list ')';
 
 
 %%

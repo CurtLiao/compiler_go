@@ -275,20 +275,34 @@ void symbol_table::function_concat(int type, char *name){
 
 }
 void symbol_table::function_declared(int type, char *name){
-    declared(name, variable(type, STYPE_FUNC));
+    variable v(type, STYPE_FUNC);
+    v.name = name;
+    tableEntrys.front().ids.push_back(v);
+
+
+
 }
-bool symbol_table::function_type_Type_check(int type){
-    func_check_count++;
-    variable v = lookup_variable(func_name);
-    int vec_size = v.func_type.size();
-    if(func_check_count >= vec_size)
-        return false;
-    if(type == v.func_type.at())
+// bool symbol_table::function_type_Type_check(int type){
+//     func_check_count++;
+//     variable v = lookup_variable(func_name);
+//     int vec_size = v.func_type.size();
+//     if(func_check_count >= vec_size)
+//         return false;
+    
+// }
+const char* symbol_table::function_type_string_concat(char *name, int type){
+    std::stringstream ss;
+    std::string i_str; // for int to str
+    ss << index;
+    ss >>  i_str;  
+    std::string concat_name = name + i_str = " ";
+    return (concat_name.c_str());
 }
-bool symbol_table::function_type_ID_check(char *name){
-    retrun (function_type_Type_check(lookup_variable(name).type))
-}
-bool symbol_table::function_check_init(char *name){
-    retrun (function_type_Type_check(lookup_variable(name).type))
-}
-func_check_count
+
+// bool symbol_table::function_type_ID_check(char *name){
+//     retrun (function_type_Type_check(lookup_variable(name).type))
+// }
+// bool symbol_table::function_check_init(char *name){
+//     func_v = lookup_variable(func_name);
+//     retrun (function_type_Type_check(lookup_variable(name).type))
+// }
