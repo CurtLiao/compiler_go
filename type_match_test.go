@@ -40,7 +40,7 @@ func void main( ) {
 	c = add(a, 20320)
 	c = add(a, add(5, 3))
 	c = add_void()
-	vadd_void()
+	go vadd_void()
 	//next line will type error
 	// c = vadd_void()
 	//next line will type error
@@ -53,8 +53,8 @@ func void main( ) {
 	// c = add(a, 203203.244)
 	//next line will type error
 	// c = add(1.244, 10, "WAd")
-	sub(1.32424e21, add_void(), "sdad")
-	sub(1.32424e21, 323, "sdad")
+	c = sub(1.32424e21, add_void(), "sdad")
+	c = sub(1.32424e21, 323, "sdad")
 	c = mul(a, 10, "WAd")
 	// next line will type error
 	// c = mul(1.244, "x", "WAd")

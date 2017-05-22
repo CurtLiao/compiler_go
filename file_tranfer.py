@@ -10,10 +10,10 @@ if __name__ == '__main__':
 	op = "scp -r "
 	path = "B10315007@140.118.155.208:./"
 	filename = "./README.md "
-
-	os.system(op + filename + path)
-	os.system("XIAOSEAN")
+	print(op + filename + path)
+	# os.system(op + filename + path)
+	# os.system("XIAOSEAN")
 	
-	sys.exit()
+	# sys.exit()
 
 

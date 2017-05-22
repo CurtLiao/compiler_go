@@ -107,11 +107,11 @@ func void main( ) {
 	go test_func2(5)
 	go test_func3()
 	go test_func4(a)
-	test()
+	
 	//next will type error
 	// a = test_func2(5)
-	test_func3()
-	test_func4(a)
+	
+	
 	return
 	return a
 

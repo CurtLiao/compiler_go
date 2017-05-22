@@ -38,5 +38,11 @@ const const_real3 = 11232.4323e-21
 const const_real4 = 11232.4323e+21
 const const_real5 = -11232.4323e+21
 func void main( ) {
+	const const_int1 = 2
+	const const_int2 = 1
+	var int1 int = 1
+	var aaa[const_int1] real
+
+
 
 }
