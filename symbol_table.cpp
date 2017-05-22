@@ -12,9 +12,7 @@ variable symbol_table::lookup_variable(std::string key){
     for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
         for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
         //check name and type and const;
-            // std::cout << "lookup key => " << (*it).name << std::endl;
             if((*it).name == key){
-                // std::cout <<  "\n in look up variable i got key = " << key << std::endl;                
                 return (*it);
             }
         }
@@ -36,11 +34,6 @@ variable symbol_table::lookup_array(std::string key, int index){
             }
         }
     }
-    // for(size_t table_idx = tableEntrys.size() -1; (int) table_idx  >= 0; --table_idx){
-    //     for(size_t idx = tableEntrys.at(table_idx).ids.size() - 1; (int) idx >= 0; --idx)
-    //         if(tableEntrys.at(table_idx).ids.at(idx).name == key)
-    //             return tableEntrys.at(table_idx).ids.at(idx);
-    // }
     variable TYPE_NIL_variable(TYPE_NIL);
     return TYPE_NIL_variable;
 }
@@ -198,19 +191,6 @@ bool symbol_table::assign_for_func(std::string key,variable v){
     }
     return true;
 }
-// int symbol_table::checkDeclared(std::string key){
-//     int variable_type = lookup_variable(key).type;
-//     int special_type = lookup_variable(key).s_type;
-//     if(variable_type == TYPE_NIL){
-//         return TYPE_NIL;
-//     }
-//     else if(special_type == STYPE_CONST){
-//         return TYPE_CONST;
-//     }
-//     else {
-//         return TYPE_PRIMITVE;
-//     }
-// }
 void symbol_table::push_table(){
     tableEntrys.push_back(symbol_table_entry());
 }
@@ -218,14 +198,7 @@ void symbol_table::pop_table(){
     if((int)tableEntrys.size() >= 0)
         tableEntrys.pop_back();
 }
-// void symbol_table::dump(symbol_table_entry* st){
-//     std::cout << "dump symbol_table" << std::endl;
-//     std::cout << "=========================" << std::endl;
-//     for(std::vector<std::string>::iterator iter = st->ids.begin(); iter != st->ids.end(); ++iter) {
-//         std::cout << *iter << std::endl;
-//     }
-//     std::cout << "=========================" << std::endl;
-// }
+
 void symbol_table::dump(){
     std::cout << "dump symbol_table" << std::endl;
     std::cout << "=========================" << std::endl;
@@ -250,9 +223,7 @@ void symbol_table::dump(){
         }
         std::cout << "====next scope===="<< std::endl;
     }
-    // for(std::vector<std::string>::iterator iter = st->ids.begin(); iter != st->ids.end(); ++iter) {
-    //     std::cout << *iter << std::endl;
-    // }
+    
     std::cout << "=========================" << std::endl;
 }
 std::string symbol_table::type_name(int value){
@@ -276,24 +247,12 @@ std::string symbol_table::s_type_name(int value){
     return "unknow type";
 
 }
-// char* symbol_table::concat_array_element(std::string key, int index){
-//     std::stringstream ss;
-//     std::string i_str; // for str to int
-//     ss << index;
-//     ss >>  i_str;  //透過串流運算子寫到string類別即可
-//     std::string key_array = key + "[" + i_str + "]";
-//     return &key_array[0u];;
-// }
+
 void symbol_table::function_concat(int type, char *name){
     // store function args type
     variable v = lookup_variable(func_name);
     v.func_type[v.func_size++] = type;
     assign_for_func(func_name, v);
-
-    // v.
-    // lookup_variable(func_name).func_type.push_back(type);
-    // v.func_type.push_back(type);
-    // assign(func_name, v);
     // store each arugment
     declared_noncheck(name, variable(type));
 
@@ -308,23 +267,6 @@ bool symbol_table::function_type_check(char *func_name, char* args){
     variable v = lookup_variable(func_name);
     std::string func_type_str = "";
     std::string i_str;
-    // std::cout << "v func type size" << v.func_type.size() << std::endl;
-    // std::cout << "look up v func type size = " << lookup_variable(func_name).func_type.size() << std::endl;
-    // std::cout << "look up v type = " << lookup_variable(func_name).type << std::endl;
-    // for(auto it = v.func_type.rbegin(); it!= v.func_type.rend(); ++it){
-        
-    //     //check name and type and const;
-    //     std::cout << *it << std::endl;
-    //     std::stringstream ss;
-    //     std::string i_str; // for int to str
-    //     ss << *it;
-    //     ss >> i_str;  
-    //     std::cout << "i_str type " << i_str << std::endl;
-
-    //     func_type_str += i_str;
-    //     if(it!= v.func_type.rend())
-    //         func_type_str += " ";
-    // }
 
     for(int i = 0; i < v.func_size; ++i){
         
@@ -338,53 +280,10 @@ bool symbol_table::function_type_check(char *func_name, char* args){
             func_type_str = " " + func_type_str ;
     }
     std::string args_str = std::string(args);
-    // assign_for_func(func_name, v);
-    // v = lookup_variable(func_name);
-    // for(int i = 0; i < v.func_size; ++i){
-        
-    //     //check name and type and const;
-    //     std::cout << v.func_type[i] << std::endl;
-    //     std::stringstream ss;
-    //     std::string i_str; // for int to str
-    //     ss <<  v.func_type[i] ;
-    //     ss >> i_str;  
-    //     std::cout << "i_str type " << i_str << std::endl;
 
-    //     func_type_str += i_str;
-    //     if(i != v.func_size - 1)
-    //         func_type_str += " ";
-    // }
-    // args_str = std::string(args);
-    // std::cout << args << std::endl;
-    // std::cout << "args_Str " << args_str << std::endl;
-    // std::cout << "rev func type " << func_type_str << std::endl;
 
     if(args_str == func_type_str){
         return true;
     }
     return(false);
 }
-// bool symbol_table::function_type_Type_check(int type){
-//     func_check_count++;
-//     variable v = lookup_variable(func_name);
-//     int vec_size = v.func_type.size();
-//     if(func_check_count >= vec_size)
-//         return false;
-    
-// }
-// const char* symbol_table::function_type_string_concat(char *name, int type){
-//     std::stringstream ss;
-//     std::string i_str; // for int to str
-//     ss << index;
-//     ss >> i_str;  
-//     std::string concat_name = name + i_str + " ";
-//     return (concat_name.c_str());
-// }
-
-// bool symbol_table::function_type_ID_check(char *name){
-//     retrun (function_type_Type_check(lookup_variable(name).type))
-// }
-// bool symbol_table::function_check_init(char *name){
-//     func_v = lookup_variable(func_name);
-//     retrun (function_type_Type_check(lookup_variable(name).type))
-// }

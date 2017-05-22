@@ -190,30 +190,6 @@ char args_buffer[256];
         };
     argument_list:          // identifier list can pass one or more id
         mix_exp ',' argument_list{
-            // printf("\t $$.name in mix_exp, arg_list of argument_list|| id = none\n"); 
-            // printf("\t $$.name in mix_exp, arg_list of argument_list|| id = %s\n", $3.concat_name); 
-            // sprintf(temp_buffer, "%d", $1.token_type);
-            // strcat(args_buffer, temp_buffer);
-
-            // $$.name = args_buffer;
-            
-            // strcat($$.name, " ");
-            // strcat($$.name, $3.concat_name);
-            // printf("\t $$.name in mix_exp, arg_list of argument_list|| id = %s\n", $$.concat_name); 
-
-            // char temp_buffer[2];
-            // sprintf(temp_buffer, "%d", $1.token_type);
-            // printf("\t pre args in mix_exp, arg_list of argument_list|| id = %s\n", args_buffer); 
-            // printf("\t pre temp buffer in mix_exp, arg_list of argument_list|| id = %s\n", temp_buffer); 
-            // for(int i = 0; i < 256; ++i){
-            //     if(args_buffer[i] == '\0'){
-            //         printf("i = %d \n", i);
-            //         args_buffer[i] = temp_buffer[0];
-            //         args_buffer[i+1] = ' ';
-            //         args_buffer[i+2] = '\0';
-            //         break;
-            //     }
-            // }
             $$.concat_name = (char*)malloc(2*sizeof(char)); 
             sprintf($$.concat_name, "%d", $1.token_type);
             strcat($$.concat_name, " ");
@@ -221,27 +197,8 @@ char args_buffer[256];
             printf("\t args in mix_exp, arg_list of argument_list|| id = %s\n", $$.concat_name); 
         }|
         mix_exp     {
-            // strcat($$.name, global_st.function_type_string_concat("", $1.token_type));
-            // strcpy($$.concat_name, global_st.function_type_string_concat("", $1.token_type));
-            // $$.name = "test";
-            
             $$.concat_name = (char*)malloc(2*sizeof(char)); 
             sprintf($$.concat_name, "%d", $1.token_type);
-            // printf("\t temp_buffer = %s\n", temp_buffer); 
-
-            // char buffer[2];
-            // for(int i = 0; i < 256; ++i){
-            //     if(args_buffer[i] == '\0'){
-            //         printf("i = %d \n", i);
-            //         args_buffer[i] = temp_buffer[0];
-            //         args_buffer[i+1] = ' ';
-            //         args_buffer[i+2] = '\0';
-            //         break;
-            //     }
-            // }
-            // $$.concat_name = args_buffer;
-            // strcat($$.concat_name, args_buffer);
-
             printf("\t args in mix_exp of argument_list|| id = %s\n", $$.concat_name); 
         };
 
@@ -319,12 +276,6 @@ char args_buffer[256];
         };
     simple_statement: //include varialbe or array assign and function call
         object '=' mix_exp { 
-            // printf("$1 name = %s  $3 name = %s\n", $1.name, $3.name);
-            // printf("$1 state = %d\n", $1.state);
-            // printf("$1 use look id type = %d, $3 token_type = %d, $3 state = %d\n", global_st.lookup_variable($1.name).type, $3.token_type, $3.state);
-            // printf("$1 use look arr type = %d, $3 token_type = %d, $3 state = %d\n", global_st.lookup_array($1.name, $1.arr_idx).type, $3.token_type, $3.state);
-            // printf("$1 type = %d, $3 in varialbe type = %d\n", global_st.lookup_variable($1.name).type, global_st.lookup_variable($3.name).type);
-            // global_st.dump();
             //type check
             if($1.state == S_ARRAY){
                 if(global_st.lookup_array($1.name, $1.arr_idx).type != $3.token_type)
@@ -479,7 +430,6 @@ int yyerror(char *s)
 
 int main(int argc, char const *argv[])
 {
-    // currentSTE = st.create();
     // yylex(); 
     /* code */
     // show symbol table
