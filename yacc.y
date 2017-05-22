@@ -23,15 +23,20 @@ char args_buffer[256];
 {
     struct
     {
+        // this union means value
         union{
             char *name;
             int  val;
             bool flag;
         };
+        // for function type concat
         char* concat_name;
+        // if it is an array element it should be store the index
         int arr_idx;
+        // int => 0 = T_INT bool => 1 = T_BOOL string => 3 = T_STR real => 3 = T_REAL
         int token_type;
-        int state; //0 => id || 1 => primitive type
+        //0 => id || 1 => primitive type for passing data by $$ to recognize
+        int state; 
     }Token;
 }
 
@@ -103,9 +108,11 @@ char args_buffer[256];
 //to count linenum
 
 %%
+    
     primitive_type: INT{ $$.token_type =  T_INT; }  | BOOL{$$.token_type =  T_BOOL;} | STRING{$$.token_type =  T_STR;} | REAL{$$.token_type =  T_REAL;};
     primitive: NUMBER{ $$.token_type = T_INT; $$.state = S_PRIMITIVE; $$.val = $1.val; }| bool_type{ $$.token_type = T_BOOL; $$.state = S_PRIMITIVE; $$.flag = $1.flag; } | STR{ $$.token_type = T_STR; $$.state = S_PRIMITIVE; $$.name = $1.name; } | REAL_NUMBER{ $$.token_type = T_REAL; $$.state = S_PRIMITIVE; $$.name = $1.name; };
     bool_type: TRUE{$$.token_type = T_BOOL; $$.state = S_PRIMITIVE; $$.flag = true;}| FALSE{$$.token_type = T_BOOL; $$.state = S_PRIMITIVE; $$.flag = false;};
+    // for access array element
     array_element:
         ID '[' expression ']' {
             //if its expression isn't int then it will abort
@@ -128,16 +135,19 @@ char args_buffer[256];
             $$.name = $1.name;
             //Todo::set 0 because expression can not calculate
             $$.arr_idx = 0;
+            //passing to $$ to distinguish which expression be returned;
             $$.state = S_ARRAY; 
+            //return the type of element
             $$.token_type = global_st.lookup_array($$.name, $$.arr_idx).type;  
         };
     object: ID{
                 $$ = $1;
-                // $$.name = $1.name; 
                 $$.state = S_ID; 
+                //return the type of element
                 $$.token_type = global_st.lookup_variable($1.name).type; 
             }| 
             array_element{$$ = $1;};
+    // math operator Priority  
     op_order2: '^' ;
     op_order3: '*' | '/' | '%' ;
     op_order4: '+' | '-' ;
@@ -160,26 +170,32 @@ char args_buffer[256];
         for_loop |
         go;      
 
-    func_declared: // can provide function declared, support void type
+    func_declared: 
+        // can provide function declared, support void type
+        // push function name to global table, let it can be function call
         FUNC primitive_type ID '(' ')'{global_st.function_declared($2.token_type, $3.name);} compound|
         FUNC primitive_type ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name); } formal_args ')' compound {global_st.pop_table();}|
         FUNC VOID ID '(' ')'{global_st.function_declared(-1, $3.name);} compound |
         FUNC VOID ID '('{ global_st.push_table(); global_st.function_declared(-1, $3.name);} formal_args ')' compound {global_st.pop_table();}|
         FUNC ID '(' ')'{global_st.function_declared(-1, $2.name);} compound|
         FUNC ID '('{ global_st.push_table(); global_st.function_declared(-1, $2.name);} formal_args ')' compound{global_st.pop_table();};        
-    formal_args: // like  int a, int b, .... 
-        //it will return a 0,b 0
+    formal_args: 
+        // like   a int , b int , .... 
+        //it will return 0 0 bcz int type i set => 0
         ID primitive_type{
             global_st.function_concat($2.token_type, $1.name);
         }|
         ID primitive_type ',' formal_args{
             global_st.function_concat($2.token_type, $1.name);
         };
-    declared: // variable or function declartd
+    declared: // variable or function declared
         func_declared | 
         identifier_declared ;
-    identifier_list:          // identifier list can pass one or more id
+    // identifier list can pass one or more id
+    // if we have three variable use ','' to concat like "a, b, c" it will return a b c 
+    identifier_list:          
         ID ',' identifier_list {  
+            // for variable declared like
             printf("\t id , identifier_list || id = %s\n", $1.name); 
             strcat($$.name, " "); 
             strcat($$.name, $3.name);
@@ -188,7 +204,9 @@ char args_buffer[256];
             // printf("\t id in identifier_list || id = %s\n", $1.name); 
             $$.name = $1.name; 
         };
-    argument_list:          // identifier list can pass one or more id
+    // identifier list can pass one or more id
+    // it can handle id and primitive
+    argument_list:          
         mix_exp ',' argument_list{
             $$.concat_name = (char*)malloc(2*sizeof(char)); 
             sprintf($$.concat_name, "%d", $1.token_type);
@@ -201,8 +219,8 @@ char args_buffer[256];
             sprintf($$.concat_name, "%d", $1.token_type);
             printf("\t args in mix_exp of argument_list|| id = %s\n", $$.concat_name); 
         };
-
-    identifier_declared:  //declare the type of id and type check
+    //declare the type of id and type check
+    identifier_declared: 
         VAR identifier_list primitive_type { 
             if(!global_st.declared($2.name, $3.token_type))
                 yyerror(declared_err);
@@ -263,6 +281,7 @@ char args_buffer[256];
             }
             
         }|
+        // const and set flag to remember it is const can not assign
         CONST identifier_list '=' primitive {
             variable v($4.token_type, 1); 
             if($4.token_type == T_INT)
@@ -385,20 +404,21 @@ char args_buffer[256];
     compound:
         '{' '}'|
         '{'{ global_st.push_table(); printf("push table\n");} statements '}'{ global_st.pop_table(); printf("pop table\n");};
+    // call function and return the function type
     func_invoke:
         ID '('{args_buffer[0] = '\0';} argument_list ')'{
-            printf("id name = %s\n", $1.name);
+            // printf("id name = %s\n", $1.name);
             if(!global_st.function_type_check($1.name, $4.concat_name))
                 yyerror(type_match_err);
 
             $$.token_type = global_st.lookup_variable($1.name).type;
-            printf("id type = %d\n", $$.token_type);
+            // printf("id type = %d\n", $$.token_type);
         }|
         ID '('')'{
             if(!global_st.function_type_check($1.name, ""))
                 yyerror(type_match_err);
             $$.token_type = global_st.lookup_variable($1.name).type;
-            printf("id type = %d\n", $$.token_type);
+            // printf("id type = %d\n", $$.token_type);
         };
     condition:
         IF '(' bool_exp ')' statement|
@@ -432,9 +452,8 @@ int main(int argc, char const *argv[])
 {
     // yylex(); 
     /* code */
-    // show symbol table
-    // st.dump(&currentSTE);
-    // return 0;
+
     yyparse();
     // global_st.dump();
+    // return 0;
 }

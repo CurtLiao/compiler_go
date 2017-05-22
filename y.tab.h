@@ -142,18 +142,23 @@ union YYSTYPE
 
     struct
     {
+        // this union means value
         union{
             char *name;
             int  val;
             bool flag;
         };
+        // for function type concat
         char* concat_name;
+        // if it is an array element it should be store the index
         int arr_idx;
+        // int => 0 = T_INT bool => 1 = T_BOOL string => 3 = T_STR real => 3 = T_REAL
         int token_type;
-        int state; //0 => id || 1 => primitive type
+        //0 => id || 1 => primitive type for passing data by $$ to recognize
+        int state; 
     }Token;
 
-#line 157 "y.tab.h" /* yacc.c:1915  */
+#line 162 "y.tab.h" /* yacc.c:1915  */
 };
 
 typedef union YYSTYPE YYSTYPE;
