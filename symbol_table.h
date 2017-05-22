@@ -23,7 +23,8 @@ typedef union{
 	bool flag;
 }variable_data;
 struct variable{
-	std::vector<int> func_type;
+	int func_type[20];// save the func args type
+	int func_size;// save the func args count
 	std::string name;
 	union{
 		variable_data data;	
@@ -31,11 +32,11 @@ struct variable{
 	
 	int type;// 0 = int 1 = bool 2 = str 3 = real_numver
 	int s_type;// 0 = normal 1 = const 2 = function declare
-	variable():type(0), s_type(0){
+	variable():type(0), s_type(0), func_size(0){
 		data.value = 0;
 	}
-	variable(int type1): type(type1), s_type(0){	}
-	variable(int type1, int type2): type(type1), s_type(type2){
+	variable(int type1): type(type1), s_type(0), func_size(0){	}
+	variable(int type1, int type2): type(type1), s_type(type2), func_size(0){
 		init_data(type1);
 	}
 	variable(int type1, int type2, char* value): type(type1), s_type(type2){
@@ -85,6 +86,7 @@ public:
 	bool assign(std::string keys, int type = 0, int type2 = 0);
 	bool assign(std::string keys, variable v);
 	bool assign_array_by_id(std::string key, int index,variable v);
+	bool assign_for_func(std::string keys,variable v);
 	bool declared(std::string keys, int type = 0, int type2 = 0);
 	bool declared(std::string keys, variable v);
     bool declared_array(std::string keys,variable v, int array_size);

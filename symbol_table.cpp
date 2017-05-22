@@ -14,6 +14,7 @@ variable symbol_table::lookup_variable(std::string key){
         //check name and type and const;
             // std::cout << "lookup key => " << (*it).name << std::endl;
             if((*it).name == key){
+                // std::cout <<  "\n in look up variable i got key = " << key << std::endl;                
                 return (*it);
             }
         }
@@ -181,6 +182,22 @@ bool symbol_table::assign(std::string keys,variable v){
     } while (iss);
     return true;
 }
+bool symbol_table::assign_for_func(std::string key,variable v){
+    for(auto table = tableEntrys.rbegin(); table!= tableEntrys.rend(); ++table){
+        for(auto it = (*table).ids.rbegin(); it!= (*table).ids.rend(); ++it){
+        //check name and type and const;
+            if((*it).name == key){
+                if ((*it).s_type  == STYPE_FUNC){
+                    (*it).func_size = v.func_size;
+                    for(int i = 0; i < v.func_size; ++i)
+                        (*it).func_type[i] = v.func_type[i];
+                    return true;
+                }
+            }
+        }
+    }
+    return true;
+}
 // int symbol_table::checkDeclared(std::string key){
 //     int variable_type = lookup_variable(key).type;
 //     int special_type = lookup_variable(key).s_type;
@@ -269,41 +286,94 @@ std::string symbol_table::s_type_name(int value){
 // }
 void symbol_table::function_concat(int type, char *name){
     // store function args type
-    lookup_variable(func_name).func_type.push_back(type);
+    variable v = lookup_variable(func_name);
+    v.func_type[v.func_size++] = type;
+    assign_for_func(func_name, v);
+
+    // v.
+    // lookup_variable(func_name).func_type.push_back(type);
+    // v.func_type.push_back(type);
+    // assign(func_name, v);
     // store each arugment
     declared_noncheck(name, variable(type));
+    std::cout << "function_concat name = " << func_name << " func_type.size() = " << lookup_variable(func_name).func_size;
+    std::cout << "function_concat name = " << func_name << " v func_type.size() = " << v.func_size;
 
 }
 void symbol_table::function_declared(int type, char *name){
     variable v(type, STYPE_FUNC);
     v.name = name;
     tableEntrys.front().ids.push_back(v);
+    func_name = name;
 }
 bool symbol_table::function_type_check(char *func_name, char* args){
+    std::cout << "v func name" << func_name << std::endl;
     variable v = lookup_variable(func_name);
     std::string func_type_str = "";
     std::string i_str;
-    for(auto it = v.func_type.rbegin(); it!= v.func_type.rend(); ++it){
+    // std::cout << "v func type size" << v.func_type.size() << std::endl;
+    // std::cout << "look up v func type size = " << lookup_variable(func_name).func_type.size() << std::endl;
+    // std::cout << "look up v type = " << lookup_variable(func_name).type << std::endl;
+    // for(auto it = v.func_type.rbegin(); it!= v.func_type.rend(); ++it){
+        
+    //     //check name and type and const;
+    //     std::cout << *it << std::endl;
+    //     std::stringstream ss;
+    //     std::string i_str; // for int to str
+    //     ss << *it;
+    //     ss >> i_str;  
+    //     std::cout << "i_str type " << i_str << std::endl;
+
+    //     func_type_str += i_str;
+    //     if(it!= v.func_type.rend())
+    //         func_type_str += " ";
+    // }
+    std::cout << "v.func_size = " << v.func_size << std::endl;
+    // v.func_type[0] = 5;
+    for(int i = 0; i < v.func_size; ++i){
         
         //check name and type and const;
-        std::cout << *it << std::endl;
+        std::cout << v.func_type[i] << std::endl;
         std::stringstream ss;
         std::string i_str; // for int to str
-        ss << *it;
+        ss <<  v.func_type[i] ;
         ss >> i_str;  
+        std::cout << "i_str type " << i_str << std::endl;
+
         func_type_str += i_str;
-        if(it!= v.func_type.rend())
+        if(i != v.func_size - 1)
             func_type_str += " ";
     }
     std::string args_str = std::string(args);
     std::cout << args << std::endl;
-    std::cout << args_str << std::endl;
-    std::cout << func_type_str << std::endl;
+    std::cout << "args_Str " << args_str << std::endl;
+    std::cout << "func type " << func_type_str << std::endl;
+    // assign_for_func(func_name, v);
+    // v = lookup_variable(func_name);
+    // for(int i = 0; i < v.func_size; ++i){
+        
+    //     //check name and type and const;
+    //     std::cout << v.func_type[i] << std::endl;
+    //     std::stringstream ss;
+    //     std::string i_str; // for int to str
+    //     ss <<  v.func_type[i] ;
+    //     ss >> i_str;  
+    //     std::cout << "i_str type " << i_str << std::endl;
+
+    //     func_type_str += i_str;
+    //     if(i != v.func_size - 1)
+    //         func_type_str += " ";
+    // }
+    // args_str = std::string(args);
+    // std::cout << args << std::endl;
+    // std::cout << "args_Str " << args_str << std::endl;
+    // std::cout << "rev func type " << func_type_str << std::endl;
+
     if(args_str == func_type_str){
         std::cout << "compared true "  << std::endl;    
         return true;
     }
-    std::cout << "compared true " << std::endl;    
+    std::cout << "compared false " << std::endl;    
     return(false);
 }
 // bool symbol_table::function_type_Type_check(int type){
