@@ -21,3 +21,4 @@ func void main( ) {
   print "Result of computation: "
   println n
 }
+

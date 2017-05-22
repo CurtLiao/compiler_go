@@ -10,11 +10,12 @@ var index int
   
 // main function
 func void main ( ) {
-  for (index = 0; index <= n; } {
+  for (index = 0; index <= n ) {
     sum = sum + index
     index = index + 1
   } 
   print "The sum is "
   println sum
 }
+
 
