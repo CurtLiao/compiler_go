@@ -1,3 +1,13 @@
+/*
+ * hi, let's test
+ *
+ * =======================
+ *
+ * date:20170525
+ * author:xiaosean 
+ *
+ */
+
 var int_a int = 5
 var int_b int = 21
 var b string = "asdaw""""wd"
@@ -8,10 +18,12 @@ int_a = int_b
 // int_a = b
 
 var arr_s[int_a] string
-arr_s[0] = "wadwada"
+// arr_s[0] = "wadwada"
 
 // next line will compiler error
 // arr_s[0] = 1223213
+int_b = 3 * 5
+int_b = int_a
 int_b = 3 * int_a 
 var arr_i[3 * int_a] int
 arr_i[0] = 4 

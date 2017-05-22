@@ -24,7 +24,7 @@ var arr_s[int_a] string
 // arr_s[0] = 1223213
 int_b = 3 * 5
 int_b = int_a
-// int_b = 3 * int_a 
+int_b = 3 * int_a 
 var arr_i[3 * int_a] int
 arr_i[0] = 4 
 // todo: i will crash
