@@ -433,7 +433,14 @@ char args_buffer[256];
         FOR '(' statement ';' bool_exp ';' statement ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
         FOR '(' statement ';' bool_exp ';' statement ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} compound;
     go:
-        GO ID '(' argument_list ')';
+        GO ID '('')'{
+            if(!global_st.function_type_check($2.name, ""))
+                yyerror(type_match_err);
+        }|
+        GO ID '(' {args_buffer[0] = '\0';} argument_list ')'{
+            if(!global_st.function_type_check($2.name, $5.concat_name))
+                yyerror(type_match_err);
+        };
 
 
 %%

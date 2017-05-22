@@ -1,5 +1,11 @@
 /*
- * Example with Functions
+ * hi, let's test
+ *
+ * =======================
+ *
+ * date:20170525
+ * author:xiaosean 
+ *
  */
 
 // variables

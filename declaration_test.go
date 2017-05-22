@@ -1,3 +1,13 @@
+/*
+ * hi, let's test
+ *
+ * =======================
+ *
+ * date:20170525
+ * author:xiaosean 
+ *
+ */
+
 var b int = 5
 var b1, b2, b3 int = 5
 var bb int
