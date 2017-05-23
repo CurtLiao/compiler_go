@@ -17,5 +17,5 @@ lex.yy.cpp: source.l
 	$(LEX) -o $@ $^
 
 clean:
-	rm y.tab.* lex.yy.cpp
+	rm -r y.tab.* lex.yy.cpp
 
