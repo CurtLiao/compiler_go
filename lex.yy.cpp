@@ -1,6 +1,5 @@
-#line 1 "lex.yy.cpp"
 
-#line 3 "lex.yy.cpp"
+#line 2 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -688,9 +687,9 @@ char buf[MAX_LINE_LENG];
 char strBuf[MAX_LINE_LENG];
 enum Type_enum{T_INT = 1, T_BOOL, T_STR, T_REAL};
 
-#line 691 "lex.yy.cpp"
+#line 690 "lex.yy.c"
 
-#line 693 "lex.yy.cpp"
+#line 692 "lex.yy.c"
 
 #define INITIAL 0
 #define commentState 1
@@ -911,7 +910,7 @@ YY_DECL
 #line 28 "source.l"
 
 
-#line 914 "lex.yy.cpp"
+#line 913 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1362,7 +1361,7 @@ YY_RULE_SETUP
 #line 150 "source.l"
 ECHO;
 	YY_BREAK
-#line 1365 "lex.yy.cpp"
+#line 1364 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(commentState):
 	yyterminate();

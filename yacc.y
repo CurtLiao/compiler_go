@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <string.h>
 #include "symbol_table.h"
+FILE *java_code;
+
 symbol_table global_st;
 int variable_type; // 0=> int 1=> bool 2=> string 3=>real
 bool const_flag = false;
@@ -173,12 +175,115 @@ char args_buffer[256];
     func_declared: 
         // can provide function declared, support void type
         // push function name to global table, let it can be function call
-        FUNC primitive_type ID '(' ')'{global_st.function_declared($2.token_type, $3.name);} compound|
-        FUNC primitive_type ID '('{ global_st.push_table(); global_st.function_declared($2.token_type, $3.name); } formal_args ')' compound {global_st.pop_table();}|
-        FUNC VOID ID '(' ')'{global_st.function_declared(-1, $3.name);} compound |
-        FUNC VOID ID '('{ global_st.push_table(); global_st.function_declared(-1, $3.name);} formal_args ')' compound {global_st.pop_table();}|
-        FUNC ID '(' ')'{global_st.function_declared(-1, $2.name);} compound|
-        FUNC ID '('{ global_st.push_table(); global_st.function_declared(-1, $2.name);} formal_args ')' compound{global_st.pop_table();};        
+        FUNC primitive_type ID '(' ')'{
+            global_st.function_declared($2.token_type, $3.name);
+            if (strcmp($3.name, "main") == 0){
+                if($2.token_type == T_INT)
+                    fprintf(java_code,"\tmethod public static int main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n");
+                else if($2.token_type == T_BOOL)
+                    fprintf(java_code,"\tmethod public static boolean main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n");
+                else if($2.token_type == T_STR)
+                    fprintf(java_code,"\tmethod public static string main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n");
+            }
+            else{
+                if($2.token_type == T_INT)
+                    fprintf(java_code,"\tmethod public static int %s()\n\tmax_stack 15\n\tmax_locals 15\n", $3.name);
+                else if($2.token_type == T_BOOL)
+                    fprintf(java_code,"\tmethod public static boolean %s()\n\tmax_stack 15\n\tmax_locals 15\n", $3.name);
+                else if($2.token_type == T_STR)
+                    fprintf(java_code,"\tmethod public static string %s()\n\tmax_stack 15\n\tmax_locals 15\n", $3.name);
+            }
+            // fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+            
+            
+        } compound|
+        FUNC primitive_type ID '('{ 
+            global_st.push_table(); 
+            global_st.function_declared($2.token_type, $3.name); 
+            if($2.token_type == T_INT)
+                fprintf(java_code,"\tmethod public static int %s", $3.name);
+            else if($2.token_type == T_BOOL)
+                fprintf(java_code,"\tmethod public static boolean %s", $3.name);
+            else if($2.token_type == T_STR)
+                fprintf(java_code,"\tmethod public static string %s", $3.name);
+
+        } formal_args ')'{
+            variable v = global_st.lookup_variable($3.name);
+            fprintf(java_code,"(");
+            for(int i = v.func_size - 1; i >= 0 ; --i){
+                printf("position = %d  type = %d\n", i , v.func_type[i]);
+                if(v.func_type[i] == T_INT)
+                    fprintf(java_code, "int");
+                else if(v.func_type[i] == T_BOOL)
+                    fprintf(java_code, "boolean");
+                else if(v.func_type[i] == T_STR)
+                    fprintf(java_code, "string");   
+                if(i != 0)
+                     fprintf(java_code, ", ");   
+            }
+            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n");
+        
+        } compound {global_st.pop_table();}|
+        FUNC VOID ID '(' ')'{
+            global_st.function_declared(-1, $3.name);
+            if (strcmp($3.name, "main") == 0){
+                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n");
+            }
+            else{
+                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n", $3.name);
+            }
+
+        } compound |
+        FUNC VOID ID '('{ 
+            global_st.push_table(); 
+            global_st.function_declared(-1, $3.name);
+            fprintf(java_code,"\tmethod public static void %s", $3.name);
+
+        } formal_args ')'{
+            variable v = global_st.lookup_variable($3.name);
+            fprintf(java_code,"(");
+            for(int i = v.func_size - 1; i >= 0 ; --i){
+                printf("position = %d  type = %d\n", i , v.func_type[i]);
+                if(v.func_type[i] == T_INT)
+                    fprintf(java_code, "int");
+                else if(v.func_type[i] == T_BOOL)
+                    fprintf(java_code, "boolean");
+                else if(v.func_type[i] == T_STR)
+                    fprintf(java_code, "string");   
+                if(i != 0)
+                     fprintf(java_code, ", ");   
+            }
+            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n");
+        } compound {global_st.pop_table();}|
+        FUNC ID '(' ')'{
+            global_st.function_declared(-1, $2.name);
+            if (strcmp($2.name, "main") == 0){
+                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n");
+            }
+            else{
+                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n", $2.name);
+            }        } compound|
+        FUNC ID '('{ 
+            global_st.push_table(); 
+            global_st.function_declared(-1, $2.name);
+            fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n");
+
+        } formal_args ')'{
+            variable v = global_st.lookup_variable($2.name);
+            fprintf(java_code,"(");
+            for(int i = v.func_size - 1; i >= 0 ; --i){
+                printf("position = %d  type = %d\n", i , v.func_type[i]);
+                if(v.func_type[i] == T_INT)
+                    fprintf(java_code, "int");
+                else if(v.func_type[i] == T_BOOL)
+                    fprintf(java_code, "boolean");
+                else if(v.func_type[i] == T_STR)
+                    fprintf(java_code, "string");   
+                if(i != 0)
+                     fprintf(java_code, ", ");   
+            }
+            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n");
+        } compound{global_st.pop_table();};        
     formal_args: 
         // like   a int , b int , .... 
         //it will return 0 0 bcz int type i set => 0
@@ -457,10 +562,14 @@ int yyerror(char *s)
 
 int main(int argc, char const *argv[])
 {
-    // yylex(); 
     /* code */
-
+    java_code = fopen("b10315007.jasm","w");
+    fprintf(java_code,"class proj3\n{\n");
     yyparse();
+    fprintf(java_code,"}");
+    fclose(java_code);
+    return 0;
+
     // global_st.dump();
     // return 0;
 }
