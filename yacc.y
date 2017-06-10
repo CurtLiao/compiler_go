@@ -223,7 +223,7 @@ char args_buffer[256];
             // fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
             
             
-        } compound {fprintf(java_code,"}\n");}|
+        } compound {fprintf(java_code,"\t}\n");}|
         FUNC primitive_type ID '('{ 
             global_st.push_table(); 
             global_st.function_declared($2.token_type, $3.name); 
@@ -250,7 +250,7 @@ char args_buffer[256];
             }
             fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
         
-        } compound {fprintf(java_code,"}\n");global_st.pop_table();}|
+        } compound {fprintf(java_code,"\t}\n");global_st.pop_table();}|
         FUNC VOID ID '(' ')'{
             global_st.function_declared(-1, $3.name);
             if (strcmp($3.name, "main") == 0){
@@ -260,7 +260,7 @@ char args_buffer[256];
                 fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
             }
 
-        } compound {fprintf(java_code,"}\n");}|
+        } compound {fprintf(java_code,"\t}\n");}|
         FUNC VOID ID '('{ 
             global_st.push_table(); 
             global_st.function_declared(-1, $3.name);
@@ -280,7 +280,7 @@ char args_buffer[256];
                      fprintf(java_code, ", ");   
             }
             fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
-        } compound {fprintf(java_code,"}\n");global_st.pop_table();}|
+        } compound {fprintf(java_code,"\t}\n");global_st.pop_table();}|
         FUNC ID '(' ')'{
             global_st.function_declared(-1, $2.name);
             if (strcmp($2.name, "main") == 0){
@@ -288,7 +288,7 @@ char args_buffer[256];
             }
             else{
                 fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $2.name);
-            }        } compound|
+            }        } compound{fprintf(java_code,"\t}\n");}|
         FUNC ID '('{ 
             global_st.push_table(); 
             global_st.function_declared(-1, $2.name);

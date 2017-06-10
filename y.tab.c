@@ -1545,7 +1545,7 @@ yyreduce:
         (yyval.Token).token_type = T_INT; 
         (yyval.Token).state = S_PRIMITIVE; 
         (yyval.Token).val = (yyvsp[0].Token).val;  
-        fprintf(java_code, "\tsipush %d\n", (yyvsp[0].Token).val);
+        fprintf(java_code, "\t\tsipush %d\n", (yyvsp[0].Token).val);
     }
 #line 1551 "y.tab.c" /* yacc.c:1661  */
     break;
@@ -1557,9 +1557,9 @@ yyreduce:
         (yyval.Token).state = S_PRIMITIVE; 
         (yyval.Token).flag = (yyvsp[0].Token).flag; 
         if((yyval.Token).flag)    
-            fprintf(java_code, "\tsipush %d\n", 1);
+            fprintf(java_code, "\t\tsipush %d\n", 1);
         else        
-            fprintf(java_code, "\tsipush %d\n", 0);
+            fprintf(java_code, "\t\tsipush %d\n", 0);
 
     }
 #line 1566 "y.tab.c" /* yacc.c:1661  */
@@ -1571,7 +1571,7 @@ yyreduce:
         (yyval.Token).token_type = T_STR; 
         (yyval.Token).state = S_PRIMITIVE; 
         (yyval.Token).name = (yyvsp[0].Token).name; 
-        fprintf(java_code, "\tldc \"%s\" \n", (yyvsp[0].Token).name);
+        fprintf(java_code, "\t\tldc \"%s\" \n", (yyvsp[0].Token).name);
 
             
 
@@ -1637,9 +1637,9 @@ yyreduce:
                 variable left_v = global_st.lookup_variable((yyvsp[0].Token).name);
                 (yyval.Token).token_type = left_v.type; 
                 if(left_v.is_global)
-                    fprintf(java_code, "\tgetstatic int proj3.%s\n", (yyvsp[0].Token).name);
+                    fprintf(java_code, "\t\tgetstatic int proj3.%s\n", (yyvsp[0].Token).name);
                 else                    
-                    fprintf(java_code, "\tiload %d\n", left_v.virtual_index);
+                    fprintf(java_code, "\t\tiload %d\n", left_v.virtual_index);
             }
 #line 1645 "y.tab.c" /* yacc.c:1661  */
     break;
@@ -1674,19 +1674,19 @@ yyreduce:
             global_st.function_declared((yyvsp[-3].Token).token_type, (yyvsp[-2].Token).name);
             if (strcmp((yyvsp[-2].Token).name, "main") == 0){
                 if((yyvsp[-3].Token).token_type == T_INT)
-                    fprintf(java_code,"\tmethod public static int main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                    fprintf(java_code,"\tmethod public static int main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
                 else if((yyvsp[-3].Token).token_type == T_BOOL)
-                    fprintf(java_code,"\tmethod public static boolean main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                    fprintf(java_code,"\tmethod public static boolean main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
                 else if((yyvsp[-3].Token).token_type == T_STR)
-                    fprintf(java_code,"\tmethod public static string main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                    fprintf(java_code,"\tmethod public static string main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
             }
             else{
                 if((yyvsp[-3].Token).token_type == T_INT)
-                    fprintf(java_code,"\tmethod public static int %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", (yyvsp[-2].Token).name);
+                    fprintf(java_code,"\tmethod public static int %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", (yyvsp[-2].Token).name);
                 else if((yyvsp[-3].Token).token_type == T_BOOL)
-                    fprintf(java_code,"\tmethod public static boolean %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", (yyvsp[-2].Token).name);
+                    fprintf(java_code,"\tmethod public static boolean %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", (yyvsp[-2].Token).name);
                 else if((yyvsp[-3].Token).token_type == T_STR)
-                    fprintf(java_code,"\tmethod public static string %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", (yyvsp[-2].Token).name);
+                    fprintf(java_code,"\tmethod public static string %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", (yyvsp[-2].Token).name);
             }
             // fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
             
@@ -1697,7 +1697,7 @@ yyreduce:
 
   case 41:
 #line 226 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"}\n");}
+    {fprintf(java_code,"\t}\n");}
 #line 1702 "y.tab.c" /* yacc.c:1661  */
     break;
 
@@ -1733,7 +1733,7 @@ yyreduce:
                 if(i != 0)
                      fprintf(java_code, ", ");   
             }
-            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
         
         }
 #line 1740 "y.tab.c" /* yacc.c:1661  */
@@ -1741,7 +1741,7 @@ yyreduce:
 
   case 44:
 #line 253 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"}\n");global_st.pop_table();}
+    {fprintf(java_code,"\t}\n");global_st.pop_table();}
 #line 1746 "y.tab.c" /* yacc.c:1661  */
     break;
 
@@ -1750,10 +1750,10 @@ yyreduce:
     {
             global_st.function_declared(-1, (yyvsp[-2].Token).name);
             if (strcmp((yyvsp[-2].Token).name, "main") == 0){
-                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
             }
             else{
-                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", (yyvsp[-2].Token).name);
+                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", (yyvsp[-2].Token).name);
             }
 
         }
@@ -1762,7 +1762,7 @@ yyreduce:
 
   case 46:
 #line 263 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"}\n");}
+    {fprintf(java_code,"\t}\n");}
 #line 1767 "y.tab.c" /* yacc.c:1661  */
     break;
 
@@ -1792,14 +1792,14 @@ yyreduce:
                 if(i != 0)
                      fprintf(java_code, ", ");   
             }
-            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
         }
 #line 1798 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 49:
 #line 283 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"}\n");global_st.pop_table();}
+    {fprintf(java_code,"\t}\n");global_st.pop_table();}
 #line 1804 "y.tab.c" /* yacc.c:1661  */
     break;
 
@@ -1808,12 +1808,18 @@ yyreduce:
     {
             global_st.function_declared(-1, (yyvsp[-2].Token).name);
             if (strcmp((yyvsp[-2].Token).name, "main") == 0){
-                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
             }
             else{
-                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", (yyvsp[-2].Token).name);
+                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", (yyvsp[-2].Token).name);
             }        }
 #line 1817 "y.tab.c" /* yacc.c:1661  */
+    break;
+
+  case 51:
+#line 291 "yacc.y" /* yacc.c:1661  */
+    {fprintf(java_code,"\t}\n");}
+#line 1823 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 52:
@@ -1824,7 +1830,7 @@ yyreduce:
             fprintf(java_code,"\tmethod public static void %s(", (yyvsp[-1].Token).name);
 
         }
-#line 1828 "y.tab.c" /* yacc.c:1661  */
+#line 1834 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 53:
@@ -1843,15 +1849,15 @@ yyreduce:
                 if(i != 0)
                      fprintf(java_code, ", ");   
             }
-            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
         }
-#line 1849 "y.tab.c" /* yacc.c:1661  */
+#line 1855 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 54:
 #line 312 "yacc.y" /* yacc.c:1661  */
     {fprintf(java_code,"\t}\n");global_st.pop_table();}
-#line 1855 "y.tab.c" /* yacc.c:1661  */
+#line 1861 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 55:
@@ -1859,7 +1865,7 @@ yyreduce:
     {
             global_st.function_concat((yyvsp[0].Token).token_type, (yyvsp[-1].Token).name);
         }
-#line 1863 "y.tab.c" /* yacc.c:1661  */
+#line 1869 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 56:
@@ -1867,7 +1873,7 @@ yyreduce:
     {
             global_st.function_concat((yyvsp[-2].Token).token_type, (yyvsp[-3].Token).name);
         }
-#line 1871 "y.tab.c" /* yacc.c:1661  */
+#line 1877 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 59:
@@ -1878,7 +1884,7 @@ yyreduce:
             strcat((yyval.Token).name, " "); 
             strcat((yyval.Token).name, (yyvsp[0].Token).name);
         }
-#line 1882 "y.tab.c" /* yacc.c:1661  */
+#line 1888 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 60:
@@ -1887,7 +1893,7 @@ yyreduce:
             // printf("\t id in identifier_list || id = %s\n", $1.name); 
             (yyval.Token).name = (yyvsp[0].Token).name; 
         }
-#line 1891 "y.tab.c" /* yacc.c:1661  */
+#line 1897 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 61:
@@ -1899,7 +1905,7 @@ yyreduce:
             strcat((yyval.Token).concat_name, (yyvsp[0].Token).concat_name);
             printf("\t args in mix_exp, arg_list of argument_list|| id = %s\n", (yyval.Token).concat_name); 
         }
-#line 1903 "y.tab.c" /* yacc.c:1661  */
+#line 1909 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 62:
@@ -1909,7 +1915,7 @@ yyreduce:
             sprintf((yyval.Token).concat_name, "%d", (yyvsp[0].Token).token_type);
             printf("\t args in mix_exp of argument_list|| id = %s\n", (yyval.Token).concat_name); 
         }
-#line 1913 "y.tab.c" /* yacc.c:1661  */
+#line 1919 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 63:
@@ -1930,7 +1936,7 @@ yyreduce:
             }
 
         }
-#line 1934 "y.tab.c" /* yacc.c:1661  */
+#line 1940 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 64:
@@ -1943,7 +1949,7 @@ yyreduce:
             if(global_st.check_global())
                 fprintf(java_code, "\tfield static int %s = %d\n", (yyvsp[-3].Token).name, (yyvsp[0].Token).val);
         }
-#line 1947 "y.tab.c" /* yacc.c:1661  */
+#line 1953 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 65:
@@ -1962,7 +1968,7 @@ yyreduce:
 
 
         }
-#line 1966 "y.tab.c" /* yacc.c:1661  */
+#line 1972 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 66:
@@ -1975,7 +1981,7 @@ yyreduce:
                 fprintf(java_code, "\tfield static string %s = %s\n", (yyvsp[-3].Token).name, (yyvsp[0].Token).name);
             
         }
-#line 1979 "y.tab.c" /* yacc.c:1661  */
+#line 1985 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 67:
@@ -1985,7 +1991,7 @@ yyreduce:
             if(!global_st.declared((yyvsp[-3].Token).name, v))
                 yyerror(declared_err);
         }
-#line 1989 "y.tab.c" /* yacc.c:1661  */
+#line 1995 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 68:
@@ -2023,7 +2029,7 @@ yyreduce:
             }
             
         }
-#line 2027 "y.tab.c" /* yacc.c:1661  */
+#line 2033 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 69:
@@ -2039,7 +2045,7 @@ yyreduce:
             if(!global_st.declared((yyvsp[-2].Token).name, v))
                 yyerror(declared_err);
         }
-#line 2043 "y.tab.c" /* yacc.c:1661  */
+#line 2049 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 70:
@@ -2056,9 +2062,9 @@ yyreduce:
                     yyerror(type_match_err);
                 //check global or local and assign
                 if(left_v.is_global)
-                    fprintf(java_code, "\tputstatic int proj3.%s\n", (yyvsp[-2].Token).name);
+                    fprintf(java_code, "\t\tputstatic int proj3.%s\n", (yyvsp[-2].Token).name);
                 else                    
-                    fprintf(java_code, "\tistore %d\n", left_v.virtual_index);
+                    fprintf(java_code, "\t\tistore %d\n", left_v.virtual_index);
             }
 
 
@@ -2093,13 +2099,13 @@ yyreduce:
                     yyerror(type_match_err);
             }
         }
-#line 2097 "y.tab.c" /* yacc.c:1661  */
+#line 2103 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 71:
 #line 503 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"\tgetstatic java.io.PrintStream java.lang.System.out\n");}
-#line 2103 "y.tab.c" /* yacc.c:1661  */
+    {fprintf(java_code,"\t\tgetstatic java.io.PrintStream java.lang.System.out\n");}
+#line 2109 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 72:
@@ -2107,17 +2113,17 @@ yyreduce:
     {
             printf("test type %d\n", (yyvsp[0].Token).token_type);
             if((yyvsp[0].Token).token_type == T_STR)
-                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
             else
-                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
         }
-#line 2115 "y.tab.c" /* yacc.c:1661  */
+#line 2121 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 73:
 #line 511 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"\tgetstatic java.io.PrintStream java.lang.System.out\n");}
-#line 2121 "y.tab.c" /* yacc.c:1661  */
+    {fprintf(java_code,"\t\tgetstatic java.io.PrintStream java.lang.System.out\n");}
+#line 2127 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 74:
@@ -2125,41 +2131,41 @@ yyreduce:
     {
             printf("test type %d\n", (yyvsp[0].Token).token_type);
             if((yyvsp[0].Token).token_type == T_STR)
-                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
             else
-                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
         }
-#line 2133 "y.tab.c" /* yacc.c:1661  */
+#line 2139 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 76:
 #line 520 "yacc.y" /* yacc.c:1661  */
-    {    fprintf(java_code,"\tireturn\n");}
-#line 2139 "y.tab.c" /* yacc.c:1661  */
+    {    fprintf(java_code,"\t\tireturn\n");}
+#line 2145 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 77:
 #line 521 "yacc.y" /* yacc.c:1661  */
-    {    fprintf(java_code,"\tireturn\n");}
-#line 2145 "y.tab.c" /* yacc.c:1661  */
+    {    fprintf(java_code,"\t\tireturn\n");}
+#line 2151 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 78:
 #line 524 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token) = (yyvsp[0].Token);}
-#line 2151 "y.tab.c" /* yacc.c:1661  */
+#line 2157 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 79:
 #line 525 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token) = (yyvsp[0].Token);}
-#line 2157 "y.tab.c" /* yacc.c:1661  */
+#line 2163 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 80:
 #line 526 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token) = (yyvsp[0].Token);}
-#line 2163 "y.tab.c" /* yacc.c:1661  */
+#line 2169 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 81:
@@ -2169,7 +2175,7 @@ yyreduce:
                 yyerror(type_match_err);
             (yyval.Token) = (yyvsp[-2].Token);
         }
-#line 2173 "y.tab.c" /* yacc.c:1661  */
+#line 2179 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 82:
@@ -2179,7 +2185,7 @@ yyreduce:
                 yyerror(type_match_err);
             (yyval.Token) = (yyvsp[-2].Token);
         }
-#line 2183 "y.tab.c" /* yacc.c:1661  */
+#line 2189 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 83:
@@ -2189,7 +2195,7 @@ yyreduce:
                 yyerror(type_match_err);
             (yyval.Token) = (yyvsp[-2].Token);
         }
-#line 2193 "y.tab.c" /* yacc.c:1661  */
+#line 2199 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 84:
@@ -2197,7 +2203,7 @@ yyreduce:
     {
             (yyval.Token) = (yyvsp[0].Token);
         }
-#line 2201 "y.tab.c" /* yacc.c:1661  */
+#line 2207 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 85:
@@ -2205,25 +2211,25 @@ yyreduce:
     {
             (yyval.Token) = (yyvsp[-1].Token);
         }
-#line 2209 "y.tab.c" /* yacc.c:1661  */
+#line 2215 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 86:
 #line 549 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token) = (yyvsp[0].Token);}
-#line 2215 "y.tab.c" /* yacc.c:1661  */
+#line 2221 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 87:
 #line 550 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token) = (yyvsp[-1].Token);}
-#line 2221 "y.tab.c" /* yacc.c:1661  */
+#line 2227 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 88:
 #line 551 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token).token_type = T_BOOL;}
-#line 2227 "y.tab.c" /* yacc.c:1661  */
+#line 2233 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 89:
@@ -2234,7 +2240,7 @@ yyreduce:
             (yyval.Token) = (yyvsp[-2].Token);
             (yyval.Token).token_type = T_BOOL;
         }
-#line 2238 "y.tab.c" /* yacc.c:1661  */
+#line 2244 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 90:
@@ -2245,7 +2251,7 @@ yyreduce:
             (yyval.Token) = (yyvsp[-2].Token);
             (yyval.Token).token_type = T_BOOL;
         }
-#line 2249 "y.tab.c" /* yacc.c:1661  */
+#line 2255 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 91:
@@ -2256,7 +2262,7 @@ yyreduce:
             (yyval.Token) = (yyvsp[-2].Token);
             (yyval.Token).token_type = T_BOOL;
         }
-#line 2260 "y.tab.c" /* yacc.c:1661  */
+#line 2266 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 92:
@@ -2267,37 +2273,37 @@ yyreduce:
             (yyval.Token) = (yyvsp[-2].Token);
             (yyval.Token).token_type = T_BOOL;
         }
-#line 2271 "y.tab.c" /* yacc.c:1661  */
+#line 2277 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 93:
 #line 577 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token) = (yyvsp[0].Token);}
-#line 2277 "y.tab.c" /* yacc.c:1661  */
+#line 2283 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 94:
 #line 578 "yacc.y" /* yacc.c:1661  */
     {(yyval.Token) = (yyvsp[0].Token);}
-#line 2283 "y.tab.c" /* yacc.c:1661  */
+#line 2289 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 96:
 #line 583 "yacc.y" /* yacc.c:1661  */
     { global_st.push_table();}
-#line 2289 "y.tab.c" /* yacc.c:1661  */
+#line 2295 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 97:
 #line 583 "yacc.y" /* yacc.c:1661  */
     { global_st.pop_table(); }
-#line 2295 "y.tab.c" /* yacc.c:1661  */
+#line 2301 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 98:
 #line 586 "yacc.y" /* yacc.c:1661  */
     {args_buffer[0] = '\0';}
-#line 2301 "y.tab.c" /* yacc.c:1661  */
+#line 2307 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 99:
@@ -2309,11 +2315,11 @@ yyreduce:
             variable v = global_st.lookup_variable((yyvsp[-4].Token).name);
             (yyval.Token).token_type = v.type;
             // printf("id type = %d\n", $$.token_type);
-            fprintf(java_code,"\tinvokestatic %s proj3.%s(%s)\n", global_st.variable_type_str((yyvsp[-4].Token).name).c_str(), (yyvsp[-4].Token).name, global_st.function_args_type((yyvsp[-4].Token).name).c_str());
+            fprintf(java_code,"\t\tinvokestatic %s proj3.%s(%s)\n", global_st.variable_type_str((yyvsp[-4].Token).name).c_str(), (yyvsp[-4].Token).name, global_st.function_args_type((yyvsp[-4].Token).name).c_str());
             
 
         }
-#line 2317 "y.tab.c" /* yacc.c:1661  */
+#line 2323 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 100:
@@ -2324,58 +2330,58 @@ yyreduce:
             variable v = global_st.lookup_variable((yyvsp[-2].Token).name);
             (yyval.Token).token_type = v.type;
             // printf("id type = %d\n", $$.token_type);
-            fprintf(java_code,"\tinvokestatic %s proj3.%s()\n", global_st.variable_type_str((yyvsp[-2].Token).name).c_str(), (yyvsp[-2].Token).name);
+            fprintf(java_code,"\t\tinvokestatic %s proj3.%s()\n", global_st.variable_type_str((yyvsp[-2].Token).name).c_str(), (yyvsp[-2].Token).name);
 
         }
-#line 2331 "y.tab.c" /* yacc.c:1661  */
+#line 2337 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 103:
 #line 610 "yacc.y" /* yacc.c:1661  */
     {if((yyvsp[-1].Token).token_type != T_BOOL){yyerror(type_match_err);}}
-#line 2337 "y.tab.c" /* yacc.c:1661  */
+#line 2343 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 105:
 #line 611 "yacc.y" /* yacc.c:1661  */
     {if((yyvsp[-1].Token).token_type != T_BOOL){yyerror(type_match_err);}}
-#line 2343 "y.tab.c" /* yacc.c:1661  */
+#line 2349 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 107:
 #line 612 "yacc.y" /* yacc.c:1661  */
     {if((yyvsp[-1].Token).token_type != T_BOOL){yyerror(type_match_err);}}
-#line 2349 "y.tab.c" /* yacc.c:1661  */
+#line 2355 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 109:
 #line 613 "yacc.y" /* yacc.c:1661  */
     {if((yyvsp[-1].Token).token_type != T_BOOL){yyerror(type_match_err);}}
-#line 2355 "y.tab.c" /* yacc.c:1661  */
+#line 2361 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 111:
 #line 614 "yacc.y" /* yacc.c:1661  */
     {if((yyvsp[-3].Token).token_type != T_BOOL){yyerror(type_match_err);}}
-#line 2361 "y.tab.c" /* yacc.c:1661  */
+#line 2367 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 113:
 #line 615 "yacc.y" /* yacc.c:1661  */
     {if((yyvsp[-3].Token).token_type != T_BOOL){yyerror(type_match_err);}}
-#line 2367 "y.tab.c" /* yacc.c:1661  */
+#line 2373 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 115:
 #line 616 "yacc.y" /* yacc.c:1661  */
     {if((yyvsp[-3].Token).token_type != T_BOOL){yyerror(type_match_err);}}
-#line 2373 "y.tab.c" /* yacc.c:1661  */
+#line 2379 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 117:
 #line 617 "yacc.y" /* yacc.c:1661  */
     {if((yyvsp[-3].Token).token_type != T_BOOL){yyerror(type_match_err);}}
-#line 2379 "y.tab.c" /* yacc.c:1661  */
+#line 2385 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 119:
@@ -2384,13 +2390,13 @@ yyreduce:
             if(!global_st.function_type_check((yyvsp[-2].Token).name, ""))
                 yyerror(type_match_err);
         }
-#line 2388 "y.tab.c" /* yacc.c:1661  */
+#line 2394 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 120:
 #line 623 "yacc.y" /* yacc.c:1661  */
     {args_buffer[0] = '\0';}
-#line 2394 "y.tab.c" /* yacc.c:1661  */
+#line 2400 "y.tab.c" /* yacc.c:1661  */
     break;
 
   case 121:
@@ -2399,11 +2405,11 @@ yyreduce:
             if(!global_st.function_type_check((yyvsp[-4].Token).name, (yyvsp[-1].Token).concat_name))
                 yyerror(type_match_err);
         }
-#line 2403 "y.tab.c" /* yacc.c:1661  */
+#line 2409 "y.tab.c" /* yacc.c:1661  */
     break;
 
 
-#line 2407 "y.tab.c" /* yacc.c:1661  */
+#line 2413 "y.tab.c" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires

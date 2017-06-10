@@ -5,30 +5,30 @@ class proj3
 	method public static int add(int, int)
 	max_stack 15
 	max_locals 15
-{
-	iload 1
-	iload 0
-	ireturn
-}
+	{
+		iload 1
+		iload 0
+		ireturn
+	}
 	method public static void main(java.lang.String[])
 	max_stack 15
 	max_locals 15
-{
-	getstatic int proj3.c
-	getstatic int proj3.a
-	sipush 10
-	invokestatic int proj3.add(int,int)
-	putstatic int proj3.c
-	getstatic int proj3.c
-	sipush 10
-	getstatic java.io.PrintStream java.lang.System.out
-	getstatic int proj3.c
-	invokevirtual void java.io.PrintStream.println(int)
-	getstatic java.io.PrintStream java.lang.System.out
-	getstatic int proj3.c
-	invokevirtual void java.io.PrintStream.println(int)
-	getstatic java.io.PrintStream java.lang.System.out
-	ldc "Hello World" 
-	invokevirtual void java.io.PrintStream.println(java.lang.String)
-}
+	{
+		getstatic int proj3.c
+		getstatic int proj3.a
+		sipush 10
+		invokestatic int proj3.add(int,int)
+		putstatic int proj3.c
+		getstatic int proj3.c
+		sipush 10
+		getstatic java.io.PrintStream java.lang.System.out
+		getstatic int proj3.c
+		invokevirtual void java.io.PrintStream.println(int)
+		getstatic java.io.PrintStream java.lang.System.out
+		getstatic int proj3.c
+		invokevirtual void java.io.PrintStream.println(int)
+		getstatic java.io.PrintStream java.lang.System.out
+		ldc "Hello World" 
+		invokevirtual void java.io.PrintStream.println(java.lang.String)
+	}
 }
