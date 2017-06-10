@@ -8,6 +8,7 @@ FILE *java_code;
 
 symbol_table global_st;
 int variable_type; // 0=> int 1=> bool 2=> string 3=>real
+int label_index = 0; // for goto label
 bool const_flag = false;
 enum Type_enum{T_INT = 0, T_BOOL = 1, T_STR, T_REAL};
 enum State_enum{S_PRIMITIVE = 0, S_ID = 1, S_ARRAY = 2};
@@ -178,16 +179,16 @@ char args_buffer[256];
             array_element{$$ = $1;};
     // math operator Priority  
     op_order2: '^' ;
-    op_order3: '*' | '/' | '%' ;
-    op_order4: '+' | '-' ;
-    op_order5: '<' | '>' | LESS_EQUAL | GREAT_EQUAL | EQUAL | NOT_EQUAL;
-    op_order6: '!' ;
-    op_order7: '&' ;
-    op_order8: '|' ;
+    // op_order3: '*' | '/' | '%' ;
+    // op_order4: '+' | '-' ;
+    // op_order5: '<' | '>' | LESS_EQUAL | GREAT_EQUAL | EQUAL | NOT_EQUAL;
+    // op_order6: '!' ;
+    // op_order7: '&' ;
+    // op_order8: '|' ;
 
     
     program: //start program
-        statements{Trace("Reducing to program\n");};
+        statements{ Trace("Reducing to program\n");};
     statements: //statements can be a one statement or statements
         statement | statement statements;
     statement: 
@@ -382,12 +383,12 @@ char args_buffer[256];
             if(!global_st.declared($2.name, v))
                 yyerror(declared_err);
             // global variable
-            if(global_st.check_global())
+            if(global_st.check_global()){
                 if($5.flag == false)
                     fprintf(java_code, "\tfield static int %s = %d\n", $2.name, 0);
                 else
                     fprintf(java_code, "\tfield static int %s = %d\n", $2.name, 1);
-
+            }
 
         }|
         VAR identifier_list STRING '=' STR { 
@@ -451,13 +452,13 @@ char args_buffer[256];
                 yyerror(declared_err);
         };
     simple_statement: //include varialbe or array assign and function call
-        object '=' mix_exp { 
+        ID '=' mix_exp { 
             //type check
-            if($1.state == S_ARRAY){
-                if(global_st.lookup_array($1.name, $1.arr_idx).type != $3.token_type)
-                    yyerror(type_match_err);
-            }
-            else if($1.state == S_ID){
+            // if($1.state == S_ARRAY){
+            //     if(global_st.lookup_array($1.name, $1.arr_idx).type != $3.token_type)
+            //         yyerror(type_match_err);
+            // }
+            // else if($1.state == S_ID){
                 variable left_v = global_st.lookup_variable($1.name);
                 if(left_v.type != $3.token_type)
                     yyerror(type_match_err);
@@ -466,7 +467,7 @@ char args_buffer[256];
                     fprintf(java_code, "\t\tputstatic int proj3.%s\n", $1.name);
                 else                    
                     fprintf(java_code, "\t\tistore %d\n", left_v.virtual_index);
-            }
+            // }
 
 
             //get value
@@ -486,14 +487,14 @@ char args_buffer[256];
             
             //assign
             //todo: this just push type bcz it can not calcualate
-            if($1.state == S_ARRAY){
-                if(!global_st.assign_array_by_id($1.name, $1.arr_idx, v))
-                    yyerror(type_match_err);
-            }
-            else if($1.state == S_ID){
-                if(!global_st.assign($1.name, v))
-                    yyerror(type_match_err);
-            }
+            // if($1.state == S_ARRAY){
+            //     if(!global_st.assign_array_by_id($1.name, $1.arr_idx, v))
+            //         yyerror(type_match_err);
+            // }
+            // else if($1.state == S_ID){
+            if(!global_st.assign($1.name, v))
+                yyerror(type_match_err);
+            // }
             //if it is primitive
             else {
                 if(!global_st.assign($1.name, v))
@@ -524,16 +525,47 @@ char args_buffer[256];
         func_invoke{$$ = $1;}|
         object {$$ = $1;}|
         primitive {$$ = $1;}|
-        expression op_order4 expression {
+        // expression op_order4 expression {
+        //     if($1.token_type != $3.token_type)
+        //         yyerror(type_match_err);
+        //     $$ = $1;
+        // }| 
+        expression '+' expression {
             if($1.token_type != $3.token_type)
                 yyerror(type_match_err);
             $$ = $1;
+            fprintf(java_code, "\t\tiadd\n");
         }| 
-        expression op_order3 expression {
+        expression '-' expression {
             if($1.token_type != $3.token_type)
                 yyerror(type_match_err);
             $$ = $1;
+            fprintf(java_code, "\t\tisub\n");
         }| 
+        expression '*' expression {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            fprintf(java_code, "\t\timul\n");
+        }| 
+        expression '/' expression {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            fprintf(java_code, "\t\tidiv\n");
+        }| 
+        expression '%' expression {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            fprintf(java_code, "\t\tirem\n");
+        }| 
+        // expression op_order3 expression {
+        //     if($1.token_type != $3.token_type)
+        //         yyerror(type_match_err);
+        //     $$ = $1;
+        // }|
+
         expression op_order2 expression {
             if($1.token_type != $3.token_type)
                 yyerror(type_match_err);
@@ -541,6 +573,8 @@ char args_buffer[256];
         }| 
         '-' expression %prec UMINUS  {
             $$ = $2;
+            fprintf(java_code, "\t\tineg\n");
+
         }|
         '(' expression ')'{
             $$ = $2;
@@ -549,29 +583,101 @@ char args_buffer[256];
         expression {$$ = $1;}|
         '(' bool_exp ')'{$$ = $2;}|
         '!' bool_exp {$$.token_type = T_BOOL;}|
-        bool_exp op_order8 bool_exp {
+        bool_exp '|' bool_exp {
             if($1.token_type != $3.token_type)
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tior\n");
+
         }| 
-        bool_exp op_order7 bool_exp {
+        bool_exp '&' bool_exp {
             if($1.token_type != $3.token_type)
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tiand\n");
+
         }| 
-        bool_exp op_order6 bool_exp {
+        bool_exp '!' bool_exp {
             if($1.token_type != $3.token_type)
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tixor\n");
         }| 
-        bool_exp op_order5 bool_exp {
+        bool_exp '<' bool_exp {
             if($1.token_type != $3.token_type)
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tiflt L%d\n", label_index);
+            fprintf(java_code, "\t\ticonst_0\n");
+            fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
+            fprintf(java_code, "\tL%d:\ticonst_1\n",label_index);
+            fprintf(java_code, "\tL%d:\n",label_index+1);
+            label_index +=2;
+        }|
+        bool_exp '>' bool_exp {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            $$.token_type = T_BOOL;
+            printf("tewstweaeae war a\ndwadwadad\ndwadwadad\ndwadwadad\ndwadwadad\ndwadwadad\n");
+            fprintf(java_code, "\t\tifgt L%d\n", label_index);
+            fprintf(java_code, "\t\ticonst_0\n");
+            fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
+            fprintf(java_code, "\tL%d:\ticonst_1\n",label_index);
+            fprintf(java_code, "\tL%d:\n",label_index+1);
+            label_index +=2;
+        }|
+        bool_exp EQUAL bool_exp {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tifeq L%d\n", label_index);
+            fprintf(java_code, "\t\ticonst_0\n");
+            fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
+            fprintf(java_code, "\tL%d:\ticonst_1\n",label_index);
+            fprintf(java_code, "\tL%d:\n",label_index+1);
+            label_index +=2;
+        }|
+        bool_exp LESS_EQUAL bool_exp {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tifle L%d\n", label_index);
+            fprintf(java_code, "\t\ticonst_0\n");
+            fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
+            fprintf(java_code, "\tL%d:\ticonst_1\n",label_index);
+            fprintf(java_code, "\tL%d:\n",label_index+1);
+            label_index +=2;
+        }|
+        bool_exp GREAT_EQUAL bool_exp {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tifge L%d\n", label_index);
+            fprintf(java_code, "\t\ticonst_0\n");
+            fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
+            fprintf(java_code, "\tL%d:\ticonst_1\n",label_index);
+            fprintf(java_code, "\tL%d:\n",label_index+1);
+            label_index +=2;
+        }|
+        bool_exp NOT_EQUAL bool_exp {
+            if($1.token_type != $3.token_type)
+                yyerror(type_match_err);
+            $$ = $1;
+            $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tifne L%d\n", label_index);
+            fprintf(java_code, "\t\ticonst_0\n");
+            fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
+            fprintf(java_code, "\tL%d:\ticonst_1\n",label_index);
+            fprintf(java_code, "\tL%d:\n",label_index+1);
+            label_index +=2;
         };
     mix_exp:
         bool_exp {$$ = $1;}|

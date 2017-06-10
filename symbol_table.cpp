@@ -202,7 +202,7 @@ bool symbol_table::assign_for_func(std::string key,variable v){
     return true;
 }
 void symbol_table::push_table(){
-    std::cout << "push table========================= cur size = " << (int)tableEntrys.size()<< std::endl;
+    // std::cout << "push table========================= cur size = " << (int)tableEntrys.size()<< std::endl;
 
     // reset local variable
     if((int)tableEntrys.size() == 1){

@@ -138,7 +138,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 25 "yacc.y" /* yacc.c:1915  */
+#line 26 "yacc.y" /* yacc.c:1915  */
 
     struct
     {
