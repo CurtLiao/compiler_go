@@ -116,21 +116,21 @@ char args_buffer[256];
         $$.token_type = T_INT; 
         $$.state = S_PRIMITIVE; 
         $$.val = $1.val;  
-        fprintf(java_code, "\tsipush %d\n", $1.val);
+        fprintf(java_code, "\t\tsipush %d\n", $1.val);
     }| bool_type{ 
         $$.token_type = T_BOOL; 
         $$.state = S_PRIMITIVE; 
         $$.flag = $1.flag; 
         if($$.flag)    
-            fprintf(java_code, "\tsipush %d\n", 1);
+            fprintf(java_code, "\t\tsipush %d\n", 1);
         else        
-            fprintf(java_code, "\tsipush %d\n", 0);
+            fprintf(java_code, "\t\tsipush %d\n", 0);
 
     } | STR{ 
         $$.token_type = T_STR; 
         $$.state = S_PRIMITIVE; 
         $$.name = $1.name; 
-        fprintf(java_code, "\tldc \"%s\" \n", $1.name);
+        fprintf(java_code, "\t\tldc \"%s\" \n", $1.name);
 
             
 
@@ -171,9 +171,9 @@ char args_buffer[256];
                 variable left_v = global_st.lookup_variable($1.name);
                 $$.token_type = left_v.type; 
                 if(left_v.is_global)
-                    fprintf(java_code, "\tgetstatic int proj3.%s\n", $1.name);
+                    fprintf(java_code, "\t\tgetstatic int proj3.%s\n", $1.name);
                 else                    
-                    fprintf(java_code, "\tiload %d\n", left_v.virtual_index);
+                    fprintf(java_code, "\t\tiload %d\n", left_v.virtual_index);
             }| 
             array_element{$$ = $1;};
     // math operator Priority  
@@ -206,19 +206,19 @@ char args_buffer[256];
             global_st.function_declared($2.token_type, $3.name);
             if (strcmp($3.name, "main") == 0){
                 if($2.token_type == T_INT)
-                    fprintf(java_code,"\tmethod public static int main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                    fprintf(java_code,"\tmethod public static int main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
                 else if($2.token_type == T_BOOL)
-                    fprintf(java_code,"\tmethod public static boolean main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                    fprintf(java_code,"\tmethod public static boolean main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
                 else if($2.token_type == T_STR)
-                    fprintf(java_code,"\tmethod public static string main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                    fprintf(java_code,"\tmethod public static string main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
             }
             else{
                 if($2.token_type == T_INT)
-                    fprintf(java_code,"\tmethod public static int %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", $3.name);
+                    fprintf(java_code,"\tmethod public static int %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
                 else if($2.token_type == T_BOOL)
-                    fprintf(java_code,"\tmethod public static boolean %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", $3.name);
+                    fprintf(java_code,"\tmethod public static boolean %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
                 else if($2.token_type == T_STR)
-                    fprintf(java_code,"\tmethod public static string %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", $3.name);
+                    fprintf(java_code,"\tmethod public static string %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
             }
             // fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
             
@@ -248,16 +248,16 @@ char args_buffer[256];
                 if(i != 0)
                      fprintf(java_code, ", ");   
             }
-            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
         
         } compound {fprintf(java_code,"}\n");global_st.pop_table();}|
         FUNC VOID ID '(' ')'{
             global_st.function_declared(-1, $3.name);
             if (strcmp($3.name, "main") == 0){
-                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
             }
             else{
-                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", $3.name);
+                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
             }
 
         } compound {fprintf(java_code,"}\n");}|
@@ -279,15 +279,15 @@ char args_buffer[256];
                 if(i != 0)
                      fprintf(java_code, ", ");   
             }
-            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
         } compound {fprintf(java_code,"}\n");global_st.pop_table();}|
         FUNC ID '(' ')'{
             global_st.function_declared(-1, $2.name);
             if (strcmp($2.name, "main") == 0){
-                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
             }
             else{
-                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n{\n", $2.name);
+                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $2.name);
             }        } compound|
         FUNC ID '('{ 
             global_st.push_table(); 
@@ -308,7 +308,7 @@ char args_buffer[256];
                 if(i != 0)
                      fprintf(java_code, ", ");   
             }
-            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n{\n");
+            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
         } compound{fprintf(java_code,"\t}\n");global_st.pop_table();};        
     formal_args: 
         // like   a int , b int , .... 
@@ -463,9 +463,9 @@ char args_buffer[256];
                     yyerror(type_match_err);
                 //check global or local and assign
                 if(left_v.is_global)
-                    fprintf(java_code, "\tputstatic int proj3.%s\n", $1.name);
+                    fprintf(java_code, "\t\tputstatic int proj3.%s\n", $1.name);
                 else                    
-                    fprintf(java_code, "\tistore %d\n", left_v.virtual_index);
+                    fprintf(java_code, "\t\tistore %d\n", left_v.virtual_index);
             }
 
 
@@ -500,25 +500,25 @@ char args_buffer[256];
                     yyerror(type_match_err);
             }
         }|
-        PRINT {fprintf(java_code,"\tgetstatic java.io.PrintStream java.lang.System.out\n");} 
+        PRINT {fprintf(java_code,"\t\tgetstatic java.io.PrintStream java.lang.System.out\n");} 
         expression{
             printf("test type %d\n", $3.token_type);
             if($3.token_type == T_STR)
-                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
             else
-                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
         } |
-        PRINTLN {fprintf(java_code,"\tgetstatic java.io.PrintStream java.lang.System.out\n");} 
+        PRINTLN {fprintf(java_code,"\t\tgetstatic java.io.PrintStream java.lang.System.out\n");} 
         expression{
             printf("test type %d\n", $3.token_type);
             if($3.token_type == T_STR)
-                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
             else
-                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
         } |
         READ ID |
-        RETURN expression{    fprintf(java_code,"\tireturn\n");}|
-        RETURN {    fprintf(java_code,"\tireturn\n");};
+        RETURN expression{    fprintf(java_code,"\t\tireturn\n");}|
+        RETURN {    fprintf(java_code,"\t\tireturn\n");};
 
     expression: // math experssion and boolean expression
         func_invoke{$$ = $1;}|
@@ -590,7 +590,7 @@ char args_buffer[256];
             variable v = global_st.lookup_variable($1.name);
             $$.token_type = v.type;
             // printf("id type = %d\n", $$.token_type);
-            fprintf(java_code,"\tinvokestatic %s proj3.%s(%s)\n", global_st.variable_type_str($1.name).c_str(), $1.name, global_st.function_args_type($1.name).c_str());
+            fprintf(java_code,"\t\tinvokestatic %s proj3.%s(%s)\n", global_st.variable_type_str($1.name).c_str(), $1.name, global_st.function_args_type($1.name).c_str());
             
 
         }|
@@ -600,7 +600,7 @@ char args_buffer[256];
             variable v = global_st.lookup_variable($1.name);
             $$.token_type = v.type;
             // printf("id type = %d\n", $$.token_type);
-            fprintf(java_code,"\tinvokestatic %s proj3.%s()\n", global_st.variable_type_str($1.name).c_str(), $1.name);
+            fprintf(java_code,"\t\tinvokestatic %s proj3.%s()\n", global_st.variable_type_str($1.name).c_str(), $1.name);
 
         };
     condition:
