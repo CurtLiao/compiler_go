@@ -26,13 +26,15 @@ struct variable{
 	int func_type[20];// save the func args type
 	int func_size;// save the func args count
 	std::string name;
+	bool is_global;
+	int virtual_index;
 	union{
 		variable_data data;	
 	};
 	
 	int type;// 0 = int 1 = bool 2 = str 3 = real_numver
 	int s_type;// 0 = normal 1 = const 2 = function declare
-	variable():type(0), s_type(0), func_size(0){
+	variable():type(0), s_type(0), func_size(0), is_global(false){
 		data.value = 0;
 	}
 	variable(int type1): type(type1), s_type(0), func_size(0){	}
@@ -54,11 +56,15 @@ struct variable{
 		type = v.type;
 		s_type = v.s_type;
 		data = v.data;
+		is_global = v.is_global;
+		virtual_index = v.virtual_index;
 	}
 	void copy(variable v){
 		type = v.type;
 		s_type = v.s_type;
 		data = v.data;
+		is_global = v.is_global;
+		virtual_index = v.virtual_index;
 	}
 	void init_data(int type){
 		char* c = new char[1];
@@ -97,11 +103,14 @@ public:
     void dump();
     void push_table();
 	void pop_table();
+	bool check_global();
 	const char* function_type_string_concat(char *name, int type);
 	char* concat_array_element(std::string key, int index);
+    std::string function_args_type(char *func_name);
+    std::string variable_type_str(char *func_name);
     variable lookup_variable(std::string key);
 	variable lookup_array(std::string key, int index);
-
+	int stack_index = 1;
 private:
 	std::vector<symbol_table_entry> tableEntrys;
 	std::string const_error_msg = "The variable is a constant, can not reassign!";

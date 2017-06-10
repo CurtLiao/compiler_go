@@ -57,6 +57,10 @@ bool symbol_table::declared(std::string keys,variable v){
         }
         variable dec_v;
         dec_v.copy(key.c_str(), v);
+        dec_v.virtual_index = stack_index++;
+        if(tableEntrys.size() == 1){
+            dec_v.is_global = true;
+        }
         tableEntrys.back().ids.push_back(dec_v);
 
     } while (iss);
@@ -64,10 +68,15 @@ bool symbol_table::declared(std::string keys,variable v){
 }
 void symbol_table::declared_noncheck(std::string key,variable v){
     
-    std::cout << "declared keys : " << key << std::endl;
+    std::cout << "declared keys : " << key << " stack_index = " << stack_index << std::endl;
     variable dec_v;
     dec_v.copy(key.c_str(), v);
+    // it is argv
+    dec_v.is_global = false;
+    dec_v.virtual_index = stack_index++;
+
     tableEntrys.back().ids.push_back(dec_v);
+
 }
 bool symbol_table::declared_array(std::string keys,variable v, int array_size){
     std::istringstream iss(keys);
@@ -193,6 +202,12 @@ bool symbol_table::assign_for_func(std::string key,variable v){
     return true;
 }
 void symbol_table::push_table(){
+    std::cout << "push table========================= cur size = " << (int)tableEntrys.size()<< std::endl;
+
+    // reset local variable
+    if((int)tableEntrys.size() == 1){
+        stack_index = 1;
+    }
     tableEntrys.push_back(symbol_table_entry());
 }
 void symbol_table::pop_table(){
@@ -248,6 +263,11 @@ std::string symbol_table::s_type_name(int value){
     return "unknow type";
 
 }
+bool symbol_table::check_global(){
+    if(tableEntrys.size() == 1)
+        return true;
+    return false;
+}
 
 void symbol_table::function_concat(int type, char *name){
     // store function args type
@@ -261,8 +281,11 @@ void symbol_table::function_concat(int type, char *name){
 void symbol_table::function_declared(int type, char *name){
     variable v(type, STYPE_FUNC);
     v.name = name;
+    // v.virtual_index = stack_index++;
+    stack_index = 0;
     tableEntrys.front().ids.push_back(v);
     func_name = name;
+
 }
 bool symbol_table::function_type_check(char *func_name, char* args){
     variable v = lookup_variable(func_name);
@@ -287,4 +310,33 @@ bool symbol_table::function_type_check(char *func_name, char* args){
         return true;
     }
     return(false);
+}
+std::string symbol_table::function_args_type(char *func_name){
+    variable v = lookup_variable(func_name);
+    std::string func_type_str = "";
+    for(int i = 0; i < v.func_size; ++i){
+        
+        //check name and type and const;
+        if(v.func_type[i] == 0)
+            func_type_str = "int" + func_type_str;
+        else if(v.func_type[i] == 1)
+            func_type_str = "boolean" + func_type_str;
+        else if(v.func_type[i] == 2)
+            func_type_str = "string" + func_type_str;
+        
+        if(i != v.func_size - 1)
+            func_type_str = "," + func_type_str ;
+    }
+    return(func_type_str);
+}
+std::string symbol_table::variable_type_str(char *func_name){
+    variable v = lookup_variable(func_name);
+    std::string func_type_str = "";
+    if(v.type == 0)
+        return("int");
+    if(v.type == 1)
+        return("boolean");
+    if(v.type == 2)
+        return("string");
+    return("int");
 }

@@ -1,0 +1,28 @@
+ldc1 : 將index1的local variable丟進stack內
+bipush x: 丟一個常數到stack -128~127
+sipush x: 丟一個常數到stack 2byte 可以丟比較大 所以應該是-32768 ~ 32767
+若是丟入參數內的
+e.g.
+	add(int a, int b){
+
+	}
+	這種時候要拿 a 只需要打iload1 拿b就是 iload2 
+invokestatic int project3().function名稱 
+field static int %s 全域變數 以及位置
+putstatic int proj3.%s 全域變數丟入opstack
+
+印東西的寫法
+getstatic java.io.PrintStream java.lang.System.out
+ldc "Hello World!"
+invokevirtual void java.io.PrintStream.println(java.lang.String)
+
+mac使用javaa
+要先下載林同學的檔案
+然後在資料夾內使用make clean
+編譯的時候要改一下main.c的main
+他沒寫回傳會編錯
+打開main.c 
+將main 改為 int main
+然後再下make指令
+之後就會編譯好
+使用  ./javaa filename

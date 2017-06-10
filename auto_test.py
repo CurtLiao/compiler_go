@@ -7,18 +7,20 @@ import os
 # ./scanner <  hello_world.txt
  
 if __name__ == '__main__':
-	filename = "hello_world.txt"
-	os.system("lex source.l")
-	# os.system("cc -o scanner -O lex.yy.c -ll")
-	# os.system("g++ -o scanner -O lex.yy.c -ll")
-	os.rename("lex.yy.c", "lex.yy.cpp")
-	# os.system("g++ -o scanner -O lex.yy.cpp -ll")
-	os.system("g++ -o scanner -O *.cpp -ll")
+	filename = "example.go"		
+	os.system("bison -y -d yacc.y")
+	os.system("flex source.l")
+	# os.rename("lex.yy.c", "lex.yy.cpp")
+	os.system("mv lex.yy.c lex.yy.cpp")
+	os.system("g++ -std=c++11 lex.yy.cpp y.tab.c symbol_table.cpp -ll -ly")
+	
 
-	# os.system("cc -o scanner -O lex.yy.c -lfl")
+	# if(len(sys.argv) == 2):
+	# 	filename = sys.argv[1]
+	# # print("test filename => ", filename)
+	os.system("./a.out < " + filename) 
+	jasm_filename = "b10315007"
+	os.system("../javaaPortable/javaa ./%s.jasm" % jasm_filename)
+	os.system("java %s.class" % jasm_filename)
 
-	if(len(sys.argv) == 2):
-		filename = sys.argv[1]
-	# print("test filename => ", filename)
-	# os.system("./scanner < " + filename)
 	sys.exit()
