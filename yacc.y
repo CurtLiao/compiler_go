@@ -126,7 +126,15 @@ char args_buffer[256];
         else        
             fprintf(java_code, "\tsipush %d\n", 0);
 
-    } | STR{ $$.token_type = T_STR; $$.state = S_PRIMITIVE; $$.name = $1.name; } | REAL_NUMBER{ $$.token_type = T_REAL; $$.state = S_PRIMITIVE; $$.name = $1.name; };
+    } | STR{ 
+        $$.token_type = T_STR; 
+        $$.state = S_PRIMITIVE; 
+        $$.name = $1.name; 
+        fprintf(java_code, "\tldc \"%s\" \n", $1.name);
+
+            
+
+    } | REAL_NUMBER{ $$.token_type = T_REAL; $$.state = S_PRIMITIVE; $$.name = $1.name; };
     bool_type: TRUE{$$.token_type = T_BOOL; $$.state = S_PRIMITIVE; $$.flag = true;}| FALSE{$$.token_type = T_BOOL; $$.state = S_PRIMITIVE; $$.flag = false;};
     // for access array element
     array_element:
@@ -492,8 +500,22 @@ char args_buffer[256];
                     yyerror(type_match_err);
             }
         }|
-        PRINT expression |
-        PRINTLN expression |
+        PRINT {fprintf(java_code,"\tgetstatic java.io.PrintStream java.lang.System.out\n");} 
+        expression{
+            printf("test type %d\n", $3.token_type);
+            if($3.token_type == T_STR)
+                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
+            else
+                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
+        } |
+        PRINTLN {fprintf(java_code,"\tgetstatic java.io.PrintStream java.lang.System.out\n");} 
+        expression{
+            printf("test type %d\n", $3.token_type);
+            if($3.token_type == T_STR)
+                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
+            else
+                fprintf(java_code,"\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
+        } |
         READ ID |
         RETURN expression{    fprintf(java_code,"\tireturn\n");}|
         RETURN {    fprintf(java_code,"\tireturn\n");};
@@ -575,8 +597,11 @@ char args_buffer[256];
         ID '('')'{
             if(!global_st.function_type_check($1.name, ""))
                 yyerror(type_match_err);
-            $$.token_type = global_st.lookup_variable($1.name).type;
+            variable v = global_st.lookup_variable($1.name);
+            $$.token_type = v.type;
             // printf("id type = %d\n", $$.token_type);
+            fprintf(java_code,"\tinvokestatic %s proj3.%s()\n", global_st.variable_type_str($1.name).c_str(), $1.name);
+
         };
     condition:
         IF '(' bool_exp ')' statement|

@@ -1,4 +1,6 @@
 ldc1 : 將index1的local variable丟進stack內
+ldc "The sum is "  這樣就是丟入字串
+
 bipush x: 丟一個常數到stack -128~127
 sipush x: 丟一個常數到stack 2byte 可以丟比較大 所以應該是-32768 ~ 32767
 若是丟入參數內的
