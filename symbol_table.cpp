@@ -73,7 +73,7 @@ void symbol_table::declared_noncheck(std::string key,variable v){
     dec_v.copy(key.c_str(), v);
     // it is argv
     dec_v.is_global = false;
-    dec_v.virtual_index = stack_index++;
+    // dec_v.virtual_index = stack_index++;
 
     tableEntrys.back().ids.push_back(dec_v);
 
@@ -285,6 +285,13 @@ void symbol_table::function_declared(int type, char *name){
     stack_index = 0;
     tableEntrys.front().ids.push_back(v);
     func_name = name;
+
+}
+void symbol_table::args_encode_index(){
+
+    for(int i = tableEntrys.back().ids.size() - 1; i >= 0 ; --i){
+        tableEntrys.back().ids.at(i).virtual_index = tableEntrys.back().ids.size() - 1 - i;
+    }
 
 }
 bool symbol_table::function_type_check(char *func_name, char* args){

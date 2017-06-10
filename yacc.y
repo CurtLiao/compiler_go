@@ -236,6 +236,7 @@ char args_buffer[256];
                 fprintf(java_code,"\tmethod public static string %s", $3.name);
 
         } formal_args ')'{
+            global_st.args_encode_index();
             variable v = global_st.lookup_variable($3.name);
             fprintf(java_code,"(");
             for(int i = v.func_size - 1; i >= 0 ; --i){
@@ -250,7 +251,7 @@ char args_buffer[256];
                      fprintf(java_code, ", ");   
             }
             fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
-        
+            
         } compound {fprintf(java_code,"\t}\n");global_st.pop_table();}|
         FUNC VOID ID '(' ')'{
             global_st.function_declared(-1, $3.name);
@@ -268,6 +269,7 @@ char args_buffer[256];
             fprintf(java_code,"\tmethod public static void %s", $3.name);
 
         } formal_args ')'{
+            global_st.args_encode_index();
             variable v = global_st.lookup_variable($3.name);
             fprintf(java_code,"(");
             for(int i = v.func_size - 1; i >= 0 ; --i){
@@ -296,6 +298,7 @@ char args_buffer[256];
             fprintf(java_code,"\tmethod public static void %s(", $2.name);
 
         } formal_args ')'{
+            global_st.args_encode_index();
             variable v = global_st.lookup_variable($2.name);
             fprintf(java_code,"(");
             for(int i = v.func_size - 1; i >= 0 ; --i){

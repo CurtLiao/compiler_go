@@ -6,8 +6,8 @@ class proj3
 	max_stack 15
 	max_locals 15
 	{
-		iload 1
 		iload 0
+		iload 1
 		iadd
 		ireturn
 	}

@@ -100,6 +100,7 @@ public:
 	void declared_noncheck(std::string key,variable v);
     void function_concat(int type, char *name);
 	void function_declared(int type, char *name);
+    void args_encode_index();
     void dump();
     void push_table();
 	void pop_table();
