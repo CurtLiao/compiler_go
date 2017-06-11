@@ -7,7 +7,7 @@ import os
 # ./scanner <  hello_world.txt
  
 if __name__ == '__main__':
-	filename = "example.go"		
+	filename = "test.go"		
 	os.system("bison -y -d yacc.y")
 	os.system("flex source.l")
 	# os.rename("lex.yy.c", "lex.yy.cpp")

@@ -119,21 +119,24 @@ char args_buffer[256];
         $$.token_type = T_INT; 
         $$.state = S_PRIMITIVE; 
         $$.val = $1.val;  
-        fprintf(java_code, "\t\tsipush %d\n", $1.val);
+        if(const_flag != true)
+            fprintf(java_code, "\t\tsipush %d\n", $1.val);
     }| bool_type{ 
         $$.token_type = T_BOOL; 
         $$.state = S_PRIMITIVE; 
         $$.flag = $1.flag; 
-        if($$.flag)    
-            fprintf(java_code, "\t\tsipush %d\n", 1);
-        else        
-            fprintf(java_code, "\t\tsipush %d\n", 0);
+        if(const_flag != true)
+            if($$.flag)    
+                fprintf(java_code, "\t\tsipush %d\n", 1);
+            else        
+                fprintf(java_code, "\t\tsipush %d\n", 0);
 
     } | STR{ 
         $$.token_type = T_STR; 
         $$.state = S_PRIMITIVE; 
         $$.name = $1.name; 
-        fprintf(java_code, "\t\tldc \"%s\" \n", $1.name);
+        if(const_flag != true)
+            fprintf(java_code, "\t\tldc \"%s\" \n", $1.name);
 
             
 
@@ -445,16 +448,34 @@ char args_buffer[256];
             
         }|
         // const and set flag to remember it is const can not assign
-        CONST identifier_list '=' primitive {
-            variable v($4.token_type, 1); 
-            if($4.token_type == T_INT)
-                v.data.value = $4.val;
-            else if($4.token_type == T_BOOL)
-                v.data.flag = $4.flag;
+        CONST{
+            const_flag = true;
+        } identifier_list '=' primitive {
+            variable v($5.token_type, 1); 
+            if($5.token_type == T_INT)
+                v.data.value = $5.val;
+            else if($5.token_type == T_BOOL)
+                v.data.flag = $5.flag;
             else
-                v.data.str = $4.name;
-            if(!global_st.declared($2.name, v))
+                v.data.str = $5.name;
+            if(!global_st.declared($3.name, v))
                 yyerror(declared_err);
+            
+            if(global_st.check_global()){
+                if($5.token_type == T_INT)
+                    fprintf(java_code, "\tfield static int %s = %d\n", $3.name, $5.val);
+                else if($5.token_type == T_BOOL)
+                    fprintf(java_code, "\tfield static string %s = %s\n", $3.name, $5.name);
+                else{
+                    if($5.flag == false)
+                        fprintf(java_code, "\tfield static int %s = %d\n", $3.name, 0);
+                    else
+                        fprintf(java_code, "\tfield static int %s = %d\n", $3.name, 1);    
+                }
+                
+            }
+            const_flag = false;
+
         };
     simple_statement: //include varialbe or array assign and function call
         ID '=' mix_exp { 
@@ -740,8 +761,6 @@ char args_buffer[256];
             //save index for else
             label_stack[label_stack_top++] = label_index;
             // fprintf(java_code,"\t\ticonst_0\n");
-
-
             fprintf(java_code,"\t\tifeq L%d\n", label_index);
             label_index += 1;
         }statement{
@@ -756,7 +775,26 @@ char args_buffer[256];
         FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
         FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} compound|
         FOR '(' statement ';' bool_exp ';' statement ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
-        FOR '(' statement ';' bool_exp ';' statement ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} compound;
+        FOR '(' statement ';'{
+            label_stack[label_stack_top++] = label_index;
+            fprintf(java_code,"\tL%d\n", label_index);
+            label_index += 4;
+        } bool_exp ';'{
+            //go exit
+            fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
+            //go to Lbody
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
+            //Lpost
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
+        } statement ')'{
+            if($6.token_type != T_BOOL){
+                yyerror(type_match_err);
+            }
+            //go to Ltest
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);
+            //Lexit
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 3);
+        } compound;
     go:
         GO ID '('')'{
             if(!global_st.function_type_check($2.name, ""))

@@ -1,19 +1,20 @@
-/*
- * hi, let's test
+/* Sigma.go
  *
- * =======================
- *
- * date:20170525
- * author:xiaosean 
- *
+ * Compute sum = 1 + 2 + ... + n
  */
 
-var a int = 3
-var b int = 4
-var c int = 5
-func int test(a int , b bool, c string) {
-	print(1 + 2)
+// variables
+const n = 10
+var sum int = 0
+var index int
+  
+// main function
+func void main ( ) {
+  for (index = 0; index <= n; index = index + 1) {
+    sum = sum + index
+  } 
+  print "The sum is "
+  println sum
 }
-func int main() {
-	print(a + b)
-}
+
+
