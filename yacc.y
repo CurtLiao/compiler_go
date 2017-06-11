@@ -56,7 +56,7 @@ char args_buffer[256];
 %type<Token> primitive
 %type<Token> expression
 %type<Token> bool_exp
-%type<Token> mix_exp
+// %type<Token> mix_exp
 %type<Token> array_element
 %type<Token> object
 %type<Token> func_invoke
@@ -347,14 +347,14 @@ char args_buffer[256];
     // identifier list can pass one or more id
     // it can handle id and primitive
     argument_list:          
-        mix_exp ',' argument_list{
+        bool_exp ',' argument_list{
             $$.concat_name = (char*)malloc(2*sizeof(char)); 
             sprintf($$.concat_name, "%d", $1.token_type);
             strcat($$.concat_name, " ");
             strcat($$.concat_name, $3.concat_name);
             printf("\t args in mix_exp, arg_list of argument_list|| id = %s\n", $$.concat_name); 
         }|
-        mix_exp     {
+        bool_exp     {
             $$.concat_name = (char*)malloc(2*sizeof(char)); 
             sprintf($$.concat_name, "%d", $1.token_type);
             printf("\t args in mix_exp of argument_list|| id = %s\n", $$.concat_name); 
@@ -478,7 +478,7 @@ char args_buffer[256];
 
         };
     simple_statement: //include varialbe or array assign and function call
-        ID '=' mix_exp { 
+        ID '=' bool_exp { 
             //type check
             // if($1.state == S_ARRAY){
             //     if(global_st.lookup_array($1.name, $1.arr_idx).type != $3.token_type)
@@ -710,9 +710,9 @@ char args_buffer[256];
             fprintf(java_code, "\tL%d:\n",label_index+1);
             label_index +=2;
         };
-    mix_exp:
-        bool_exp {$$ = $1;}|
-        expression {$$ = $1;}; //becaz mix_exp will go to exp
+    // mix_exp:
+    //     bool_exp {$$ = $1;}|
+    //     expression {$$ = $1;}; //becaz mix_exp will go to exp
 
 
     compound:
@@ -757,7 +757,7 @@ char args_buffer[256];
             fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top] + 1);
         }
         |
-        IF '(' bool_exp ')' {
+        IF '(' bool_exp ')'{
             //save index for else
             label_stack[label_stack_top++] = label_index;
             // fprintf(java_code,"\t\ticonst_0\n");
@@ -774,13 +774,35 @@ char args_buffer[256];
         // FOR '(' statement ';' bool_exp ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} compound|
         // FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
         // FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} compound|
-        FOR '(' statement ';'{
-            printf("i am here 1\n");
+        FOR '(' {
+            label_stack[label_stack_top++] = label_index;
+            fprintf(java_code,"\tL%d:\n", label_index);
+            label_index += 4;
+        } bool_exp  ')'{
+        
+            if($4.token_type != T_BOOL){
+                yyerror(type_match_err);
+            }    
+            //go exit
+            fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
+            //go to Lbody
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
+    
+            //Lbody
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
+            
+        } compound{
+            //no Lpost so go to Ltest
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);        
+            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
+
+        }|
+        
+        FOR '('{
             label_stack[label_stack_top++] = label_index;
             fprintf(java_code,"\tL%d:\n", label_index);
             label_index += 4;
         } bool_exp ';'{
-            printf("i am here 2\n");
             //go exit
             fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
             //go to Lbody
@@ -788,7 +810,55 @@ char args_buffer[256];
             //Lpost
             fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
         } statement ')'{
-            printf("i am here 3\n");
+            if($4.token_type != T_BOOL){
+                yyerror(type_match_err);
+            }
+            //go to Ltest
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);
+            //Lbody
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
+            
+        } compound{
+            //go to Lpost
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[--label_stack_top-1] + 1);
+            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
+
+        }|
+        FOR '(' statement ';'{
+            label_stack[label_stack_top++] = label_index;
+            fprintf(java_code,"\tL%d:\n", label_index);
+            label_index += 4;
+        } bool_exp  ')'{
+        
+            if($6.token_type != T_BOOL){
+                yyerror(type_match_err);
+            }    
+            //go exit
+            fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
+            //go to Lbody
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
+    
+            //Lbody
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
+            
+        } compound{
+            //no Lpost so go to Ltest
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);        
+            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
+
+        }|
+        FOR '(' statement ';'{
+            label_stack[label_stack_top++] = label_index;
+            fprintf(java_code,"\tL%d:\n", label_index);
+            label_index += 4;
+        } bool_exp ';'{
+            //go exit
+            fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
+            //go to Lbody
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
+            //Lpost
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
+        } statement ')'{
             if($6.token_type != T_BOOL){
                 yyerror(type_match_err);
             }
