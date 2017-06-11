@@ -9,6 +9,8 @@ FILE *java_code;
 symbol_table global_st;
 int variable_type; // 0=> int 1=> bool 2=> string 3=>real
 int label_index = 0; // for goto label
+int label_stack[10];
+int label_stack_top = 0;
 bool const_flag = false;
 enum Type_enum{T_INT = 0, T_BOOL = 1, T_STR, T_REAL};
 enum State_enum{S_PRIMITIVE = 0, S_ID = 1, S_ARRAY = 2};
@@ -136,7 +138,7 @@ char args_buffer[256];
             
 
     } | REAL_NUMBER{ $$.token_type = T_REAL; $$.state = S_PRIMITIVE; $$.name = $1.name; };
-    bool_type: TRUE{$$.token_type = T_BOOL; $$.state = S_PRIMITIVE; $$.flag = true;}| FALSE{$$.token_type = T_BOOL; $$.state = S_PRIMITIVE; $$.flag = false;};
+    bool_type: TRUE{$$.token_type = T_BOOL; $$.state = S_PRIMITIVE; $$.flag = true; }| FALSE{$$.token_type = T_BOOL; $$.state = S_PRIMITIVE; $$.flag = false;};
     // for access array element
     array_element:
         ID '[' expression ']' {
@@ -614,6 +616,7 @@ char args_buffer[256];
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tisub\n");
             fprintf(java_code, "\t\tiflt L%d\n", label_index);
             fprintf(java_code, "\t\ticonst_0\n");
             fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
@@ -626,7 +629,7 @@ char args_buffer[256];
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
-            printf("tewstweaeae war a\ndwadwadad\ndwadwadad\ndwadwadad\ndwadwadad\ndwadwadad\n");
+            fprintf(java_code, "\t\tisub\n");
             fprintf(java_code, "\t\tifgt L%d\n", label_index);
             fprintf(java_code, "\t\ticonst_0\n");
             fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
@@ -639,6 +642,7 @@ char args_buffer[256];
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tisub\n");
             fprintf(java_code, "\t\tifeq L%d\n", label_index);
             fprintf(java_code, "\t\ticonst_0\n");
             fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
@@ -651,6 +655,7 @@ char args_buffer[256];
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tisub\n");
             fprintf(java_code, "\t\tifle L%d\n", label_index);
             fprintf(java_code, "\t\ticonst_0\n");
             fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
@@ -663,6 +668,7 @@ char args_buffer[256];
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tisub\n");
             fprintf(java_code, "\t\tifge L%d\n", label_index);
             fprintf(java_code, "\t\ticonst_0\n");
             fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
@@ -675,6 +681,7 @@ char args_buffer[256];
                 yyerror(type_match_err);
             $$ = $1;
             $$.token_type = T_BOOL;
+            fprintf(java_code, "\t\tisub\n");
             fprintf(java_code, "\t\tifne L%d\n", label_index);
             fprintf(java_code, "\t\ticonst_0\n");
             fprintf(java_code, "\t\tgoto L%d\n",label_index+1);
@@ -713,8 +720,34 @@ char args_buffer[256];
 
         };
     condition:
-        IF '(' bool_exp ')' statement|
-        IF '(' bool_exp ')' statement ELSE statement;
+        IF '(' bool_exp ')'{
+            printf("in if else\nin if else\nin if else\nin if else\nin if else\nin if else\nin if else\nin if else\n");
+            //save index for else
+            label_stack[label_stack_top++] = label_index;
+            // fprintf(java_code,"\t\ticonst_0\n");
+            fprintf(java_code,"\t\tifeq L%d\n", label_index);
+            label_index += 2;
+        } statement ELSE{
+            //go exit
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 1);
+            //else lable
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1]);
+        } statement{
+            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top] + 1);
+        }
+        |
+        IF '(' bool_exp ')' {
+            //save index for else
+            label_stack[label_stack_top++] = label_index;
+            // fprintf(java_code,"\t\ticonst_0\n");
+
+
+            fprintf(java_code,"\t\tifeq L%d\n", label_index);
+            label_index += 1;
+        }statement{
+            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top]);
+        }
+        ;
     for_loop:
         FOR '(' bool_exp ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
         FOR '(' bool_exp ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} compound|
