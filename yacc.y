@@ -264,7 +264,7 @@ char args_buffer[256];
                 fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
             }
 
-        } compound {fprintf(java_code,"\t}\n");}|
+        } compound {fprintf(java_code,"\t\treturn\n\t}\n");}|
         FUNC VOID ID '('{ 
             global_st.push_table(); 
             global_st.function_declared(-1, $3.name);
@@ -285,7 +285,7 @@ char args_buffer[256];
                      fprintf(java_code, ", ");   
             }
             fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
-        } compound {fprintf(java_code,"\t}\n");global_st.pop_table();}|
+        } compound {fprintf(java_code,"\t\treturn\n\t}\n");global_st.pop_table();}|
         FUNC ID '(' ')'{
             global_st.function_declared(-1, $2.name);
             if (strcmp($2.name, "main") == 0){
@@ -293,7 +293,7 @@ char args_buffer[256];
             }
             else{
                 fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $2.name);
-            }        } compound{fprintf(java_code,"\t}\n");}|
+            }        } compound{fprintf(java_code,"\t\treturn\n\t}\n");}|
         FUNC ID '('{ 
             global_st.push_table(); 
             global_st.function_declared(-1, $2.name);
@@ -315,7 +315,7 @@ char args_buffer[256];
                      fprintf(java_code, ", ");   
             }
             fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
-        } compound{fprintf(java_code,"\t}\n");global_st.pop_table();};        
+        } compound{fprintf(java_code,"\t\treturn\n\t}\n");global_st.pop_table();};        
     formal_args: 
         // like   a int , b int , .... 
         //it will return 0 0 bcz int type i set => 0
@@ -510,9 +510,9 @@ char args_buffer[256];
         expression{
             printf("test type %d\n", $3.token_type);
             if($3.token_type == T_STR)
-                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.print(java.lang.String)\n");
             else
-                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.print(int)\n"); 
         } |
         PRINTLN {fprintf(java_code,"\t\tgetstatic java.io.PrintStream java.lang.System.out\n");} 
         expression{

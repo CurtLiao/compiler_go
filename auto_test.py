@@ -21,6 +21,7 @@ if __name__ == '__main__':
 	os.system("./a.out < " + filename) 
 	jasm_filename = "b10315007"
 	os.system("../javaaPortable/javaa ./%s.jasm" % jasm_filename)
-	os.system("java %s.class" % jasm_filename)
+	# java_filename = "proj3"
+	# os.system("java /usr/bin /.%s.class" % java_filename)
 
 	sys.exit()

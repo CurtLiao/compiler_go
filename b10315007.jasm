@@ -31,15 +31,16 @@ class proj3
 		getstatic java.io.PrintStream java.lang.System.out
 		getstatic int proj3.c
 		ineg
-		invokevirtual void java.io.PrintStream.println(int)
+		invokevirtual void java.io.PrintStream.print(int)
 		goto L3
 	L2:
 		getstatic java.io.PrintStream java.lang.System.out
 		getstatic int proj3.c
-		invokevirtual void java.io.PrintStream.println(int)
+		invokevirtual void java.io.PrintStream.print(int)
 	L3:
 		getstatic java.io.PrintStream java.lang.System.out
 		ldc "Hello World" 
 		invokevirtual void java.io.PrintStream.println(java.lang.String)
+		return
 	}
 }

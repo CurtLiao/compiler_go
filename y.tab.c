@@ -1760,7 +1760,7 @@ yyreduce:
 
   case 32:
 #line 267 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"\t}\n");}
+    {fprintf(java_code,"\t\treturn\n\t}\n");}
 #line 1765 "y.tab.c" /* yacc.c:1661  */
     break;
 
@@ -1798,7 +1798,7 @@ yyreduce:
 
   case 35:
 #line 288 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"\t}\n");global_st.pop_table();}
+    {fprintf(java_code,"\t\treturn\n\t}\n");global_st.pop_table();}
 #line 1803 "y.tab.c" /* yacc.c:1661  */
     break;
 
@@ -1817,7 +1817,7 @@ yyreduce:
 
   case 37:
 #line 296 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"\t}\n");}
+    {fprintf(java_code,"\t\treturn\n\t}\n");}
 #line 1822 "y.tab.c" /* yacc.c:1661  */
     break;
 
@@ -1856,7 +1856,7 @@ yyreduce:
 
   case 40:
 #line 318 "yacc.y" /* yacc.c:1661  */
-    {fprintf(java_code,"\t}\n");global_st.pop_table();}
+    {fprintf(java_code,"\t\treturn\n\t}\n");global_st.pop_table();}
 #line 1861 "y.tab.c" /* yacc.c:1661  */
     break;
 
@@ -2113,9 +2113,9 @@ yyreduce:
     {
             printf("test type %d\n", (yyvsp[0].Token).token_type);
             if((yyvsp[0].Token).token_type == T_STR)
-                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.print(java.lang.String)\n");
             else
-                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(int)\n"); 
+                fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.print(int)\n"); 
         }
 #line 2121 "y.tab.c" /* yacc.c:1661  */
     break;
