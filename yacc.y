@@ -125,12 +125,12 @@ char args_buffer[256];
         $$.token_type = T_BOOL; 
         $$.state = S_PRIMITIVE; 
         $$.flag = $1.flag; 
-        if(const_flag != true)
+        if(const_flag != true){
             if($$.flag)    
                 fprintf(java_code, "\t\tsipush %d\n", 1);
             else        
                 fprintf(java_code, "\t\tsipush %d\n", 0);
-
+        }
     } | STR{ 
         $$.token_type = T_STR; 
         $$.state = S_PRIMITIVE; 
@@ -203,7 +203,8 @@ char args_buffer[256];
         func_invoke |   
         condition |   
         for_loop |
-        go;      
+        go|
+        expression;     
 
     func_declared: 
         // can provide function declared, support void type
@@ -742,7 +743,6 @@ char args_buffer[256];
         };
     condition:
         IF '(' bool_exp ')'{
-            printf("in if else\nin if else\nin if else\nin if else\nin if else\nin if else\nin if else\nin if else\n");
             //save index for else
             label_stack[label_stack_top++] = label_index;
             // fprintf(java_code,"\t\ticonst_0\n");
@@ -756,60 +756,33 @@ char args_buffer[256];
         } statement{
             fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top] + 1);
         }
-        |
-        IF '(' bool_exp ')'{
-            //save index for else
-            label_stack[label_stack_top++] = label_index;
-            // fprintf(java_code,"\t\ticonst_0\n");
-            fprintf(java_code,"\t\tifeq L%d\n", label_index);
-            label_index += 1;
-        }statement{
-            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top]);
-        }
+        // |
+        // IF '(' bool_exp ')'{
+        //     //save index for else
+        //     label_stack[label_stack_top++] = label_index;
+        //     // fprintf(java_code,"\t\ticonst_0\n");
+        //     fprintf(java_code,"\t\tifeq L%d\n", label_index);
+        //     label_index += 1;
+        // }statement{
+        //     fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top]);
+        // }
         ;
     for_loop:
-        // FOR '(' bool_exp ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
-        // FOR '(' bool_exp ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} compound|
         // FOR '(' statement ';' bool_exp ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
         // FOR '(' statement ';' bool_exp ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} compound|
-        // FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
-        // FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} compound|
-        FOR '(' {
-            label_stack[label_stack_top++] = label_index;
-            fprintf(java_code,"\tL%d:\n", label_index);
-            label_index += 4;
-        } bool_exp  ')'{
-        
-            if($4.token_type != T_BOOL){
-                yyerror(type_match_err);
-            }    
-            //go exit
-            fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
-            //go to Lbody
-            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
-    
-            //Lbody
-            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
-            
-        } compound{
-            //no Lpost so go to Ltest
-            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);        
-            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
-
-        }|
-        
         FOR '('{
             label_stack[label_stack_top++] = label_index;
+            //Ltest
             fprintf(java_code,"\tL%d:\n", label_index);
             label_index += 4;
-        } bool_exp ';'{
+        } bool_exp ';' {
             //go exit
             fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
             //go to Lbody
             fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
             //Lpost
             fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
-        } statement ')'{
+        } statement {
             if($4.token_type != T_BOOL){
                 yyerror(type_match_err);
             }
@@ -818,62 +791,77 @@ char args_buffer[256];
             //Lbody
             fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
             
-        } compound{
-            //go to Lpost
-            fprintf(java_code,"\t\tgoto L%d\n", label_stack[--label_stack_top-1] + 1);
-            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
-
-        }|
-        FOR '(' statement ';'{
-            label_stack[label_stack_top++] = label_index;
-            fprintf(java_code,"\tL%d:\n", label_index);
-            label_index += 4;
-        } bool_exp  ')'{
-        
-            if($6.token_type != T_BOOL){
-                yyerror(type_match_err);
-            }    
-            //go exit
-            fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
-            //go to Lbody
-            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
-    
-            //Lbody
-            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
-            
-        } compound{
-            //no Lpost so go to Ltest
-            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);        
-            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
-
-        }|
-        FOR '(' statement ';'{
-            label_stack[label_stack_top++] = label_index;
-            fprintf(java_code,"\tL%d:\n", label_index);
-            label_index += 4;
-        } bool_exp ';'{
-            //go exit
-            fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
-            //go to Lbody
-            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
-            //Lpost
-            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
-        } statement ')'{
-            if($6.token_type != T_BOOL){
-                yyerror(type_match_err);
-            }
-            //go to Ltest
-            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);
-            //Lbody
-            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
-            
-        } compound{
+        } ')' compound{
             //go to Lpost
             fprintf(java_code,"\t\tgoto L%d\n", label_stack[--label_stack_top-1] + 1);
             fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
 
         };
-        // FOR '(' statement ';' bool_exp ';' statement ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement;
+
+
+        // FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
+        // FOR '(' bool_exp ';' statement ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} compound|
+        // FOR '(' bool_exp ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement|
+        // FOR '(' bool_exp ')'{if($3.token_type != T_BOOL){yyerror(type_match_err);}} compound;
+        
+
+
+
+        // FOR '(' statement ';'{
+        //     label_stack[label_stack_top++] = label_index;
+        //     fprintf(java_code,"\tL%d:\n", label_index);
+        //     label_index += 4;
+        // } bool_exp ';'{
+        //     //go exit
+        //     fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
+        //     //go to Lbody
+        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
+        //     //Lpost
+        //     fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
+        // } statement ')'{
+        //     if($6.token_type != T_BOOL){
+        //         yyerror(type_match_err);
+        //     }
+        //     //go to Ltest
+        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);
+        //     //Lbody
+        //     fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
+            
+        // } compound{
+        //     //go to Lpost
+        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[--label_stack_top-1] + 1);
+        //     fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
+
+        // }|
+        // FOR '(' statement ';'{
+        //     label_stack[label_stack_top++] = label_index;
+        //     fprintf(java_code,"\tL%d:\n", label_index);
+        //     label_index += 4;
+        // } bool_exp ';'{
+        //     //go exit
+        //     fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
+        //     //go to Lbody
+        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
+        //     //Lpost
+        //     fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
+        // } statement ')'{
+        //     if($6.token_type != T_BOOL){
+        //         yyerror(type_match_err);
+        //     }
+        //     //go to Ltest
+        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);
+        //     //Lbody
+        //     fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
+            
+        // } compound{
+        //     //go to Lpost
+        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[--label_stack_top-1] + 1);
+        //     fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
+
+        // };
+        
+        
+        // // FOR '(' statement ';' bool_exp ';' statement ')'{if($5.token_type != T_BOOL){yyerror(type_match_err);}} simple_statement;
 
     go:
         GO ID '('')'{

@@ -6,13 +6,13 @@
 // variables
 const n = 10
 var sum int = 0
-var index int
+var index int = 0
   
 // main function
 func void main ( ) {
-  for (index = 0; index <= n ) {
+  for (index <= n; index = index + 1 ) {
     sum = sum + index
-    index = index + 1
+    // index = index + 1
   } 
   print "The sum is "
   println sum
