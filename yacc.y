@@ -106,10 +106,11 @@ char args_buffer[256];
 %token REAL_NUMBER
 
 %start program
-%left '|'
-%left '&'
-%left '!' 
-%left '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
+%right '='
+%right '|'
+%right '&'
+%right '!' 
+// %right '<' '>' LESS_EQUAL GREAT_EQUAL EQUAL NOT_EQUAL
 %left '+' '-' 
 %left '*'  '/' '%' 
 %right '^'
@@ -218,21 +219,21 @@ char args_buffer[256];
             global_st.function_declared($2.token_type, $3.name);
             if (strcmp($3.name, "main") == 0){
                 if($2.token_type == T_INT)
-                    fprintf(java_code,"\tmethod public static int main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+                    fprintf(java_code,"\tmethod public static int main(java.lang.String[])\n\tmax_stack 30\n\tmax_locals 30\n\t{\n");
                 else if($2.token_type == T_BOOL)
-                    fprintf(java_code,"\tmethod public static boolean main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+                    fprintf(java_code,"\tmethod public static boolean main(java.lang.String[])\n\tmax_stack 30\n\tmax_locals 30\n\t{\n");
                 else if($2.token_type == T_STR)
-                    fprintf(java_code,"\tmethod public static string main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+                    fprintf(java_code,"\tmethod public static string main(java.lang.String[])\n\tmax_stack 30\n\tmax_locals 30\n\t{\n");
             }
             else{
                 if($2.token_type == T_INT)
-                    fprintf(java_code,"\tmethod public static int %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
+                    fprintf(java_code,"\tmethod public static int %s()\n\tmax_stack 30\n\tmax_locals 30\n\t{\n", $3.name);
                 else if($2.token_type == T_BOOL)
-                    fprintf(java_code,"\tmethod public static boolean %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
+                    fprintf(java_code,"\tmethod public static boolean %s()\n\tmax_stack 30\n\tmax_locals 30\n\t{\n", $3.name);
                 else if($2.token_type == T_STR)
-                    fprintf(java_code,"\tmethod public static string %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
+                    fprintf(java_code,"\tmethod public static string %s()\n\tmax_stack 30\n\tmax_locals 30\n\t{\n", $3.name);
             }
-            // fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+            // fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 30\n\tmax_locals 30\n\t{\n");
             
             
         } compound {fprintf(java_code,"\t}\n");}|
@@ -261,16 +262,16 @@ char args_buffer[256];
                 if(i != 0)
                      fprintf(java_code, ", ");   
             }
-            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+            fprintf(java_code,")\n\tmax_stack 30\n\tmax_locals 30\n\t{\n");
             
         } compound {fprintf(java_code,"\t}\n");global_st.pop_table();}|
         FUNC VOID ID '(' ')'{
             global_st.function_declared(-1, $3.name);
             if (strcmp($3.name, "main") == 0){
-                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 30\n\tmax_locals 30\n\t{\n");
             }
             else{
-                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $3.name);
+                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 30\n\tmax_locals 30\n\t{\n", $3.name);
             }
 
         } compound {fprintf(java_code,"\t\treturn\n\t}\n");}|
@@ -293,15 +294,15 @@ char args_buffer[256];
                 if(i != 0)
                      fprintf(java_code, ", ");   
             }
-            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+            fprintf(java_code,")\n\tmax_stack 30\n\tmax_locals 30\n\t{\n");
         } compound {fprintf(java_code,"\t\treturn\n\t}\n");global_st.pop_table();}|
         FUNC ID '(' ')'{
             global_st.function_declared(-1, $2.name);
             if (strcmp($2.name, "main") == 0){
-                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+                fprintf(java_code,"\tmethod public static void main(java.lang.String[])\n\tmax_stack 30\n\tmax_locals 30\n\t{\n");
             }
             else{
-                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 15\n\tmax_locals 15\n\t{\n", $2.name);
+                fprintf(java_code,"\tmethod public static void %s()\n\tmax_stack 30\n\tmax_locals 30\n\t{\n", $2.name);
             }        } compound{fprintf(java_code,"\t\treturn\n\t}\n");}|
         FUNC ID '('{ 
             global_st.push_table(); 
@@ -323,7 +324,7 @@ char args_buffer[256];
                 if(i != 0)
                      fprintf(java_code, ", ");   
             }
-            fprintf(java_code,")\n\tmax_stack 15\n\tmax_locals 15\n\t{\n");
+            fprintf(java_code,")\n\tmax_stack 30\n\tmax_locals 30\n\t{\n");
         } compound{fprintf(java_code,"\t\treturn\n\t}\n");global_st.pop_table();};        
     formal_args: 
         // like   a int , b int , .... 
@@ -612,7 +613,6 @@ char args_buffer[256];
             $$ = $2;
         };
     bool_exp:
-        expression {$$ = $1;}|
         '(' bool_exp ')'{$$ = $2;}|
         '!' bool_exp {$$.token_type = T_BOOL;}|
         bool_exp '|' bool_exp {
@@ -715,7 +715,8 @@ char args_buffer[256];
             fprintf(java_code, "\tL%d:\ticonst_1\n",label_index);
             fprintf(java_code, "\tL%d:\n",label_index+1);
             label_index +=2;
-        };
+        }|
+        expression {$$ = $1;};
     // mix_exp:
     //     bool_exp {$$ = $1;}|
     //     expression {$$ = $1;}; //becaz mix_exp will go to exp
@@ -772,33 +773,50 @@ char args_buffer[256];
         //     fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top]);
         // }
         ;
+
+
+    prefix_for_statement:
+        simple_statement ';'{printf("in pre simple_statement\n");}| 
+        // simple_statement ';'{printf("in pre simple_statement\n");}| 
+        %empty {printf("in pre none\n");};       
+    
+    postfix_for_statement:
+        ';' simple_statement {printf("in post simple_statement\n");}| 
+        %empty {printf("in post none\n");};       
     for_loop:
-        FOR {
+
+        FOR '('{
+            printf("in for\nin for\nin for\nin for\nin for\nin for\n");
+        } prefix_for_statement {
             label_stack[label_stack_top++] = label_index;
             //Ltest
             fprintf(java_code,"\tL%d:\n", label_index);
             label_index += 4;
-        }'(' bool_exp ';' {
+
+            
+        } bool_exp {
+            printf("in bool_exp\nin bool_exp\nin bool_exp\nin for\nin for\nin for\n");
+
+            // if($5.token_type != T_BOOL){
+            //     yyerror(type_match_err);
+            // }
             //go exit
             fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
             //go to Lbody
             fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
             //Lpost
             fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
-        } statement {
-            if($4.token_type != T_BOOL){
-                yyerror(type_match_err);
-            }
+        } postfix_for_statement {
+            
             //go to Ltest
             fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);
-            //Lbody
+        //     //Lbody
             fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
             
         } ')' compound{
-            //go to Lpost
+             //     //go to Lpost
             fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 1);
-            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
-
+            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top] + 3);
         };
         //correct
         // FOR '(' statement ';' {

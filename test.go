@@ -12,16 +12,20 @@ var index int = 0
 func void main ( ) {
   
 
-  // for (index = 0; index <= n + 6) {
-  //   sum = sum + index
-  //   index = index + 1
-  // } 
-  sum = 0 + 5 * 9 + -1 * 3
-  // for (index <= n; index = index + 1 ) {
-  //   // sum = sum + index  + 1 * 2
-  //   sum = sum + index
+	for (index = 0; index <= n; index = index + 1 ) {
+    	// sum = sum + index  + 1 * 2
+    	sum = sum + index
 
-  // } 
+	} 
+	for (index = 0; index <= 3) {
+		sum = sum + index
+		index = index + 1
+	} 
+  	index = 0
+	// for (index <= 10; index = index + 1 ) {
+	// 	// sum = sum + index  + 1 * 2
+	// 	sum = sum + index
+	// } 
   // sum = 0
   // for (index = 0; index <= n + 6; index = index + 1) {
   //   sum = sum + index
