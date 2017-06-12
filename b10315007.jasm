@@ -7,30 +7,16 @@ class proj3
 	max_stack 15
 	max_locals 15
 	{
-	L0:
-		getstatic int proj3.index
-		getstatic int proj3.n
-		isub
-		ifle L4
-		iconst_0
-		goto L5
-	L4:	iconst_1
-	L5:
-		ifeq L3
-		goto L2
-	L1:
-		getstatic int proj3.index
-		sipush 1
+		sipush 0
+		sipush 5
+		sipush 9
+		imul
 		iadd
-		putstatic int proj3.index
-		goto L0
-	L2:
-		getstatic int proj3.sum
-		getstatic int proj3.index
+		sipush -1
+		sipush 3
+		imul
 		iadd
 		putstatic int proj3.sum
-		goto L1
-	L3:
 		getstatic java.io.PrintStream java.lang.System.out
 		ldc "The sum is " 
 		invokevirtual void java.io.PrintStream.print(java.lang.String)
