@@ -1,141 +1,35 @@
 class proj3
 {
-	field static int n = 10
-	field static int sum = 0
-	field static int index = 0
+	field static int Fn = 1
+	field static int n = 8
+	field static int FNminus1 = 1
+	field static int temp
 	method public static void main(java.lang.String[])
 	max_stack 30
 	max_locals 30
 	{
 	L0: iconst_0
 		pop
-		sipush 0
-		putstatic int proj3.index
-		goto L1
-	L1:
-		getstatic int proj3.index
 		getstatic int proj3.n
+		sipush 2
 		isub
-		ifle L5
+		ifgt L4
 		iconst_0
-		goto L6
-	L5:	iconst_1
-	L6:
-		ifeq L4
-		goto L3
-	L2:
-		getstatic int proj3.index
-		sipush 1
-		iadd
-		putstatic int proj3.index
-		goto L1
-	L3:
-		getstatic int proj3.sum
-		getstatic int proj3.index
-		iadd
-		putstatic int proj3.sum
+		goto L5
+	L4:	iconst_1
+	L5:
+		ifeq L3
 		goto L2
-	L4:iconst_0
-		pop
-	L7: iconst_0
-		pop
-		getstatic int proj3.index
-		sipush 10
-		isub
-		ifle L11
-		iconst_0
-		goto L12
-	L11:	iconst_1
-	L12:
-		ifeq L10
-		goto L9
-	L8:
-		getstatic int proj3.index
-		sipush 1
-		iadd
-		putstatic int proj3.index
-		goto L7
-	L9:
-		getstatic int proj3.sum
-		getstatic int proj3.index
-		iadd
-		putstatic int proj3.sum
-		goto L8
-	L10:
-	iconst_0
-		pop
-	L13: iconst_0
-		pop
-		sipush 0
-		putstatic int proj3.index
-		goto L14
-	L14:
-		getstatic int proj3.index
-		sipush 10
-		isub
-		ifle L18
-		iconst_0
-		goto L19
-	L18:	iconst_1
-	L19:
-		ifeq L17
-		goto L16
-	L15:
-	iconst_0
-		pop
-		goto L14
-	L16:
-		getstatic int proj3.sum
-		getstatic int proj3.index
-		iadd
-		putstatic int proj3.sum
-		getstatic int proj3.index
-		sipush 1
-		iadd
-		putstatic int proj3.index
-		goto L15
-	L17:iconst_0
-		pop
-		sipush 0
-		putstatic int proj3.sum
-	L20: iconst_0
-		pop
-		sipush 0
-		putstatic int proj3.index
-		goto L21
-	L21:
-		getstatic int proj3.index
+	L1:
 		getstatic int proj3.n
-		sipush 6
-		iadd
-		isub
-		ifle L25
-		iconst_0
-		goto L26
-	L25:	iconst_1
-	L26:
-		ifeq L24
-		goto L23
-	L22:
-		getstatic int proj3.index
 		sipush 1
+		isub
+		putstatic int proj3.n
+		goto L0
+	L2:
+		getstatic int proj3.Fn
+		putstatic int proj3.temp
+		getstatic int proj3.Fn
+		getstatic int proj3.FNminus1
 		iadd
-		putstatic int proj3.index
-		goto L21
-	L23:
-		getstatic int proj3.sum
-		getstatic int proj3.index
-		iadd
-		putstatic int proj3.sum
-		goto L22
-	L24:iconst_0
-		pop
-		getstatic java.io.PrintStream java.lang.System.out
-		ldc "The sum is " 
-		invokevirtual void java.io.PrintStream.print(java.lang.String)
-		getstatic java.io.PrintStream java.lang.System.out
-		getstatic int proj3.sum
-		invokevirtual void java.io.PrintStream.println(int)
-		return
-	}
-}
+		putstatic int proj3.Fn

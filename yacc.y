@@ -746,6 +746,19 @@ char args_buffer[256];
             fprintf(java_code,"\t\tinvokestatic %s proj3.%s()\n", global_st.variable_type_str($1.name).c_str(), $1.name);
 
         };
+    condition_optinal_else:
+        ELSE{
+            //go exit
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 1);
+            //else lable
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1]);
+        } statement{
+            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top] + 1);
+        }|// if it is none, it means one if and no else
+          statement{
+            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top]);
+
+        };
     condition:
         IF '(' bool_exp ')'{
             //save index for else
@@ -753,15 +766,8 @@ char args_buffer[256];
             // fprintf(java_code,"\t\ticonst_0\n");
             fprintf(java_code,"\t\tifeq L%d\n", label_index);
             label_index += 2;
-        } statement ELSE{
-            //go exit
-            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 1);
-            //else lable
-            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1]);
-        } statement{
-            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top] + 1);
-        }
-        // |
+        } statement condition_optinal_else;
+        |
         // IF '(' bool_exp ')'{
         //     //save index for else
         //     label_stack[label_stack_top++] = label_index;

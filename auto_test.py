@@ -8,9 +8,10 @@ import os
  
 if __name__ == '__main__':
 	filename = "test.go"		
-	# filename = "example.go"		
-	# filename = "HelloWorld.go"		
-	# filename = "sigma.go"		
+	filename = "example.go"		
+	filename = "HelloWorld.go"		
+	filename = "sigma.go"		
+	filename = "fib.go"		
 	os.system("bison -y -d yacc.y")
 	os.system("flex source.l")
 	# os.rename("lex.yy.c", "lex.yy.cpp")
