@@ -251,7 +251,7 @@ char args_buffer[256];
             variable v = global_st.lookup_variable($3.name);
             fprintf(java_code,"(");
             for(int i = v.func_size - 1; i >= 0 ; --i){
-                printf("position = %d  type = %d\n", i , v.func_type[i]);
+                // printf("position = %d  type = %d\n", i , v.func_type[i]);
                 if(v.func_type[i] == T_INT)
                     fprintf(java_code, "int");
                 else if(v.func_type[i] == T_BOOL)
@@ -313,7 +313,7 @@ char args_buffer[256];
             variable v = global_st.lookup_variable($2.name);
             fprintf(java_code,"(");
             for(int i = v.func_size - 1; i >= 0 ; --i){
-                printf("position = %d  type = %d\n", i , v.func_type[i]);
+                // printf("position = %d  type = %d\n", i , v.func_type[i]);
                 if(v.func_type[i] == T_INT)
                     fprintf(java_code, "int");
                 else if(v.func_type[i] == T_BOOL)
@@ -342,7 +342,7 @@ char args_buffer[256];
     identifier_list:          
         ID ',' identifier_list {  
             // for variable declared like
-            printf("\t id , identifier_list || id = %s\n", $1.name); 
+            // printf("\t id , identifier_list || id = %s\n", $1.name); 
             strcat($$.name, " "); 
             strcat($$.name, $3.name);
         }|
@@ -358,12 +358,12 @@ char args_buffer[256];
             sprintf($$.concat_name, "%d", $1.token_type);
             strcat($$.concat_name, " ");
             strcat($$.concat_name, $3.concat_name);
-            printf("\t args in mix_exp, arg_list of argument_list|| id = %s\n", $$.concat_name); 
+            // printf("\t args in mix_exp, arg_list of argument_list|| id = %s\n", $$.concat_name); 
         }|
         bool_exp     {
             $$.concat_name = (char*)malloc(2*sizeof(char)); 
             sprintf($$.concat_name, "%d", $1.token_type);
-            printf("\t args in mix_exp of argument_list|| id = %s\n", $$.concat_name); 
+            // printf("\t args in mix_exp of argument_list|| id = %s\n", $$.concat_name); 
         };
     //declare the type of id and type check
     identifier_declared: 
@@ -392,7 +392,7 @@ char args_buffer[256];
                 fprintf(java_code, "\tfield static int %s = %d\n", $2.name, $5.val);
         }|
         VAR identifier_list BOOL '=' bool_type {
-            printf("T_BOOL = %d\n", T_BOOL);
+            // printf("T_BOOL = %d\n", T_BOOL);
             variable v(T_BOOL, 0, $5.flag); 
             if(!global_st.declared($2.name, v))
                 yyerror(declared_err);
@@ -535,7 +535,7 @@ char args_buffer[256];
         }|
         PRINT {fprintf(java_code,"\t\tgetstatic java.io.PrintStream java.lang.System.out\n");} 
         expression{
-            printf("test type %d\n", $3.token_type);
+            // printf("test type %d\n", $3.token_type);
             if($3.token_type == T_STR)
                 fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.print(java.lang.String)\n");
             else
@@ -543,7 +543,7 @@ char args_buffer[256];
         } |
         PRINTLN {fprintf(java_code,"\t\tgetstatic java.io.PrintStream java.lang.System.out\n");} 
         expression{
-            printf("test type %d\n", $3.token_type);
+            // printf("test type %d\n", $3.token_type);
             if($3.token_type == T_STR)
                 fprintf(java_code,"\t\tinvokevirtual void java.io.PrintStream.println(java.lang.String)\n");
             else
@@ -754,10 +754,13 @@ char args_buffer[256];
             fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1]);
         } statement{
             fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top] + 1);
+            fprintf(java_code,"\ticonst_0\n");
+            fprintf(java_code,"\t\tpop\n");
         }|// if it is none, it means one if and no else
           statement{
             fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top]);
-
+            fprintf(java_code,"\ticonst_0\n");
+            fprintf(java_code,"\t\tpop\n");
         };
     condition:
         IF '(' bool_exp ')'{
@@ -766,6 +769,7 @@ char args_buffer[256];
             // fprintf(java_code,"\t\ticonst_0\n");
             fprintf(java_code,"\t\tifeq L%d\n", label_index);
             label_index += 2;
+
         } statement condition_optinal_else;
         |
         // IF '(' bool_exp ')'{
@@ -801,7 +805,7 @@ char args_buffer[256];
                 if(!global_st.assign($1.name, v))
                     yyerror(type_match_err);
             }
-        } ';'{printf("in pre simple_statement\n");};
+        } ';'{};
         // simple_statement ';'{printf("in pre simple_statement\n");}| 
     
     
@@ -827,23 +831,12 @@ char args_buffer[256];
                     yyerror(type_match_err);
             }
         }| %empty {
-            printf("in post simple_statement\n");
             fprintf(java_code,"\ticonst_0\n");
             fprintf(java_code,"\t\tpop\n");
         };
     forloop_args:
          bool_exp {
-            printf("in bool for\nin bool for\nin bool for\n");
-            // label_index -= 1;
-            // label_stack[label_stack_top++] = label_index;
-            //Ltest
-            // label_index += 4;
-
-            printf("in bool_exp\nin bool_exp\nin bool_exp\nin for\nin for\nin for\n");
-
-            // if($5.token_type != T_BOOL){
-            //     yyerror(type_match_err);
-            // }
+            
             //go exit
             fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
             //go to Lbody
@@ -879,7 +872,6 @@ char args_buffer[256];
 
             
         } bool_exp {
-            printf("in bool_exp\nin bool_exp\nin bool_exp\nin for\nin for\nin for\n");
 
             // if($5.token_type != T_BOOL){
             //     yyerror(type_match_err);
