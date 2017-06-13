@@ -106,7 +106,6 @@ char args_buffer[256];
 %token REAL_NUMBER
 
 %start program
-%right '='
 %right '|'
 %right '&'
 %right '!' 
@@ -776,18 +775,97 @@ char args_buffer[256];
 
 
     prefix_for_statement:
-        simple_statement ';'{printf("in pre simple_statement\n");}| 
+        ID '=' expression { 
+            //type check
+           
+            variable left_v = global_st.lookup_variable($1.name);
+            if(left_v.type != $3.token_type)
+                yyerror(type_match_err);
+            //check global or local and assign
+            if(left_v.is_global)
+                fprintf(java_code, "\t\tputstatic int proj3.%s\n", $1.name);
+            else                    
+                fprintf(java_code, "\t\tistore %d\n", left_v.virtual_index);
+            //get value
+            variable v($3.token_type);
+            if(!global_st.assign($1.name, v))
+                yyerror(type_match_err);
+            //if it is primitive
+            else {
+                if(!global_st.assign($1.name, v))
+                    yyerror(type_match_err);
+            }
+        } ';'{printf("in pre simple_statement\n");};
         // simple_statement ';'{printf("in pre simple_statement\n");}| 
-        %empty {printf("in pre none\n");};       
+    
     
     postfix_for_statement:
-        ';' simple_statement {printf("in post simple_statement\n");}| 
-        %empty {printf("in post none\n");};       
-    for_loop:
+        ';' ID '=' expression { 
+            //type check
+           
+            variable left_v = global_st.lookup_variable($2.name);
+            if(left_v.type != $4.token_type)
+                yyerror(type_match_err);
+            //check global or local and assign
+            if(left_v.is_global)
+                fprintf(java_code, "\t\tputstatic int proj3.%s\n", $2.name);
+            else                    
+                fprintf(java_code, "\t\tistore %d\n", left_v.virtual_index);
+            //get value
+            variable v($4.token_type);
+            if(!global_st.assign($2.name, v))
+                yyerror(type_match_err);
+            //if it is primitive
+            else {
+                if(!global_st.assign($2.name, v))
+                    yyerror(type_match_err);
+            }
+        }| %empty {
+            printf("in post simple_statement\n");
+            fprintf(java_code,"\ticonst_0\n");
+            fprintf(java_code,"\t\tpop\n");
+        };
+    forloop_args:
+         bool_exp {
+            printf("in bool for\nin bool for\nin bool for\n");
+            // label_index -= 1;
+            // label_stack[label_stack_top++] = label_index;
+            //Ltest
+            // label_index += 4;
 
-        FOR '('{
-            printf("in for\nin for\nin for\nin for\nin for\nin for\n");
-        } prefix_for_statement {
+            printf("in bool_exp\nin bool_exp\nin bool_exp\nin for\nin for\nin for\n");
+
+            // if($5.token_type != T_BOOL){
+            //     yyerror(type_match_err);
+            // }
+            //go exit
+            fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
+            //go to Lbody
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
+            //Lpost
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
+        } postfix_for_statement {
+            
+            //go to Ltest
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);
+        //     //Lbody
+            fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
+            
+        } ')' compound{
+             //     //go to Lpost
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 1);
+            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top] + 3);
+            fprintf(java_code,"\ticonst_0\n");
+            fprintf(java_code,"\t\tpop\n");
+
+        }|
+
+        prefix_for_statement {
+            //bcz it don't need preprocess
+            --label_stack_top;
+            label_index -= 3;
+            fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top] + 1);
+
             label_stack[label_stack_top++] = label_index;
             //Ltest
             fprintf(java_code,"\tL%d:\n", label_index);
@@ -816,61 +894,23 @@ char args_buffer[256];
         } ')' compound{
              //     //go to Lpost
             fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 1);
-            fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top] + 3);
+            fprintf(java_code,"\tL%d:iconst_0\n", label_stack[--label_stack_top] + 3);
+            fprintf(java_code,"\t\tpop\n");
+
         };
-        //correct
-        // FOR '(' statement ';' {
-        //     label_stack[label_stack_top++] = label_index;
-        //     //Ltest
-        //     fprintf(java_code,"\tL%d:\n", label_index);
-        //     label_index += 4;
-            
-        // } bool_exp {
-        //     if($6.token_type != T_BOOL){
-        //         yyerror(type_match_err);
-        //     }
-        //     //go exit
-        //     fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
-        //     //go to Lbody
-        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
-            
-        //     //Lbody
-        //     fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
-            
-        // } ')' compound{
-        //     //no Lbody go to Ltest
-        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);
-        //     fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
+        
 
-        // }
+    for_loop:
+        
+        FOR '(' {
+            label_stack[label_stack_top++] = label_index;
+            //Ltest
+            fprintf(java_code,"\tL%d: iconst_0\n", label_index);
+            fprintf(java_code,"\t\tpop\n");
 
+            label_index += 4;
 
-        //correct
-        // FOR '(' statement ';'{
-        //     label_stack[label_stack_top++] = label_index;
-        //     fprintf(java_code,"\tL%d:\n", label_index);
-        //     label_index += 4;
-        // } bool_exp ';'{
-        //     //go exit
-        //     fprintf(java_code,"\t\tifeq L%d\n", label_stack[label_stack_top-1] + 3);
-        //     //go to Lbody
-        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1] + 2);
-        //     //Lpost
-        //     fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 1);
-        // } statement ')'{
-        //     if($6.token_type != T_BOOL){
-        //         yyerror(type_match_err);
-        //     }
-        //     //go to Ltest
-        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[label_stack_top-1]);
-        //     //Lbody
-        //     fprintf(java_code,"\tL%d:\n", label_stack[label_stack_top - 1] + 2);
-            
-        // } compound{
-        //     //go to Lpost
-        //     fprintf(java_code,"\t\tgoto L%d\n", label_stack[--label_stack_top-1] + 1);
-        //     fprintf(java_code,"\tL%d:\n", label_stack[--label_stack_top-1] + 3);
-        // };
+        } forloop_args;
 
     go:
         GO ID '('')'{
